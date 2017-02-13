@@ -12,7 +12,6 @@ body {
 .navbar-default .navbar-nav #user-profile {
     height: 50px;
     padding-top: 15px;
-    padding-left: 58px;
 }
 
 .navbar-default .navbar-nav #user-profile img {
@@ -139,6 +138,7 @@ body {
     #page-content-wrapper{
         position: relative;
         left:40px;
+        width:95%;
     }
 
 }
@@ -165,3 +165,28 @@ body {
     color: #fff;
     background-color: transparent;
 }
+
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+    border-color: #35475E;
+}
+
+.navbar-default .navbar-nav .open .dropdown-menu > li > a {
+    color: #fff;
+    background-color:#35475E;
+}
+
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover {
+    color: #fff;
+    text-decoration: underline;
+    background-color:#35475E;
+}
+
+.navbar-nav > li > .dropdown-menu {
+    background-color:#35475E;
+}
+
+.nav > li {
+    border-color: #35475E;
+}
+
+

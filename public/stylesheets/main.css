@@ -1,3 +1,7 @@
+body{
+    background-color:#35475E;
+}
+
 #border{
     border: 1px solid black;
 }
@@ -10,6 +14,15 @@
     align-items: center;
 }
 
+.centered
+{
+    text-align:center;
+}
+
 #margTop{
     margin-top: 10px;
+}
+
+#margBot{
+    margin-bottom:15px;
 }
