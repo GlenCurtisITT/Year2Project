@@ -1,0 +1,23 @@
+@(addUserForm: Form[models.users.User])
+@import helper._
+
+@mainTemplate.main("Create User") {
+    <div class="row">
+        <div class="col-lg-3">
+        <!--http://stackoverflow.com/questions/38379858/play-framework-get-value-from-form-->
+        @helper.form(action = controllers.routes.HomeController.addUserSubmit(), 'class -> "form-horizontal", 'role->"form"){
+            @inputText(addUserForm("email"), '_label -> "Email", 'class -> "form-control")
+            @select(addUserForm("role"), options("consultant"->"Consultant", "admin"-> "Admin"), '_label -> "Role")
+            @inputText(addUserForm("name"), '_label -> "Name", 'class -> "form-control")
+            @inputPassword(addUserForm("password"), '_label -> "Password", 'class -> "form-control")
+
+            <div class="actions">
+                <input type="submit" value="Add User" class="btn btn-primary">
+                <a href="@routes.HomeController.index()" <button class="btn btn-warning">Cancel</button></a>
+            </div>
+        }
+        </div>
+
+    </div>
+
+}
