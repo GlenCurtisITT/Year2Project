@@ -7,6 +7,7 @@ import views.html.*;
 import views.html.loginPage.*;
 import views.html.mainTemplate.*;
 import play.data.*;
+import java.util.*;
 
 import javax.inject.Inject;
 import models.users.*;
@@ -34,14 +35,26 @@ public class HomeController extends Controller {
 
     public Result createUser(){
         Form<User> adduserForm = formFactory.form(User.class);
-        return ok(createUser.render(adduserForm));
+        return ok(createUser.render(adduserForm, null));
     }
 
     public Result addUserSubmit(){
         DynamicForm newUserForm = formFactory.form().bindFromRequest();
+        Form errorForm = formFactory.form().bindFromRequest();
+        //Checking if Form has errors.
         if(newUserForm.hasErrors()){
-            Form<User> errorForm = formFactory.form(User.class);
-            return badRequest(createUser.render(errorForm));
+            return badRequest(createUser.render(errorForm, "Error in form."));
+        }
+        //Checking if password == confirmed password
+        if(!newUserForm.get("password").equals(newUserForm.get("passwordConfirm"))){
+            return badRequest(createUser.render(errorForm, "Passwords do not match."));
+        }
+        //Checking if email exists in database.
+        List<User> allusers = User.findAll();
+        for(User a : allusers){
+            if(a.getEmail().equals(newUserForm.get("email"))){
+                return badRequest(createUser.render(errorForm, "Email already exists."));
+            }
         }
 
         User.create(newUserForm.get("email"), newUserForm.get("role"), newUserForm.get("name"), newUserForm.get("password"));
