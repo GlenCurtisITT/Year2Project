@@ -49,7 +49,7 @@ public class HomeController extends Controller {
         if(!newUserForm.get("password").equals(newUserForm.get("passwordConfirm"))){
             return badRequest(createUser.render(errorForm, "Passwords do not match."));
         }
-        //Checking if email exists in database.
+        //Checking if email exists in database
         List<User> allusers = User.findAll();
         for(User a : allusers){
             if(a.getEmail().equals(newUserForm.get("email"))){
