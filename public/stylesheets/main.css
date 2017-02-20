@@ -26,3 +26,8 @@ body{
 #margBot{
     margin-bottom:15px;
 }
+
+#page-content-wrapper{
+    padding-left:10px;
+    padding-top:10px;
+}
