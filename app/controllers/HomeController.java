@@ -26,7 +26,7 @@ public class HomeController extends Controller {
     }
 
     public Result index() {
-        return ok(index.render());
+        return ok(index.render(null));
     }
 
     public Result homepage(){
@@ -47,7 +47,10 @@ public class HomeController extends Controller {
         }
         //Checking that Email and Name are not blank.
         if(newUserForm.get("email").equals("") || newUserForm.get("name").equals("")){
-            return badRequest(createUser.render(errorForm, "Please enter Email and Name."));
+            return badRequest(createUser.render(errorForm, "Please enter an email and name."));
+        }
+        if(newUserForm.get("role").equals("select")){
+            return badRequest(createUser.render(errorForm, "Please enter a role."));
         }
         //Checking if password == confirmed password
         if(!newUserForm.get("password").equals(newUserForm.get("passwordConfirm"))){
@@ -55,7 +58,7 @@ public class HomeController extends Controller {
         }
         //Checking if password is longer than 6 characters
         if(newUserForm.get("password").length() < 6){
-            return badRequest(createUser.render(errorForm, "Password must be more than six characters."));
+            return badRequest(createUser.render(errorForm, "Password must be at least six characters."));
         }
         //Checking if email exists already in database (Duplicate primary key)
         List<User> allusers = User.findAll();
@@ -65,7 +68,11 @@ public class HomeController extends Controller {
             }
         }
 
+        //Adding user to database
         User.create(newUserForm.get("email"), newUserForm.get("role"), newUserForm.get("name"), newUserForm.get("password"));
+        String s = newUserForm.get("role") + ": " + newUserForm.get("name") + " added successfully.";
+        //Flashing String s to memory to be used in index screen.
+        flash("success", s);
         return redirect(controllers.routes.HomeController.index());
     }
 }

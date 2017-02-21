@@ -9,14 +9,14 @@
                     <strong>@error</strong>
                 </div>
             }
-        <!--http://stackoverflow.com/questions/38379858/play-framework-get-value-from-form-->
-        <!--http://stackoverflow.com/questions/10127156/use-of-option-helper-in-play-framework-2-0-templates/10137190#10137190-->
-        @helper.form(action = controllers.routes.HomeController.addUserSubmit(), 'class -> "form-horizontal", 'role->"form"){
-            @inputText(addUserForm("email"), '_label -> "Email", 'class -> "form-control")
-            @select(addUserForm("role"), options("consultant"->"Consultant", "admin"-> "Admin"), '_label -> "Role")
-            @inputText(addUserForm("name"), '_label -> "Name", 'class -> "form-control")
-            @inputPassword(addUserForm("password"), '_label -> "Password", 'class -> "form-control")
-            @inputPassword(addUserForm("passwordConfirm"), '_label -> "Confirm Password", 'class -> "form-control")
+            <!--http://stackoverflow.com/questions/38379858/play-framework-get-value-from-form-->
+            <!--http://stackoverflow.com/questions/10127156/use-of-option-helper-in-play-framework-2-0-templates/10137190#10137190-->
+            @helper.form(action = controllers.routes.HomeController.addUserSubmit(), 'class -> "form-horizontal", 'role->"form"){
+                @inputText(addUserForm("email"), '_label -> "Email", 'class -> "form-control")
+                @select(addUserForm("role"), options("select" -> "--- Please Select ---","Admin"-> "Admin", "Consultant"->"Consultant"), '_label -> "Role")
+                @inputText(addUserForm("name"), '_label -> "Full Name", 'class -> "form-control")
+                @inputPassword(addUserForm("password"), '_label -> "Password", 'class -> "form-control")
+                @inputPassword(addUserForm("passwordConfirm"), '_label -> "Confirm Password", 'class -> "form-control")
 
             <div class="actions">
                 <input type="submit" value="Add User" class="btn btn-primary">
@@ -24,7 +24,5 @@
             </div>
         }
         </div>
-
     </div>
-
 }
