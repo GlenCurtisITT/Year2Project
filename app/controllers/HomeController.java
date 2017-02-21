@@ -45,20 +45,27 @@ public class HomeController extends Controller {
         if(newUserForm.hasErrors()){
             return badRequest(createUser.render(errorForm, "Error in form."));
         }
+        //Checking that Email and Name are not blank.
+        if(newUserForm.get("email").equals("") || newUserForm.get("name").equals("")){
+            return badRequest(createUser.render(errorForm, "Please enter Email and Name."));
+        }
         //Checking if password == confirmed password
         if(!newUserForm.get("password").equals(newUserForm.get("passwordConfirm"))){
             return badRequest(createUser.render(errorForm, "Passwords do not match."));
         }
-        //Checking if email exists in database
+        //Checking if password is longer than 6 characters
+        if(newUserForm.get("password").length() < 6){
+            return badRequest(createUser.render(errorForm, "Password must be more than six characters."));
+        }
+        //Checking if email exists already in database (Duplicate primary key)
         List<User> allusers = User.findAll();
-        for(User a : allusers){
-            if(a.getEmail().equals(newUserForm.get("email"))){
-                return badRequest(createUser.render(errorForm, "Email already exists."));
+        for(User a : allusers) {
+            if (a.getEmail().equals(newUserForm.get("email"))) {
+                return badRequest(createUser.render(errorForm, "Email already exists in system."));
             }
         }
 
         User.create(newUserForm.get("email"), newUserForm.get("role"), newUserForm.get("name"), newUserForm.get("password"));
-        //User.create("test", "test", "test", "test");
         return redirect(controllers.routes.HomeController.index());
     }
 }

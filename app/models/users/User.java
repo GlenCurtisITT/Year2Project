@@ -12,6 +12,7 @@ import org.mindrot.jbcrypt.BCrypt;
 public class User extends Model{
 
     @Id
+    @Constraints.Required
     private String email;
 
     @Constraints.Required

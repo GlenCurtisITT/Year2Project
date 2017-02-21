@@ -5,7 +5,9 @@
     <div class="row">
         <div class="col-lg-3">
             @if(error != null){
-                <h1>@error</h1>
+                <div class="alert alert-warning">
+                    <strong>@error</strong>
+                </div>
             }
         <!--http://stackoverflow.com/questions/38379858/play-framework-get-value-from-form-->
         <!--http://stackoverflow.com/questions/10127156/use-of-option-helper-in-play-framework-2-0-templates/10137190#10137190-->
