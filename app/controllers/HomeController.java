@@ -3,6 +3,7 @@ package controllers;
 import controllers.*;
 import play.mvc.*;
 
+import sun.rmi.runtime.Log;
 import views.html.*;
 import views.html.loginPage.*;
 import views.html.mainTemplate.*;
@@ -26,11 +27,13 @@ public class HomeController extends Controller {
     }
 
     public Result index() {
-        return ok(index.render(null));
+        Form<Login> loginForm = formFactory.form(Login.class);
+        return ok(index.render(loginForm));
     }
 
     public Result homepage(){
-        return ok(homepage.render());
+        User u = getUserFromSession();
+        return ok(homepage.render(u));
     }
 
     public Result createUser(){
@@ -74,5 +77,9 @@ public class HomeController extends Controller {
         //Flashing String s to memory to be used in index screen.
         flash("success", s);
         return redirect(controllers.routes.HomeController.index());
+    }
+
+    public User getUserFromSession(){
+        return User.getUserById(session().get("email"));
     }
 }

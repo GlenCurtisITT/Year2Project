@@ -40,6 +40,14 @@ public class User extends Model{
         }
     }
 
+    public static User getUserById(String id){
+        if(id == null)
+            return null;
+        else
+            return find.byId(id);
+    }
+
+
     public static Finder<String, User> find = new Finder<String, User>(User.class);
 
     public static List<User> findAll(){

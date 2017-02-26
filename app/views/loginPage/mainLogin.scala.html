@@ -8,8 +8,16 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/bootstrap.css")">
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-      <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/login.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/login.css")">
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+    <script type="text/javascript" src="jquery-1.8.3.js"></script>
+    <script type="text/javascript">
+            setTimeout(fade_out, 3000);
+
+            function fade_out() {
+              $("#fadeOut").fadeOut(3000).empty();
+            }
+    </script>
   </head>
   <body>
     <div class="jumbotron vertical-center" id="loginpage">

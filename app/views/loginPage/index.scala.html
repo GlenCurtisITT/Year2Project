@@ -1,4 +1,6 @@
-@(message: String)
+@(loginForm: Form[models.users.Login])
+@import helper._
+
 @loginPage.mainLogin("Login") {
 
     <div class="row">
@@ -9,7 +11,7 @@
         </div>
     </div>
     @if(flash().containsKey("success")) {
-        <div class="row">
+        <div class="row" id="fadeOut">
             <div class="col-xs-4">
 
             </div>
@@ -25,10 +27,47 @@
             </div>
         </div>
     }
+    @if(flash().containsKey("error")){
+        <div class="row">
+            <div class="col-xs-4">
+
+            </div>
+            <div class="col-xs-4">
+                <div class="centered">
+                    <div class="alert alert-danger">
+                        <strong>@flash().get("error")</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-4">
+
+            </div>
+        </div>
+    }
     <div class="row">
+        <div class="col-xs-4">
+
+        </div>
+        <div class="col-xs-4">
+            <div class="centered">
+                @helper.form(action = controllers.routes.LoginController.loginSubmit()){
+                    <div class="form-group">
+                        @inputText(loginForm("email"), '_label -> "", 'class -> "form-control input-xs", 'placeholder -> "Email")
+                    </div>
+                    <div class="form-group">
+                        @inputPassword(loginForm("password"), '_label -> "", 'class -> "form-control input-xs", 'placeholder -> "Password")
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Sign In" class="btn btn-primary">
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-xs-4">
+
+        </div>
         <div class="col-xs-12">
             <div class="centered">
-                <a href="@routes.HomeController.homepage()"><button type="button" class="btn btn-primary text-center">Login</button></a>
                 <a href="@routes.HomeController.createUser()"><button type="button" class="btn btn-primary text-center">Create User</button></a>
             </div>
         </div>

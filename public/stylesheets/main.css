@@ -31,3 +31,11 @@ body{
     padding-left:10px;
     padding-top:10px;
 }
+
+#fadeOut{
+    -webkit-transition: opacity 3s ease-in-out;
+    -moz-transition: opacity 3s ease-in-out;
+    -ms-transition: opacity 3s ease-in-out;
+    -o-transition: opacity 3s ease-in-out;
+    opacity: 1;
+}

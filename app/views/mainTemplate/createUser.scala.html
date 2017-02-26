@@ -1,7 +1,7 @@
 @(addUserForm: Form[models.users.User], error: String)
 @import helper._
 
-@mainTemplate.main("Create User") {
+@mainTemplate.main("Create User", null) {
     <div class="row">
         <div class="col-lg-3">
             @if(error != null){

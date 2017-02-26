@@ -6,7 +6,9 @@
 GET     /                           controllers.HomeController.index
 GET     /homepage                   controllers.HomeController.homepage
 GET     /createuser                 controllers.HomeController.createUser
+GET     /logout                     controllers.LoginController.logout
 POST    /addUserSubmit              controllers.HomeController.addUserSubmit
+POST    /loginSubmit                controllers.LoginController.loginSubmit
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count
 # An example controller showing how to write asynchronous code
