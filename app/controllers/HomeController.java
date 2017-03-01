@@ -79,7 +79,7 @@ public class HomeController extends Controller {
         return redirect(controllers.routes.HomeController.index());
     }
 
-    public User getUserFromSession(){
+    public static User getUserFromSession(){
         return User.getUserById(session().get("email"));
     }
 }

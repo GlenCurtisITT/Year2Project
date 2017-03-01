@@ -1,0 +1,7 @@
+@(user: models.users.User)
+@adminPages.mainAdmin("Admin Homepage", user){
+  <h1>This is the admin homepage.</h1>
+  <h2>Name: @user.getName</h2>
+  <h2>Email: @user.getEmail</h2>
+  <h2>Role: @user.getRole</h2>
+}
