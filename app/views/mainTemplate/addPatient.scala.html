@@ -1,0 +1,12 @@
+@(addUserForm: Form[models.users.User], error: String, user: models.users.User)
+@import helper._
+@if(user.getRole().equals("Admin")) {
+  @adminPages.mainAdmin("Add Patient", user) {
+
+  }
+}
+@if(user.getRole().equals("Consulatant")) {
+  @consultantPages.mainConsultant("Add Patient", user) {
+
+  }
+}
