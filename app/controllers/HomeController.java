@@ -8,6 +8,10 @@ import views.html.*;
 import views.html.loginPage.*;
 import views.html.mainTemplate.*;
 import play.data.*;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.inject.Inject;
@@ -49,7 +53,7 @@ public class HomeController extends Controller {
             return badRequest(createUser.render(errorForm, "Error in form."));
         }
         //Checking that Email and Name are not blank.
-        if(newUserForm.get("email").equals("") || newUserForm.get("name").equals("")){
+        if(newUserForm.get("email").equals("") || newUserForm.get("fname").equals("") || newUserForm.get("lname").equals("")){
             return badRequest(createUser.render(errorForm, "Please enter an email and name."));
         }
         if(newUserForm.get("role").equals("select")){
@@ -71,9 +75,17 @@ public class HomeController extends Controller {
             }
         }
 
+        String dateString = newUserForm.get("dateOfBirth");
+        DateFormat format = new SimpleDateFormat("YYYY/MM/DD");
+        Date date = new Date();
+        try{
+            date = format.parse(dateString);
+        } catch (ParseException e) {
+            return badRequest(createUser.render(errorForm, "Error with date"));
+        }
         //Adding user to database
-        User.create(newUserForm.get("email"), newUserForm.get("role"), newUserForm.get("name"), newUserForm.get("password"));
-        String s = newUserForm.get("role") + ": " + newUserForm.get("name") + " added successfully.";
+        User.create(newUserForm.get("email"), newUserForm.get("role"), newUserForm.get("fname"),newUserForm.get("lname"),newUserForm.get("address"),newUserForm.get("phoneNumber"), newUserForm.get("ppsNumber"), date, newUserForm.get("password"));
+        String s = newUserForm.get("role") + ": " + newUserForm.get("fname") + " " + newUserForm.get("lname") + " added successfully.";
         //Flashing String s to memory to be used in index screen.
         flash("success", s);
         return redirect(controllers.routes.HomeController.index());
