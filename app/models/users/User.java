@@ -14,6 +14,7 @@ public class User extends Model{
     private String phoneNumber;
     private String address;
     private String ppsNumber;
+    @Formats.DateTime(pattern="yyyy/dd/MM")
     private Date dateOfBirth;
     private Date startDate;
     @Id

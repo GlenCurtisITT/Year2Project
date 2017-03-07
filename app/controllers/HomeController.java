@@ -76,15 +76,16 @@ public class HomeController extends Controller {
         }
 
         String dateString = newUserForm.get("dateOfBirth");
-        DateFormat format = new SimpleDateFormat("YYYY/MM/DD");
+        DateFormat format = new SimpleDateFormat("yyyy-dd-MM");
         Date date = new Date();
         try{
             date = format.parse(dateString);
         } catch (ParseException e) {
-            return badRequest(createUser.render(errorForm, "Error with date"));
+            return badRequest(createUser.render(errorForm, dateString));
         }
         //Adding user to database
-        User.create(newUserForm.get("email"), newUserForm.get("role"), newUserForm.get("fname"),newUserForm.get("lname"),newUserForm.get("address"),newUserForm.get("phoneNumber"), newUserForm.get("ppsNumber"), date, newUserForm.get("password"));
+        User.create(newUserForm.get("email"), newUserForm.get("role"), newUserForm.get("fname"),newUserForm.get("lname"),
+                newUserForm.get("address"),newUserForm.get("phoneNumber"), newUserForm.get("ppsNumber"), date, newUserForm.get("password"));
         String s = newUserForm.get("role") + ": " + newUserForm.get("fname") + " " + newUserForm.get("lname") + " added successfully.";
         //Flashing String s to memory to be used in index screen.
         flash("success", s);
