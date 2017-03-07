@@ -2,7 +2,6 @@ package models.users;
 
 import java.util.*;
 import javax.persistence.*;
-
 import com.avaje.ebean.Model;
 import play.data.format.*;
 import play.data.validation.*;
@@ -10,22 +9,30 @@ import org.mindrot.jbcrypt.BCrypt;
 
 @Entity
 public class User extends Model{
-
+    private String fname;
+    private String lname;
+    private String phoneNumber;
+    private String address;
+    private String ppsNumber;
+    private Date dateOfBirth;
+    private Date startDate;
     @Id
     private String email;
-
     private String role;
-
-    private String name;
-
     private String passwordHash;
 
     //http://rny.io/playframework/bcrypt/2013/10/22/better-password-hashing-in-play-2.html
-    public static User create(String email, String role, String name, String password){
+    public static User create(String email, String role, String fname,String lname , String address, String phoneNumber, String ppsNumber, Date dateOfBirth, String password){
         User user = new User();
         user.setEmail(email);
         user.setRole(role);
-        user.setName(name);
+        user.setFname(fname);
+        user.setLname(lname);
+        user.setPhoneNumber(phoneNumber);
+        user.setAddress(address);
+        user.setPpsNumber(ppsNumber);
+        user.setDateOfBirth(dateOfBirth);
+        user.setStartDate();
         user.setPasswordHash(BCrypt.hashpw(password, BCrypt.gensalt()));
         user.save();
         return user;
@@ -70,12 +77,52 @@ public class User extends Model{
         this.role = role;
     }
 
-    public String getName() {
-        return name;
+    public String getFname() {
+        return fname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFname(String fname) {
+        this.fname = fname;
+    }
+
+    public String getLname() {
+        return lname;
+    }
+
+    public void setLname(String lname) {
+        this.lname = lname;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPpsNumber() {
+        return ppsNumber;
+    }
+
+    public void setPpsNumber(String ppsNumber) {
+        this.ppsNumber = ppsNumber;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getPasswordHash() {
@@ -84,5 +131,13 @@ public class User extends Model{
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate() {
+        startDate = new Date();
     }
 }

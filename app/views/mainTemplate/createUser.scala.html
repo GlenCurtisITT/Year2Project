@@ -12,9 +12,14 @@
             <!--http://stackoverflow.com/questions/38379858/play-framework-get-value-from-form-->
             <!--http://stackoverflow.com/questions/10127156/use-of-option-helper-in-play-framework-2-0-templates/10137190#10137190-->
             @helper.form(action = controllers.routes.HomeController.addUserSubmit(), 'class -> "form-horizontal", 'role->"form"){
+                @inputText(addUserForm("fname"), '_label -> "First Name", 'class -> "form-control")
+                @inputText(addUserForm("lname"), '_label -> "Last Name", 'class -> "form-control")
+                @inputText(addUserForm("address"), '_label -> "Address", 'class -> "form-control")
+                @inputText(addUserForm("phoneNumber"), '_label -> "Phone No.", 'class -> "form-control")
+                @inputText(addUserForm("ppsNumber"), '_label -> "PPS Number", 'class -> "form-control")
+                @inputText(addUserForm("dateOfBirth"), '_label -> "Date Of Birth", 'class -> "form-control")
                 @inputText(addUserForm("email"), '_label -> "Email", 'class -> "form-control")
                 @select(addUserForm("role"), options("select" -> "--- Please Select ---","Admin"-> "Admin", "Consultant"->"Consultant"), '_label -> "Role")
-                @inputText(addUserForm("name"), '_label -> "Full Name", 'class -> "form-control")
                 @inputPassword(addUserForm("password"), '_label -> "Password", 'class -> "form-control")
                 @inputPassword(addUserForm("passwordConfirm"), '_label -> "Confirm Password", 'class -> "form-control")
 
