@@ -4,6 +4,7 @@
 # --- !Ups
 
 create table patient (
+  mrn                           varchar(255) not null,
   f_name                        varchar(255),
   l_name                        varchar(255),
   pps_number                    varchar(255),
@@ -17,8 +18,10 @@ create table patient (
   nok_address                   varchar(255),
   nok_number                    varchar(255),
   medical_card                  boolean,
-  prev_illnesses                varchar(255)
+  prev_illnesses                varchar(255),
+  constraint pk_patient primary key (mrn)
 );
+create sequence patient_seq increment by 1;
 
 create table user (
   email                         varchar(255) not null,
@@ -38,6 +41,7 @@ create table user (
 # --- !Downs
 
 drop table if exists patient;
+drop sequence if exists patient_seq;
 
 drop table if exists user;
 

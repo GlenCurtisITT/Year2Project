@@ -11,9 +11,11 @@ import java.util.List;
  * Created by wdd on 03/03/17.
  */
 @Entity
+@SequenceGenerator(name = "mrn_gen", allocationSize=1, initialValue=1)
 public class Patient extends Model{
     @Id
-    private static String mrn = "0";
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mrn_gen")
+    private String mrn;
     private String fName;
     private String lName;
     private String ppsNumber;
@@ -30,10 +32,8 @@ public class Patient extends Model{
     private Boolean medicalCard;
     private String prevIllnesses;
 
-
     public static Patient create(String fname, String lname, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness){
         Patient patient = new Patient();
-        patient.genMrn();
         patient.setfName(fname);
         patient.setlName(lname);
         patient.setPpsNumber(ppsNumber);
@@ -63,11 +63,11 @@ public class Patient extends Model{
         return mrn;
     }
 
-    public void genMrn() {
+    /*public void genMrn() {
         double number = Double.parseDouble(this.mrn);
         number++;
         this.mrn = Double.toString(number);
-    }
+    }*/
 
     public String getfName() {
         return fName;
