@@ -3,6 +3,23 @@
 
 # --- !Ups
 
+create table patient (
+  f_name                        varchar(255),
+  l_name                        varchar(255),
+  pps_number                    varchar(255),
+  dob                           timestamp,
+  address                       varchar(255),
+  email                         varchar(255),
+  home_phone                    varchar(255),
+  mobile_phone                  varchar(255),
+  nok_fname                     varchar(255),
+  nok_lname                     varchar(255),
+  nok_address                   varchar(255),
+  nok_number                    varchar(255),
+  medical_card                  boolean,
+  prev_illnesses                varchar(255)
+);
+
 create table user (
   email                         varchar(255) not null,
   fname                         varchar(255),
@@ -19,6 +36,8 @@ create table user (
 
 
 # --- !Downs
+
+drop table if exists patient;
 
 drop table if exists user;
 
