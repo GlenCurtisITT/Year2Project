@@ -104,21 +104,21 @@ public class HomeController extends Controller {
         Form errorForm = formFactory.form().bindFromRequest();
         //Checking if Form has errors.
         if(newPatientForm.hasErrors()){
-            return badRequest(createUser.render(errorForm, "Error in form."));
+            return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
         }
         //Checking that Email and Name are not blank.
         if(newPatientForm.get("email").equals("") || newPatientForm.get("fname").equals("") || newPatientForm.get("lname").equals("")){
-            return badRequest(createUser.render(errorForm, "Please enter an email and name."));
+            return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
         }
         if(newPatientForm.get("medicalCard").equals("select")){
-            return badRequest(createUser.render(errorForm, "Please select a medical card status"));
+            return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
         }
 
         //Checking if ppsNumber exists already in database (additional functionality)
         List<Patient> allpatients = Patient.findAll();
         for(Patient a : allpatients) {
             if (a.getPpsNumber().equals(newPatientForm.get("ppsNumber"))) {
-                return badRequest(createUser.render(errorForm, "A patient with this PPS Number already exists."));
+                return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
             }
         }
         //formatting date to work
@@ -128,7 +128,7 @@ public class HomeController extends Controller {
         try{
             date = format.parse(dateString);
         } catch (ParseException e) {
-            return badRequest(createUser.render(errorForm, dateString));
+            return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
         }
 
         //converting medicalCard from form from string to boolean
@@ -148,7 +148,15 @@ public class HomeController extends Controller {
         String s = "Patient: " + newPatientForm.get("fname") + " " + newPatientForm.get("lname") + "was added successfully.\nMRN: " + p.getMrn();
         //Flashing String s to memory to be used in index screen.
         flash("success", s);
-        return redirect(controllers.routes.HomeController.homepage());
+        User u = getUserFromSession();
+        if(u.getRole().equals("Admin")){
+            return redirect(routes.AdminController.adminHomePage());
+        }else if(u.getRole().equals("Consultant")){
+            return redirect(routes.ConsultantController.consultantHomePage());
+        }else{
+            return badRequest();
+        }
+
     }
 
     public static User getUserFromSession(){

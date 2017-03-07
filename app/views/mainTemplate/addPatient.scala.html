@@ -1,74 +1,81 @@
 @(addPatientForm: Form[models.Patient], error: String, user: models.users.User)
 @import helper._
 @if(user.getRole().equals("Admin")) {
-  @adminPages.mainAdmin("Add Patient", user) {
-    <div class="row">
-      <div class="col-lg-3">
-        @if(error != null){
-          <div class="alert alert-warning">
-            <strong>@error</strong>
-          </div>
-        }
-          <!--http://stackoverflow.com/questions/38379858/play-framework-get-value-from-form-->
-          <!--http://stackoverflow.com/questions/10127156/use-of-option-helper-in-play-framework-2-0-templates/10137190#10137190-->
-        @helper.form(action = controllers.routes.HomeController.addPatientSubmit(), 'class -> "form-horizontal", 'role->"form"){
-              @inputText(addPatientForm("fname"), '_label -> "First Name", 'class -> "form-control")
-              @inputText(addPatientForm("lname"), '_label -> "Last Name", 'class -> "form-control")
-              @inputText(addPatientForm("ppsNumber"), '_label -> "PPS Number", 'class -> "form-control")
-              @inputDate(addPatientForm("dob"), '_label -> "Date Of Birth", '_help -> "format yyyy-dd-MM",'class -> "form-control")
-              @inputText(addPatientForm("address"), '_label -> "Address", 'class -> "form-control")
-              @inputText(addPatientForm("email"), '_label -> "Email", 'class -> "form-control")
-              @inputText(addPatientForm("homePhone"), '_label -> "Home Phone No.", 'class -> "form-control")
-              @inputText(addPatientForm("mobilePhone"), '_label -> "Mobile Phone No.", 'class -> "form-control")
-              @inputText(addPatientForm("nokFName"), '_label -> "Next Of Kin First Name", 'class -> "form-control")
-              @inputText(addPatientForm("nokLName"), '_label -> "Next Of Kin Last Name", 'class -> "form-control")
-              @inputText(addPatientForm("nokAddress"), '_label -> "Next Of Kin Address", 'class -> "form-control")
-              @inputText(addPatientForm("nokNumber"), '_label -> "Next Of Kin Contact Number", 'class -> "form-control")
-              @select(addPatientForm("medicalCard"), options("select" -> "--- Please Select ---","true"-> "Yes", "false"->"No"), '_label -> "Does the patient have a medical card?")
-              @inputText(addPatientForm("prevIllness"), '_label -> "If you have any previous Illnesses, please enter them here.", 'class -> "form-control")
+    @adminPages.mainAdmin("Add Patient", user) {
+        <div class="row">
+            <div class="col-lg-4">
+                @if(error != null) {
+                    <div class="alert alert-warning">
+                        <strong>@error</strong>
+                    </div>
+                }
+                    <!--http://stackoverflow.com/questions/38379858/play-framework-get-value-from-form-->
+                    <!--http://stackoverflow.com/questions/10127156/use-of-option-helper-in-play-framework-2-0-templates/10137190#10137190-->
+                @helper.form(action = controllers.routes.HomeController.addPatientSubmit(), 'class -> "form-horizontal", 'role -> "form") {
+                    @inputText(addPatientForm("fname"), '_label -> "First Name", 'class -> "form-control")
+                    @inputText(addPatientForm("lname"), '_label -> "Last Name", 'class -> "form-control")
+                    @inputText(addPatientForm("ppsNumber"), '_label -> "PPS Number", 'class -> "form-control")
+                    @inputDate(addPatientForm("dob"), '_label -> "Date Of Birth", '_help -> "format yyyy-dd-MM", 'class -> "form-control")
+                    @inputText(addPatientForm("address"), '_label -> "Address", 'class -> "form-control")
+                    @inputText(addPatientForm("email"), '_label -> "Email", 'class -> "form-control")
+                    @inputText(addPatientForm("homePhone"), '_label -> "Home Phone No.", 'class -> "form-control")
+                </div>
+            <div class="col-lg-4">
+                @inputText(addPatientForm("mobilePhone"), '_label -> "Mobile Phone No.", 'class -> "form-control")
+                @inputText(addPatientForm("nokFName"), '_label -> "Next Of Kin First Name", 'class -> "form-control")
+                @inputText(addPatientForm("nokLName"), '_label -> "Next Of Kin Last Name", 'class -> "form-control")
+                @inputText(addPatientForm("nokAddress"), '_label -> "Next Of Kin Address", 'class -> "form-control")
+                @inputText(addPatientForm("nokNumber"), '_label -> "Next Of Kin Contact Number", 'class -> "form-control")
+                @select(addPatientForm("medicalCard"), options("select" -> "--- Please Select ---", "true" -> "Yes", "false" -> "No"), '_label -> "Does the patient have a medical card?")
+                @inputText(addPatientForm("prevIllness"), '_label -> "If you have any previous Illnesses, please enter them here.", 'class -> "form-control")
+            </div>
+        </div>
+        <div col="row">
+            <div class="actions">
+                <input type="submit" value="Add Patient" class="btn btn-primary">
+                <a href="@routes.AdminController.adminHomePage()" <button class="btn btn-warning">Cancel</button></a>
+            </div>
+        </div>
+    }
 
-          <div class="actions">
-            <input type="submit" value="Add Patient" class="btn btn-primary">
-            <a href="@routes.HomeController.homepage()" <button class="btn btn-warning">Cancel</button></a>
-          </div>
-        }
-      </div>
-    </div>
-  }
+    }
 }
 @if(user.getRole().equals("Consultant")) {
-  @consultantPages.mainConsultant("Add Patient", user) {
-      <div class="row">
-          <div class="col-lg-3">
-              @if(error != null){
-                  <div class="alert alert-warning">
-                      <strong>@error</strong>
-                  </div>
-              }
-                  <!--http://stackoverflow.com/questions/38379858/play-framework-get-value-from-form-->
-                  <!--http://stackoverflow.com/questions/10127156/use-of-option-helper-in-play-framework-2-0-templates/10137190#10137190-->
-              @helper.form(action = controllers.routes.HomeController.addPatientSubmit(), 'class -> "form-horizontal", 'role->"form"){
-                  @inputText(addPatientForm("fname"), '_label -> "First Name", 'class -> "form-control")
-                  @inputText(addPatientForm("lname"), '_label -> "Last Name", 'class -> "form-control")
-                  @inputText(addPatientForm("ppsNumber"), '_label -> "PPS Number", 'class -> "form-control")
-                  @inputDate(addPatientForm("dob"), '_label -> "Date Of Birth", '_help -> "format yyyy-dd-MM",'class -> "form-control")
-                  @inputText(addPatientForm("address"), '_label -> "Address", 'class -> "form-control")
-                  @inputText(addPatientForm("email"), '_label -> "Email", 'class -> "form-control")
-                  @inputText(addPatientForm("homePhone"), '_label -> "Home Phone No.", 'class -> "form-control")
-                  @inputText(addPatientForm("mobilePhone"), '_label -> "Mobile Phone No.", 'class -> "form-control")
-                  @inputText(addPatientForm("nokFName"), '_label -> "Next Of Kin First Name", 'class -> "form-control")
-                  @inputText(addPatientForm("nokLName"), '_label -> "Next Of Kin Last Name", 'class -> "form-control")
-                  @inputText(addPatientForm("nokAddress"), '_label -> "Next Of Kin Address", 'class -> "form-control")
-                  @inputText(addPatientForm("nokNumber"), '_label -> "Next Of Kin Contact Number", 'class -> "form-control")
-                  @select(addPatientForm("medicalCard"), options("select" -> "--- Please Select ---","true"-> "true", "false"->"false"), '_label -> "Does the patient have a medical card?")
-                  @inputText(addPatientForm("prevIllness"), '_label -> "If you have any previous Illnesses, please enter them here.", 'class -> "form-control")
-
-                  <div class="actions">
-                      <input type="submit" value="Add Patient" class="btn btn-primary">
-                      <a href="@routes.HomeController.homepage()" <button class="btn btn-warning">Cancel</button></a>
-                  </div>
-              }
-          </div>
-      </div>
-  }
+    @consultantPages.mainConsultant("Add Patient", user) {
+        <div class="row">
+            <div class="col-lg-4">
+                @if(error != null) {
+                    <div class="alert alert-warning">
+                        <strong>@error</strong>
+                    </div>
+                }
+                    <!--http://stackoverflow.com/questions/38379858/play-framework-get-value-from-form-->
+                    <!--http://stackoverflow.com/questions/10127156/use-of-option-helper-in-play-framework-2-0-templates/10137190#10137190-->
+                @helper.form(action = controllers.routes.HomeController.addPatientSubmit(), 'class -> "form-horizontal", 'role -> "form") {
+                    @inputText(addPatientForm("fname"), '_label -> "First Name", 'class -> "form-control")
+                    @inputText(addPatientForm("lname"), '_label -> "Last Name", 'class -> "form-control")
+                    @inputText(addPatientForm("ppsNumber"), '_label -> "PPS Number", 'class -> "form-control")
+                    @inputDate(addPatientForm("dob"), '_label -> "Date Of Birth", '_help -> "format yyyy-dd-MM", 'class -> "form-control")
+                    @inputText(addPatientForm("address"), '_label -> "Address", 'class -> "form-control")
+                    @inputText(addPatientForm("email"), '_label -> "Email", 'class -> "form-control")
+                    @inputText(addPatientForm("homePhone"), '_label -> "Home Phone No.", 'class -> "form-control")
+                </div>
+            <div class="col-lg-4">
+                @inputText(addPatientForm("mobilePhone"), '_label -> "Mobile Phone No.", 'class -> "form-control")
+                @inputText(addPatientForm("nokFName"), '_label -> "Next Of Kin First Name", 'class -> "form-control")
+                @inputText(addPatientForm("nokLName"), '_label -> "Next Of Kin Last Name", 'class -> "form-control")
+                @inputText(addPatientForm("nokAddress"), '_label -> "Next Of Kin Address", 'class -> "form-control")
+                @inputText(addPatientForm("nokNumber"), '_label -> "Next Of Kin Contact Number", 'class -> "form-control")
+                @select(addPatientForm("medicalCard"), options("select" -> "--- Please Select ---", "true" -> "Yes", "false" -> "No"), '_label -> "Does the patient have a medical card?")
+                @inputText(addPatientForm("prevIllness"), '_label -> "If you have any previous Illnesses, please enter them here.", 'class -> "form-control")
+            </div>
+        </div>
+        <div col="row">
+            <div class="actions">
+                <input type="submit" value="Add Patient" class="btn btn-primary">
+                <a href="@routes.ConsultantController.consultantHomePage()" <button class="btn btn-warning">Cancel</button></a>
+            </div>
+        </div>
+    }
+    }
 }

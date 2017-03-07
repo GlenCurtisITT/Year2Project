@@ -1,7 +1,18 @@
 @(user: models.users.User)
 @adminPages.mainAdmin("Admin Homepage", user){
-  <h1>This is the admin homepage.</h1>
-  <h2>Name: @user.getFname @user.getLname</h2>
-  <h2>Email: @user.getEmail</h2>
-  <h2>Role: @user.getRole</h2>
+  @if(flash.containsKey("success")){
+    <div class="row">
+      <div class="col-xs-4">
+          <div class="alert alert-success">
+            <strong>@flash().get("success")</strong>
+          </div>
+      </div>
+    </div>
+  }
+  <div class="row">
+    <h1>This is the admin homepage.</h1>
+    <h2>Name: @user.getFname @user.getLname</h2>
+    <h2>Email: @user.getEmail</h2>
+    <h2>Role: @user.getRole</h2>
+  </div>
 }
