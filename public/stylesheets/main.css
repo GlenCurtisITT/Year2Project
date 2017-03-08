@@ -27,6 +27,10 @@ body{
     margin-bottom:15px;
 }
 
+#margLeft{
+    margin-left:10px;
+}
+
 #page-content-wrapper{
     padding-left:10px;
     padding-top:10px;
