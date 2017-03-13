@@ -9,6 +9,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 @Entity
 public class User extends Model{
+    @Id
+    private String idNum;
     private String fname;
     private String lname;
     private String phoneNumber;
@@ -17,7 +19,6 @@ public class User extends Model{
     @Formats.DateTime(pattern="yyyy/dd/MM")
     private Date dateOfBirth;
     private Date startDate;
-    @Id
     private String email;
     private String role;
     private String passwordHash;
@@ -25,6 +26,7 @@ public class User extends Model{
     //http://rny.io/playframework/bcrypt/2013/10/22/better-password-hashing-in-play-2.html
     public static User create(String email, String role, String fname,String lname , String address, String phoneNumber, String ppsNumber, Date dateOfBirth, String password){
         User user = new User();
+        user.setIdNum(idGen());
         user.setEmail(email);
         user.setRole(role);
         user.setFname(fname);
@@ -60,6 +62,32 @@ public class User extends Model{
 
     public static List<User> findAll(){
         return User.find.all();
+    }
+
+    private static String idGen(){
+        Random rand = new Random();
+        List<User> allusers = findAll();
+        int randNum = 0;
+        boolean check = true;
+        do{
+            randNum = rand.nextInt((99999999 - 10000001) + 1) + 10000001;
+            check = true;
+            for(User a: allusers){
+                if(randNum != Integer.parseInt(a.getIdNum())) {
+                    check = false;
+                }
+            }
+        }while(!check);
+        String numberAsString = Integer.toString(randNum);
+        return numberAsString;
+    }
+
+    public String getIdNum() {
+        return idNum;
+    }
+
+    public void setIdNum(String idNum) {
+        this.idNum = idNum;
     }
 
     public String getEmail() {

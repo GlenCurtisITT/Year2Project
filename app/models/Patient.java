@@ -2,6 +2,7 @@ package models;
 
 import javax.persistence.*;
 import com.avaje.ebean.Model;
+import models.users.Consultant;
 import play.data.format.Formats;
 
 import java.util.Date;
@@ -31,6 +32,10 @@ public class Patient extends Model{
     private String nokNumber;
     private Boolean medicalCard;
     private String prevIllnesses;
+
+    @ManyToOne()    //signifies relationship with Consultant table
+    @JoinColumn(name = "idNum")    //name of column which links tables
+    Consultant c;
 
     public static Patient create(String fname, String lname, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness){
         Patient patient = new Patient();
