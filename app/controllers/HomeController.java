@@ -57,6 +57,16 @@ public class HomeController extends Controller {
         return ok(searchPatient.render(patientList, getUserFromSession()));
     }
 
+    public Result viewPatient(){
+        Patient p = new Patient();
+        return ok(viewPatient.render(getUserFromSession(), p));
+    }
+
+    public Result viewPatientByID(String mrn){
+        Patient p = Patient.find.byId(mrn);
+        return ok(viewPatient.render(getUserFromSession(), p));
+    }
+
     public Result addUserSubmit(){
         DynamicForm newUserForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();

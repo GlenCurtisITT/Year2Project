@@ -11,6 +11,8 @@ GET     /createuser                 controllers.HomeController.createUser
 GET     /addPatient                 controllers.HomeController.addPatient
 GET     /logout                     controllers.LoginController.logout
 GET     /searchPatient              controllers.HomeController.searchPatient
+GET     /viewPatient                controllers.HomeController.viewPatient
+GET     /viewPatientByID/:mrn       controllers.HomeController.viewPatientByID(mrn: String)
 GET     /deletePatient/:mrn         controllers.AdminController.deletePatient(mrn: String)
 GET     /updatePatient/:mrn         controllers.AdminController.updatePatient(mrn: String)
 POST    /addUserSubmit              controllers.HomeController.addUserSubmit

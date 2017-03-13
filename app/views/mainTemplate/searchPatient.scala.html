@@ -32,7 +32,7 @@
                             <td>@p.getPpsNumber</td>
                             <td>@p.getDob</td>
                             <td>@p.getPrevIllnesses</td>
-                            <td><a href="#">View Profile</a></td>
+                            <td><a href="@routes.HomeController.viewPatientByID(p.getMrn)">View Profile</a></td>
                             <td>
                                 <a href="@routes.AdminController.updatePatient(p.getMrn)" class="btn-xs btn-danger">
                                     <span class="glyphicon glyphicon-pencil"></span>
