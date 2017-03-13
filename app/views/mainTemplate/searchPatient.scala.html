@@ -1,0 +1,91 @@
+@(patients: List[models.Patient], user: models.users.User)
+
+@if(user.getRole().equals("Admin")) {
+    @adminPages.mainAdmin("Search Patient", user) {
+        @if(flash().containsKey("success")) {
+            <div class="col-xs-4">
+                <div class="centered">
+                    <div class="alert alert-success">
+                        <strong>@flash().get("success")</strong>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th>MRN</th>
+                            <th>Name</th>
+                            <th>PPS Number</th>
+                            <th>Date of Birth</th>
+                            <th>Illness</th>
+                            <th>Profile</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for(p <- patients) {
+                        <tr>
+                            <td class="numeric">@p.getMrn</td>
+                            <td>@p.getfName() @p.getlName()</td>
+                            <td>@p.getPpsNumber</td>
+                            <td>@p.getDob</td>
+                            <td>@p.getPrevIllnesses</td>
+                            <td><a href="@routes.HomeController.viewPatientByID(p.getMrn)">View Profile</a></td>
+                            <td>
+                                <a href="@routes.AdminController.updatePatient(p.getMrn)" class="btn-xs btn-danger">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="@routes.AdminController.deletePatient(p.getMrn)" class="btn-xs btn-danger" onclick="return confirmDel();">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script>
+                function confirmDel() {
+                    return confirm('Are you sure?');
+                }
+        </script>
+    }
+}
+
+@if(user.getRole().equals("Consultant")) {
+    @consultantPages.mainConsultant("Search Patient", user) {
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th>MRN</th>
+                            <th>Name</th>
+                            <th>PPS Number</th>
+                            <th>Date of Birth</th>
+                            <th>Illness</th>
+                            <th>Profile</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for(p <- patients) {
+                        <tr>
+                            <td class="numeric">@p.getMrn</td>
+                            <td>@p.getfName() @p.getlName()</td>
+                            <td>@p.getPpsNumber</td>
+                            <td>@p.getDob</td>
+                            <td>@p.getPrevIllnesses</td>
+                            <td><a href="#">View Profile</a></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}
