@@ -122,9 +122,9 @@ public class HomeController extends Controller {
         Appointment appointment = Appointment.create(date, c, p);
         c.popAppointments();
         p.popAppointments();
-        //Flashing String s to memory to be used in index screen.
+        //Flashing String s to memory to be used in view patient screen.
         String s = "Appointment booked for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName() + " with Dr." + c.getLname() + " at " + dateString;
-        flash("success" + s);
+        flash("success", s);
         return redirect(controllers.routes.HomeController.viewPatient());
     }
 
