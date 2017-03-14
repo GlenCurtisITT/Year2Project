@@ -37,6 +37,7 @@ public class HomeController extends Controller {
     }
 
     public Result homepage(){
+        endPatientSession();
         User u = getUserFromSession();
         return ok(homepage.render(u));
     }
