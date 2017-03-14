@@ -38,7 +38,7 @@ public class Patient extends Model{
     Consultant c;
 
     @OneToMany(mappedBy = "p")
-    private ArrayList<Appointment> appointments;
+    private List<Appointment> appointments = new ArrayList<>();
 
     public Patient() {
 
@@ -69,8 +69,14 @@ public class Patient extends Model{
         return patient;
     }
 
-    public void addAppointment(Appointment a){
-        this.appointments.add(a);
+    public void popAppointments(){
+        appointments.clear();
+        List<Appointment> appoints = Appointment.findAll();
+        for(Appointment a: appoints){
+            if(a.getP().getMrn().equals(this.getMrn())){
+                appointments.add(a);
+            }
+        }
     }
 
     public static Finder<String, Patient> find = new Finder<String, Patient>(Patient.class);

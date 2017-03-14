@@ -16,10 +16,10 @@ public class Consultant extends User{
     private String specialization = null;
 
     @OneToMany(mappedBy = "c")
-    private ArrayList<Patient> patients = new ArrayList<>();
+    private List<Patient> patients = new ArrayList<>();
 
     @OneToMany(mappedBy = "c")
-    private ArrayList<Appointment> appointments;
+    private List<Appointment> appointments = new ArrayList<>();
 
 
     public Consultant(String fname, String lname, String phoneNumber, String address, String ppsNumber, Date dateOfBirth, String email, String password) {
@@ -60,8 +60,14 @@ public class Consultant extends User{
         return dates;
     }
 
-    public void addAppointment(Appointment a){
-        this.appointments.add(a);
+    public void popAppointments(){
+        appointments.clear();
+        List<Appointment> appoints = Appointment.findAll();
+        for(Appointment a: appoints){
+            if(a.getC().getIdNum().equals(this.getIdNum()) && !appointments.contains(a)){
+                appointments.add(a);
+            }
+        }
     }
     public String getSpecialization() {
         return specialization;
@@ -71,5 +77,7 @@ public class Consultant extends User{
         this.specialization = specialization;
     }
 
-
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
 }

@@ -4,6 +4,8 @@ import com.avaje.ebean.Model;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import models.users.*;
 import play.data.format.Formats;
 
@@ -47,6 +49,13 @@ public class Appointment extends Model {
         }
         else
             return null;
+    }
+
+
+    public static Finder<String, Appointment> find = new Finder<String, Appointment>(Appointment.class);
+
+    public static List<Appointment> findAll(){
+        return Appointment.find.all();
     }
 
     public String getId() {

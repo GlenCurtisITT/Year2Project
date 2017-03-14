@@ -47,7 +47,7 @@ public class AdminController extends Controller{
         try{
             p = Patient.find.byId(mrn);
             patientForm = formFactory.form(Patient.class).fill(p);
-            
+            p.delete();
         }catch(Exception e){
             return badRequest();
         }

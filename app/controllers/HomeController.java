@@ -96,6 +96,7 @@ public class HomeController extends Controller {
         String dateString = newAppointmentForm.get("appDate") + "T" + newAppointmentForm.get("hours") + ":" + newAppointmentForm.get("minutes") + ":00";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         Date date = new Date();
         try{
             date = sdf.parse(dateString);
@@ -116,7 +117,9 @@ public class HomeController extends Controller {
         }
         Consultant c = Consultant.getConsultantById(newAppointmentForm.get("consultant"));
         //Adding Appointment to database
-        Appointment.create(date, c, p);
+        Appointment appointment = Appointment.create(date, c, p);
+        c.popAppointments();
+        p.popAppointments();
         //Flashing String s to memory to be used in index screen.
         String s = "Appointment booked for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName() + " with Dr." + c.getLname() + " at " + dateString;
         flash("success" + s);
@@ -184,21 +187,21 @@ public class HomeController extends Controller {
         Form errorForm = formFactory.form().bindFromRequest();
         //Checking if Form has errors.
         if(newPatientForm.hasErrors()){
-            return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
+            return badRequest(addPatient.render(errorForm, "Error in form", getUserFromSession()));
         }
         //Checking that Email and Name are not blank.
         if(newPatientForm.get("email").equals("") || newPatientForm.get("fname").equals("") || newPatientForm.get("lname").equals("")){
-            return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
+            return badRequest(addPatient.render(errorForm, "Error name and email must be valid", getUserFromSession()));
         }
         if(newPatientForm.get("medicalCard").equals("select")){
-            return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
+            return badRequest(addPatient.render(errorForm, "Please select medical card status", getUserFromSession()));
         }
 
         //Checking if ppsNumber exists already in database (additional functionality)
         List<Patient> allpatients = Patient.findAll();
         for(Patient a : allpatients) {
             if (a.getPpsNumber().equals(newPatientForm.get("ppsNumber"))) {
-                return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
+                return badRequest(addPatient.render(errorForm, "A patient with that PPS number already exits on the system", getUserFromSession()));
             }
         }
         //formatting date to work

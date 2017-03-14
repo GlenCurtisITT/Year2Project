@@ -37,7 +37,7 @@
 }
 
 @if(user.checkRole().equals("Consultant")){
-  @consultantPages.mainConsultant("View Patient", user) {
+  @consultantPages.mainConsultant("Add Appointment", user) {
       @if(error != null){
           <div class="alert alert-warning">
               <strong>@error</strong>
