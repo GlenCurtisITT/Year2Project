@@ -5,17 +5,17 @@ import com.avaje.ebean.Model;
 import models.users.Consultant;
 import play.data.format.Formats;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by wdd on 03/03/17.
  */
 @Entity
-@SequenceGenerator(name = "mrn_gen", allocationSize=1, initialValue=1)
 public class Patient extends Model{
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mrn_gen")
     private String mrn;
     private String fName;
     private String lName;
@@ -37,26 +37,41 @@ public class Patient extends Model{
     @JoinColumn(name = "idNum")    //name of column which links tables
     Consultant c;
 
+    @OneToMany(mappedBy = "p")
+    private ArrayList<Appointment> appointments;
+
+    public Patient() {
+
+    }
+
+    public Patient(String fname, String lname, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness) {
+        this.mrn = genMrn();
+        this.fName = fname;
+        this.lName = lname;
+        this.ppsNumber = ppsNumber;
+        this.dob = dob;
+        this.address = address;
+        this.email = email;
+        this.homePhone = homePhone;
+        this.mobilePhone = mobilePhone;
+        this.nokFName = nokFName;
+        this.nokLName = nokLName;
+        this.nokAddress = nokAddress;
+        this.nokNumber = nokNumber;
+        this.medicalCard = medicalCard;
+        this.prevIllnesses = prevIllness;
+        this.c = null;
+    }
+
     public static Patient create(String fname, String lname, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness){
-        Patient patient = new Patient();
-        patient.setfName(fname);
-        patient.setlName(lname);
-        patient.setPpsNumber(ppsNumber);
-        patient.setDob(dob);
-        patient.setAddress(address);
-        patient.setEmail(email);
-        patient.setHomePhone(homePhone);
-        patient.setMobilePhone(mobilePhone);
-        patient.setNokFName(nokFName);
-        patient.setNokLName(nokLName);
-        patient.setNokAddress(nokAddress);
-        patient.setNokNumber(nokNumber);
-        patient.setMedicalCard(medicalCard);
-        patient.setPrevIllnesses(prevIllness);
+        Patient patient = new Patient(fname, lname, ppsNumber, dob, address, email, homePhone, mobilePhone, nokFName, nokLName, nokAddress, nokNumber, medicalCard, prevIllness);
         patient.save();
         return patient;
     }
 
+    public void addAppointment(Appointment a){
+        this.appointments.add(a);
+    }
 
     public static Finder<String, Patient> find = new Finder<String, Patient>(Patient.class);
 
@@ -64,15 +79,35 @@ public class Patient extends Model{
         return Patient.find.all();
     }
 
+    public static Patient getPatientById(String id){
+        if(id == null)
+            return null;
+        else
+            return find.byId(id);
+    }
+
+    private static String genMrn(){
+        Random rand = new Random();
+        List<Patient> allpatients = findAll();
+        int randNum = 0;
+        boolean check = true;
+        do{
+            randNum = rand.nextInt((99999999 - 10000001) + 1) + 10000001;
+            check = true;
+            for(Patient a: allpatients){
+                if(a.find.byId(Integer.toString(randNum)) != null) {
+                    check = false;
+                }
+            }
+        }while(!check);
+        String numberAsString = Integer.toString(randNum);
+        return numberAsString;
+    }
+
     public String getMrn() {
         return mrn;
     }
 
-    /*public void genMrn() {
-        double number = Double.parseDouble(this.mrn);
-        number++;
-        this.mrn = Double.toString(number);
-    }*/
 
     public String getfName() {
         return fName;

@@ -19,6 +19,7 @@ import models.users.*;
 public class ConsultantController extends Controller {
     public Result consultantHomePage(){
         User u = HomeController.getUserFromSession();
+        HomeController.endPatientSession();
         return ok(consultantHomePage.render(u));
     }
 }

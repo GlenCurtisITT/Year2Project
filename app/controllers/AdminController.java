@@ -29,6 +29,7 @@ public class AdminController extends Controller{
 
     public Result adminHomePage(){
         User u = HomeController.getUserFromSession();
+        HomeController.endPatientSession();
         return ok(adminHomePage.render(u));
     }
 

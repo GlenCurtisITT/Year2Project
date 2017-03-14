@@ -1,6 +1,6 @@
 @(addPatientForm: Form[models.Patient], error: String, user: models.users.User)
 @import helper._
-@if(user.getRole().equals("Admin")) {
+@if(user.checkRole().equals("Admin")) {
     @adminPages.mainAdmin("Add Patient", user) {
         <div class="row">
             <div class="col-lg-4">
@@ -41,7 +41,7 @@
 
     }
 }
-@if(user.getRole().equals("Consultant")) {
+@if(user.checkRole().equals("Consultant")) {
     @consultantPages.mainConsultant("Add Patient", user) {
         <div class="row">
             <div class="col-lg-4">
@@ -69,8 +69,6 @@
                 @inputText(addPatientForm("nokNumber"), '_label -> "Next Of Kin Contact Number", 'class -> "form-control")
                 @select(addPatientForm("medicalCard"), options("select" -> "--- Please Select ---", "true" -> "Yes", "false" -> "No"), '_label -> "Does the patient have a medical card?")
                 @inputText(addPatientForm("prevIllness"), '_label -> "If you have any previous Illnesses, please enter them here.", 'class -> "form-control")
-                @select(addPatientForm("medicalCard"), options("select" -> "--- Please Select ---", "true" -> "Yes", "false" -> "No"), '_label -> "Consultant")
-
             </div>
         </div>
         <div col="row">
