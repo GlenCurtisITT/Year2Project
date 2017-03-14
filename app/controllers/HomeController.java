@@ -115,8 +115,8 @@ public class HomeController extends Controller {
         }
 
         //Checking if Consultant already has an appointment at that time
-        if(Consultant.find.byId(newAppointmentForm.get("consultant")).checkAppointments().size() != 0){ //if consultant has appointments
-            List<Date> appointments = Consultant.find.byId(newAppointmentForm.get("consultant")).checkAppointments();
+        if(c.checkAppointments().size() != 0){ //if consultant has appointments
+            List<Date> appointments = c.checkAppointments();
             for (Date a : appointments) {
                 if (a.compareTo(date) == 0) {
                     return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Consultant already has an appointment at that time."));
