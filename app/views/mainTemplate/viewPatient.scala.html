@@ -4,15 +4,17 @@
     @if(patient.getMrn == null){
       <h1>No patient selected</h1>
     }else{
+      @if(flash().containsKey("success")) {
+        <div class="row">
+          <div class="col-xs-5">
+            <div class="alert alert-success">
+              <strong>@flash().get("success")</strong>
+            </div>
+          </div>
+        </div>
+      }
       <div class="row">
         <div class="col-lg-12">
-          @if(flash().containsKey("success")) {
-            <div class="col-xs-4">
-                <div class="alert alert-success">
-                  <strong>@flash().get("success")</strong>
-                </div>
-            </div>
-          }
           <h1>MRN: @patient.getMrn()</h1>
           <h1>Name: @patient.getfName() @patient.getlName()</h1>
         </div>
