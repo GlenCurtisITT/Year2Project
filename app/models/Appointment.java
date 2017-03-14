@@ -42,8 +42,6 @@ public class Appointment extends Model {
     public static Appointment create(Date appDate, Consultant c, Patient p){
         Appointment app = new Appointment(appDate, c, p);
         if(c != null && p != null) {
-            c.addAppointment(app);
-            p.addAppointment(app);
             app.save();
             return app;
         }
