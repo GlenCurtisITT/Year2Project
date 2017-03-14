@@ -99,6 +99,7 @@ public class HomeController extends Controller {
         SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         Date date = new Date();
+        Date todayDate = new Date();
         try{
             date = sdf.parse(dateString);
             dateString = output.format(date);
@@ -107,15 +108,18 @@ public class HomeController extends Controller {
             return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Could not create appointment for: " + dateString));
         }
 
+        if(date.before(todayDate)){     //check to see if appointment was made for the past
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Cannot create an appointment in the past: " + dateString));
+        }
+
         //Checking if Consultant already has an appointment at that time
-        if(Consultant.find.byId(newAppointmentForm.get("consultant")).checkAppointments().size() != 0){ //if consultant has appointments
             List<Date> appointments = Consultant.find.byId(newAppointmentForm.get("consultant")).checkAppointments();
             for (Date a : appointments) {
-                if (a == date) {
+                if (a.compareTo(date) == 0) {
                     return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Consultant already has an appointment at that time."));
                 }
             }
-        }
+
         Consultant c = Consultant.getConsultantById(newAppointmentForm.get("consultant"));
         //Adding Appointment to database
         Appointment appointment = Appointment.create(date, c, p);
