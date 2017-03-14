@@ -66,6 +66,7 @@ public class HomeController extends Controller {
     }
 
     public Result viewPatientByID(java.lang.String mrn){
+        endPatientSession();
         Patient p = Patient.find.byId(mrn);
         if(!session().containsKey("mrn")) {
             session("mrn", mrn);
@@ -84,6 +85,7 @@ public class HomeController extends Controller {
         Form errorForm = formFactory.form().bindFromRequest();
         List<Consultant> consultants = Consultant.findAllConsultants();
         Patient p = getPatientFromSession();
+        Consultant c = Consultant.getConsultantById(newAppointmentForm.get("consultant"));
         //Checking if Form has errors.
         if(newAppointmentForm.hasErrors()){
             return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Error in form."));
@@ -113,14 +115,14 @@ public class HomeController extends Controller {
         }
 
         //Checking if Consultant already has an appointment at that time
+        if(Consultant.find.byId(newAppointmentForm.get("consultant")).checkAppointments().size() != 0){ //if consultant has appointments
             List<Date> appointments = Consultant.find.byId(newAppointmentForm.get("consultant")).checkAppointments();
             for (Date a : appointments) {
                 if (a.compareTo(date) == 0) {
                     return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Consultant already has an appointment at that time."));
                 }
             }
-
-        Consultant c = Consultant.getConsultantById(newAppointmentForm.get("consultant"));
+        }
         //Adding Appointment to database
         Appointment appointment = Appointment.create(date, c, p);
         c.popAppointments();
