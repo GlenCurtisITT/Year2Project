@@ -17,10 +17,13 @@ GET     /deletePatient/:mrn         controllers.AdminController.deletePatient(mr
 GET     /updatePatient/:mrn         controllers.AdminController.updatePatient(mrn: String)
 GET     /viewAppointments           controllers.ConsultantController.viewAppointments
 GET     /makeAppointment            controllers.HomeController.makeAppointment
+GET     /appointmentMain/:id        controllers.HomeController.appointmentMain(id: String)
+GET     /cancelAppointment/:id      controllers.HomeController.cancelAppointment(id:String)
 POST    /addUserSubmit              controllers.HomeController.addUserSubmit
 POST    /loginSubmit                controllers.LoginController.loginSubmit
 POST    /addPatientSubmit           controllers.HomeController.addPatientSubmit
 POST    /addAppointmentSubmit       controllers.HomeController.addAppointmentSubmit
+
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count
 # An example controller showing how to write asynchronous code

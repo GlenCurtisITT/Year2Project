@@ -56,24 +56,30 @@
             <div class="col-lg-12">
                 <h1>MRN: @patient.getMrn()</h1>
                 <h1>Name: @patient.getfName() @patient.getlName()</h1>
-                    @helper.form(action = controllers.routes.HomeController.addAppointmentSubmit(), 'class -> "form-horizontal", 'role -> "form") {
-                        @inputDate(addAppointmentForm("appDate"), '_label -> "Appointment Date", '_help -> "format yyyy-dd-MM", 'class -> "form-control")
-                            @select(addAppointmentForm("hours"), options("select" -> "--- Please Select ---", "00" -> "00", "01" -> "01", "02" -> "02", "03" -> "03"
-                                , "04" -> "04", "05" -> "05", "06" -> "06", "07" -> "07", "08" -> "08", "09" -> "09", "10" -> "10", "11" -> "11", "12" -> "12"
-                                , "13" -> "13", "14" -> "14", "15" -> "15", "16" -> "16", "17" -> "17", "18" -> "18", "19" -> "19", "20" -> "20"
-                                , "21" -> "21", "22" -> "22", "23" -> "23"), '_label -> "Time(Hours)")
-                            @select(addAppointmentForm("minutes"), options("select" -> "--- Please Select ---", "00" -> "00", "30" -> "30"), '_label -> "Time(Minutes)")
-                            @for(c <- consultantlist){
-                                    @select(addAppointmentForm("consultant"), options("select" -> "--- Please Select ---", c.getIdNum -> c.getFname), '_label -> "Select a Consultant to book an appointment with.")
+                <label>Appointment Date, Time and Consultant</label>
+                    <!-- Be sure to change id to value. Value is what gets included in the POST request to the method -->
+                <form method = "post" action="@routes.HomeController.addAppointmentSubmit()" class="form-horizontal">
+                    <input type="date" id="appDate" name="appDate" dataformatas="yyyy-dd-MM" />
+                    <select id="hours" name="hours">
+                        <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
+                        <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
+                        <option id="18">18</option><option id="19">19</option><option id="20">20</option>
+                    </select>
+                    <select id="minutes" name="minutes">
+                        <option id="00">00</option><option id="30">30</option>
+                    </select>
+                    <select id="consultant" name="consultant">
+                        <option value="select">--- Please Select ---</option>
+                        @for(c <- consultantlist){
+                            <option value="@c.getIdNum">@c.getFname @c.getLname</option>
                         }
-            </div>
-        </div>
-        <div class="actions">
-            <input type="submit" value="Add Appointment" class="btn btn-primary">
-            <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Cancel</button></a>
-        </div>
-    }
-    }
+                    </select>
+                    <div class="actions">
+                        <input type="submit" value="Add Appointment" class="btn btn-primary">
+                        <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Cancel</button></a>
+                    </div>
+                </form>
+                }
 
-  }
 }
+  }

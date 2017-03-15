@@ -48,11 +48,11 @@ public class Consultant extends User{
 
     public List<Date> checkAppointments(){
         ArrayList<Date> appointmentDates = new ArrayList<>();
-        if(appointmentDates.size() != 0){ //no existing appointments for this consultant
+        if(appointments.size() != 0){ //no existing appointments for this consultant
             for(Appointment a : appointments){
                 appointmentDates.add(a.getAppDate());
             }
-        } else{
+        }else{
             List<Date> dates = appointmentDates;
             return dates;
         }

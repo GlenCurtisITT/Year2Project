@@ -74,6 +74,38 @@ public class HomeController extends Controller {
         return ok(viewPatient.render(getUserFromSession(), getPatientFromSession()));
     }
 
+    public Result appointmentMain(String id){
+        Appointment a = Appointment.find.byId(id);
+        User u = getUserFromSession();
+        return ok(appointmentMain.render(u, a));
+    }
+
+    public Result cancelAppointment(String id){
+        Appointment a = Appointment.find.byId(id);
+        Consultant c = (Consultant) getUserFromSession();
+        a.delete();
+        String s = "Appointment Cancelled ";
+        flash("success", s);
+        c.popAppointments();
+        List<Appointment> appointments = c.getAppointments();
+        return ok(viewAppointments.render(c, appointments));
+    }
+
+    /* Need to pull appointment in for appointmentMain.render (or addAppointmentSubmit
+    public Result rescheduleAppointment(String id){
+        Appointment a = Appointment.find.byId(id);
+        if(!session().containsKey("mrn")) {
+            session("mrn", a.getP().getMrn());
+        }
+        Patient p = getPatientFromSession();
+        addAppointmentSubmit();
+        String s = "Appointment recheduled for " + p.getfName() + " " + p.getlName();
+        flash("success", s);
+        a.delete();
+        endPatientSession();
+        return ok(appointmentMain.render(getUserFromSession(), a));
+    }
+    */
     public Result makeAppointment(){
         Form<Appointment> addAppointmentForm = formFactory.form(Appointment.class);
         List<Consultant> consultants = Consultant.findAllConsultants();
@@ -99,7 +131,7 @@ public class HomeController extends Controller {
         String dateString = newAppointmentForm.get("appDate") + "T" + newAppointmentForm.get("hours") + ":" + newAppointmentForm.get("minutes") + ":00";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        sdf.setTimeZone(TimeZone.getDefault());
         Date date = new Date();
         Date todayDate = new Date();
         try{
@@ -124,7 +156,7 @@ public class HomeController extends Controller {
             }
         }
         //Adding Appointment to database
-        Appointment appointment = Appointment.create(date, c, p);
+        Appointment.create(date, c, p);
         c.popAppointments();
         p.popAppointments();
         //Flashing String s to memory to be used in view patient screen.
