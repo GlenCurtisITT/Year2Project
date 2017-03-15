@@ -29,6 +29,7 @@ public class AdminController extends Controller{
 
     public Result adminHomePage(){
         User u = HomeController.getUserFromSession();
+        HomeController.endPatientSession();
         return ok(adminHomePage.render(u));
     }
 
@@ -46,7 +47,6 @@ public class AdminController extends Controller{
         try{
             p = Patient.find.byId(mrn);
             patientForm = formFactory.form(Patient.class).fill(p);
-            
         }catch(Exception e){
             return badRequest();
         }

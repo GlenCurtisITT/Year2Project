@@ -32,18 +32,18 @@ public class LoginController extends Controller {
 
         if(login != null){
             session().clear();
-            session("email", login.getEmail());
-            session("role", login.getRole());
+            session("numId", login.getIdNum());
+            session("role", login.checkRole());
 
         }else{
             flash("error", "Invalid Username or Password");
             return redirect(routes.HomeController.index());
         }
 
-        if(session().get("role").equals("Admin")){
+        if(session("role").equals("Admin")){
             return redirect(routes.AdminController.adminHomePage());
         }
-        if(session().get("role").equals("Consultant")){
+        if(session("role").equals("Consultant")){
             return redirect(routes.ConsultantController.consultantHomePage());
         }
         return redirect(controllers.routes.HomeController.homepage());

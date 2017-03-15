@@ -1,6 +1,6 @@
 @(patients: List[models.Patient], user: models.users.User)
 
-@if(user.getRole().equals("Admin")) {
+@if(user.checkRole().equals("Admin")) {
     @adminPages.mainAdmin("Search Patient", user) {
         @if(flash().containsKey("success")) {
             <div class="col-xs-4">
@@ -57,7 +57,7 @@
     }
 }
 
-@if(user.getRole().equals("Consultant")) {
+@if(user.checkRole().equals("Consultant")) {
     @consultantPages.mainConsultant("Search Patient", user) {
         <div class="row">
             <div class="col-sm-12">
@@ -80,7 +80,7 @@
                             <td>@p.getPpsNumber</td>
                             <td>@p.getDob</td>
                             <td>@p.getPrevIllnesses</td>
-                            <td><a href="#">View Profile</a></td>
+                            <td><a href="@routes.HomeController.viewPatientByID(p.getMrn)">View Profile</a></td>
                         </tr>
                     }
                     </tbody>

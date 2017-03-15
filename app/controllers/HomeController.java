@@ -37,11 +37,13 @@ public class HomeController extends Controller {
     }
 
     public Result homepage(){
+        endPatientSession();
         User u = getUserFromSession();
         return ok(homepage.render(u));
     }
 
     public Result addPatient(){
+        endPatientSession();
         Form<Patient> addPatientForm = formFactory.form(Patient.class);
         User u = getUserFromSession();
         return ok(addPatient.render(addPatientForm, null, u));
@@ -53,18 +55,82 @@ public class HomeController extends Controller {
     }
 
     public Result searchPatient(){
+        endPatientSession();
         List<Patient> patientList = Patient.findAll();
         return ok(searchPatient.render(patientList, getUserFromSession()));
     }
 
     public Result viewPatient(){
-        Patient p = new Patient();
+        Patient p = getPatientFromSession();
         return ok(viewPatient.render(getUserFromSession(), p));
     }
 
-    public Result viewPatientByID(String mrn){
+    public Result viewPatientByID(java.lang.String mrn){
+        endPatientSession();
         Patient p = Patient.find.byId(mrn);
-        return ok(viewPatient.render(getUserFromSession(), p));
+        if(!session().containsKey("mrn")) {
+            session("mrn", mrn);
+        }
+        return ok(viewPatient.render(getUserFromSession(), getPatientFromSession()));
+    }
+
+    public Result makeAppointment(){
+        Form<Appointment> addAppointmentForm = formFactory.form(Appointment.class);
+        List<Consultant> consultants = Consultant.findAllConsultants();
+        return ok(makeAppointment.render(addAppointmentForm, consultants, getUserFromSession(), getPatientFromSession(), null));
+    }
+
+    public Result addAppointmentSubmit(){
+        DynamicForm newAppointmentForm = formFactory.form().bindFromRequest();
+        Form errorForm = formFactory.form().bindFromRequest();
+        List<Consultant> consultants = Consultant.findAllConsultants();
+        Patient p = getPatientFromSession();
+        Consultant c = Consultant.getConsultantById(newAppointmentForm.get("consultant"));
+        //Checking if Form has errors.
+        if(newAppointmentForm.hasErrors()){
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Error in form."));
+        }
+        //Checking that Consultant and Date are not blank.
+        if(newAppointmentForm.get("consultant") == null || newAppointmentForm.get("appDate") == null){
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Please enter a date and a consultant."));
+        }
+
+        //handles processing of date
+        String dateString = newAppointmentForm.get("appDate") + "T" + newAppointmentForm.get("hours") + ":" + newAppointmentForm.get("minutes") + ":00";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        Date date = new Date();
+        Date todayDate = new Date();
+        try{
+            date = sdf.parse(dateString);
+            dateString = output.format(date);
+
+        } catch (ParseException e) {
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Could not create appointment for: " + dateString));
+        }
+
+        if(date.before(todayDate)){     //check to see if appointment was made for the past
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Cannot create an appointment in the past: " + dateString));
+        }
+
+        //Checking if Consultant already has an appointment at that time
+        if(c.checkAppointments().size() != 0){ //if consultant has appointments
+            List<Date> appointments = c.checkAppointments();
+            for (Date a : appointments) {
+                if (a.compareTo(date) == 0) {
+                    return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Consultant already has an appointment at that time."));
+                }
+            }
+        }
+        //Adding Appointment to database
+        Appointment appointment = Appointment.create(date, c, p);
+        c.popAppointments();
+        p.popAppointments();
+        //Flashing String s to memory to be used in view patient screen.
+        String s = "Appointment booked for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName() + " with Dr." + c.getLname() + " at " + dateString;
+        flash("success", s);
+        return redirect(controllers.routes.HomeController.viewPatient());
     }
 
     public Result addUserSubmit(){
@@ -106,8 +172,17 @@ public class HomeController extends Controller {
             return badRequest(createUser.render(errorForm, dateString));
         }
         //Adding user to database
-        User.create(newUserForm.get("email"), newUserForm.get("role"), newUserForm.get("fname"),newUserForm.get("lname"),
-                newUserForm.get("address"),newUserForm.get("phoneNumber"), newUserForm.get("ppsNumber"), date, newUserForm.get("password"));
+        if(newUserForm.get("role").equals("Admin")){
+            User u = new User(newUserForm.get("fname"), newUserForm.get("lname"), newUserForm.get("phoneNumber"), newUserForm.get("address")
+                    , newUserForm.get("ppsNumber"), date, newUserForm.get("email"), newUserForm.get("password"));
+            User.create(u);
+        }else if (newUserForm.get("role").equals("Consultant")){
+            Consultant c = new Consultant(newUserForm.get("fname"), newUserForm.get("lname"), newUserForm.get("phoneNumber"), newUserForm.get("address")
+                    , newUserForm.get("ppsNumber"), date, newUserForm.get("email"), newUserForm.get("password"));
+            Consultant.create(c);
+        } else {
+            return badRequest(createUser.render(errorForm, "Invalid role chosen."));
+        }
         String s = newUserForm.get("role") + ": " + newUserForm.get("fname") + " " + newUserForm.get("lname") + " added successfully.";
         //Flashing String s to memory to be used in index screen.
         flash("success", s);
@@ -119,21 +194,21 @@ public class HomeController extends Controller {
         Form errorForm = formFactory.form().bindFromRequest();
         //Checking if Form has errors.
         if(newPatientForm.hasErrors()){
-            return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
+            return badRequest(addPatient.render(errorForm, "Error in form", getUserFromSession()));
         }
         //Checking that Email and Name are not blank.
         if(newPatientForm.get("email").equals("") || newPatientForm.get("fname").equals("") || newPatientForm.get("lname").equals("")){
-            return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
+            return badRequest(addPatient.render(errorForm, "Error name and email must be valid", getUserFromSession()));
         }
         if(newPatientForm.get("medicalCard").equals("select")){
-            return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
+            return badRequest(addPatient.render(errorForm, "Please select medical card status", getUserFromSession()));
         }
 
         //Checking if ppsNumber exists already in database (additional functionality)
         List<Patient> allpatients = Patient.findAll();
         for(Patient a : allpatients) {
             if (a.getPpsNumber().equals(newPatientForm.get("ppsNumber"))) {
-                return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
+                return badRequest(addPatient.render(errorForm, "A patient with that PPS number already exits on the system", getUserFromSession()));
             }
         }
         //formatting date to work
@@ -164,17 +239,32 @@ public class HomeController extends Controller {
         //Flashing String s to memory to be used in index screen.
         flash("success", s);
         User u = getUserFromSession();
-        if(u.getRole().equals("Admin")){
-            return redirect(routes.AdminController.adminHomePage());
-        }else if(u.getRole().equals("Consultant")){
+        if(u instanceof Consultant){
             return redirect(routes.ConsultantController.consultantHomePage());
-        }else{
+        }else if(u == null){
             return badRequest();
+        }else{
+            return redirect(routes.AdminController.adminHomePage());
         }
 
     }
 
     public static User getUserFromSession(){
-        return User.getUserById(session().get("email"));
+        if(User.getUserById(session().get("numId")) instanceof Consultant){
+            return Consultant.getConsultantById(session().get("numId"));
+        }
+        else{
+            return User.getUserById(session().get("numId"));
+        }
+    }
+
+    public static Patient getPatientFromSession(){
+        return Patient.getPatientById(session().get("mrn"));
+    }
+
+    public static void endPatientSession(){
+        if(session().containsKey("mrn")){
+            session().remove("mrn");
+        }
     }
 }

@@ -8,7 +8,12 @@ import play.data.validation.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role")
+@DiscriminatorValue("Admin")
 public class User extends Model{
+    @Id
+    private String idNum;
     private String fname;
     private String lname;
     private String phoneNumber;
@@ -17,32 +22,38 @@ public class User extends Model{
     @Formats.DateTime(pattern="yyyy/dd/MM")
     private Date dateOfBirth;
     private Date startDate;
-    @Id
     private String email;
-    private String role;
     private String passwordHash;
 
+    public User(String fname, String lname, String phoneNumber, String address, String ppsNumber, Date dateOfBirth, String email, String password) {
+        this.idNum = idGen();
+        this.fname = fname;
+        this.lname = lname;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.ppsNumber = ppsNumber;
+        this.dateOfBirth = dateOfBirth;
+        this.startDate = new Date();
+        this.email = email;
+        this.passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+
     //http://rny.io/playframework/bcrypt/2013/10/22/better-password-hashing-in-play-2.html
-    public static User create(String email, String role, String fname,String lname , String address, String phoneNumber, String ppsNumber, Date dateOfBirth, String password){
-        User user = new User();
-        user.setEmail(email);
-        user.setRole(role);
-        user.setFname(fname);
-        user.setLname(lname);
-        user.setPhoneNumber(phoneNumber);
-        user.setAddress(address);
-        user.setPpsNumber(ppsNumber);
-        user.setDateOfBirth(dateOfBirth);
-        user.setStartDate();
-        user.setPasswordHash(BCrypt.hashpw(password, BCrypt.gensalt()));
-        user.save();
-        return user;
+    public static User create(User u){
+        u.save();
+        return u;
     }
 
     public static User authenticate(String email, String password){
         User user = User.find.where().eq("email", email).findUnique();
         if(user != null && BCrypt.checkpw(password, user.getPasswordHash())){
-            return user;
+            if(user.checkRole().equals("Consultant")){
+                Consultant c = Consultant.find.where().eq("email", email).findUnique();
+                return c;
+            } else {
+                return user;
+            }
         }else{
             return null;
         }
@@ -62,20 +73,46 @@ public class User extends Model{
         return User.find.all();
     }
 
+    private static String idGen(){
+        Random rand = new Random();
+        List<User> allusers = findAll();
+        int randNum = 0;
+        boolean check = true;
+        do{
+            randNum = rand.nextInt((99999999 - 10000001) + 1) + 10000001;
+            check = true;
+            for(User a: allusers){
+                if(randNum == Integer.parseInt(a.getIdNum())) {
+                    check = false;
+                }
+            }
+        }while(!check);
+        String numberAsString = Integer.toString(randNum);
+        return numberAsString;
+    }
+
+    public String checkRole(){
+        if(this instanceof Consultant){
+            return "Consultant";
+        }else {
+            return "Admin";
+        }
+    }
+
+    public String getIdNum() {
+        return idNum;
+    }
+
+    public void setIdNum(String idNum) {
+        this.idNum = idNum;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     public String getFname() {

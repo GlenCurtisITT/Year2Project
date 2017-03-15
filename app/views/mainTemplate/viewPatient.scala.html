@@ -1,9 +1,18 @@
 @(user: models.users.User, patient: models.Patient)
-@if(user.getRole().equals("Admin")) {
+@if(user.checkRole().equals("Admin")) {
   @adminPages.mainAdmin("View Patient", user) {
     @if(patient.getMrn == null){
       <h1>No patient selected</h1>
     }else{
+      @if(flash().containsKey("success")) {
+        <div class="row">
+          <div class="col-xs-5">
+            <div class="alert alert-success">
+              <strong>@flash().get("success")</strong>
+            </div>
+          </div>
+        </div>
+      }
       <div class="row">
         <div class="col-lg-12">
           <h1>MRN: @patient.getMrn()</h1>
@@ -13,7 +22,7 @@
       <div class="row">
         <div class="col-lg-12">
           <a href="#"><button type="button" class="btn btn-primary text-center">Add Consultant</button></a>
-          <a href="#"><button type="button" class="btn btn-primary text-center">Make Appointment</button></a>
+          <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">Make Appointment</button></a>
         </div>
       </div>
     }
@@ -21,14 +30,30 @@
   }
 }
 
-@if(user.getRole().equals("Consultant")){
+@if(user.checkRole().equals("Consultant")){
   @consultantPages.mainConsultant("View Patient", user) {
     @if(patient.getMrn == null){
       <h1>No patient selected</h1>
     }else{
-      <h1>MRN: @patient.getMrn()</h1>
-      <h1>Name: @patient.getfName() @patient.getlName()</h1>
-      <!-- Consultant class does not have access to buttons to make appointment and add consultant.
+      <div class="row">
+        <div class="col-lg-12">
+          @if(flash().containsKey("success")) {
+            <div class="col-xs-4">
+              <div class="alert alert-success">
+                <strong>@flash().get("success")</strong>
+              </div>
+            </div>
+          }
+          <h1>MRN: @patient.getMrn()</h1>
+          <h1>Name: @patient.getfName() @patient.getlName()</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <a href="#"><button type="button" class="btn btn-primary text-center">Add Consultant</button></a>
+          <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">Make Appointment</button></a>
+        </div>
+      </div>
     }
 
   }

@@ -1,6 +1,6 @@
 @(addPatientForm: Form[models.Patient], error: String, user: models.users.User)
 @import helper._
-@if(user.getRole().equals("Admin")) {
+@if(user.checkRole().equals("Admin")) {
     @adminPages.mainAdmin("Add Patient", user) {
         <div class="row">
             <div class="col-lg-4">
@@ -41,7 +41,7 @@
 
     }
 }
-@if(user.getRole().equals("Consultant")) {
+@if(user.checkRole().equals("Consultant")) {
     @consultantPages.mainConsultant("Add Patient", user) {
         <div class="row">
             <div class="col-lg-4">
