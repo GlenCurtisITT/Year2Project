@@ -116,7 +116,7 @@ public class Patient extends Model implements Serializable{
     public void serialize() throws FileNotFoundException, IOException {
         final String FILENAME = "public/Files/patients.gz";
         try(FileOutputStream fo = new FileOutputStream(FILENAME);
-            GZIPOutputStream gzipOut = new GZIPOutputStream(fo);
+            GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
             ObjectOutputStream oo = new ObjectOutputStream(gzipOut);) {
             oo.writeObject(this);
         }
@@ -128,7 +128,7 @@ public class Patient extends Model implements Serializable{
         Patient patientRead = null;
         try (FileInputStream fin = new FileInputStream(FILENAME);
              GZIPInputStream gis = new GZIPInputStream(fin);
-             ObjectInputStream ois = new ObjectInputStream(gis)){
+             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
             while (true) {
                 patientRead = (Patient) ois.readObject();
                 if(patientRead.getMrn().equals(mrn)){
