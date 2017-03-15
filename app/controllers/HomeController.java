@@ -82,16 +82,24 @@ public class HomeController extends Controller {
 
     public Result cancelAppointment(String id){
         Appointment a = Appointment.find.byId(id);
-        Consultant c = (Consultant) getUserFromSession();
-        a.delete();
-        String s = "Appointment Cancelled ";
-        flash("success", s);
-        c.popAppointments();
-        List<Appointment> appointments = c.getAppointments();
-        return ok(viewAppointments.render(c, appointments));
+        if(getUserFromSession() instanceof Consultant){
+            Consultant c = (Consultant) getUserFromSession();
+            a.delete();
+            String s = "Appointment Cancelled ";
+            flash("success", s);
+            c.popAppointments();
+            List<Appointment> appointments = c.getAppointments();
+            return ok(viewAppointments.render(c, appointments));
+        }
+        else{
+            String s = "Only Consultants may cancel appointments";
+            flash("error", s);
+            return ok(appointmentMain.render(getUserFromSession(), a));
+        }
+
     }
 
-    /* Need to pull appointment in for appointmentMain.render (or addAppointmentSubmit
+    /* Need to pull appointment in for addAppointmentSubmit
     public Result rescheduleAppointment(String id){
         Appointment a = Appointment.find.byId(id);
         if(!session().containsKey("mrn")) {

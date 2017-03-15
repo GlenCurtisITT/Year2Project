@@ -5,11 +5,13 @@ import com.avaje.ebean.Model;
 import models.users.Consultant;
 import play.data.format.Formats;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.io.Serializable;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Created by wdd on 03/03/17.
@@ -111,10 +113,40 @@ public class Patient extends Model implements Serializable{
         return numberAsString;
     }
 
+    public void serialize() throws FileNotFoundException, IOException {
+        final String FILENAME = "public/Files/patients.gz";
+        try(FileOutputStream fo = new FileOutputStream(FILENAME);
+            GZIPOutputStream gzipOut = new GZIPOutputStream(fo);
+            ObjectOutputStream oo = new ObjectOutputStream(gzipOut);) {
+            oo.writeObject(this);
+        }
+    }
+
+    public static Patient readArchive(String mrn) throws IOException, ClassNotFoundException {
+        final String FILENAME = "public/Files/patients.gz";
+        ArrayList<Patient> patients = new ArrayList<>();
+        Patient patientRead = null;
+        try (FileInputStream fin = new FileInputStream(FILENAME);
+             GZIPInputStream gis = new GZIPInputStream(fin);
+             ObjectInputStream ois = new ObjectInputStream(gis)){
+            while (true) {
+                patientRead = (Patient) ois.readObject();
+                if(patientRead.getMrn().equals(mrn)){
+                    return patientRead;
+                }
+            }
+        } finally{
+            return patientRead;
+        }
+    }
+
     public String getMrn() {
         return mrn;
     }
 
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
 
     public String getfName() {
         return fName;
