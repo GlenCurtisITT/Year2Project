@@ -34,7 +34,7 @@ public class AdminController extends Controller{
     }
 
     public Result deletePatient(String mrn){
-        Patient.find.ref(mrn).delete(); //change to serialize
+        Patient.find.ref(mrn).delete(); //serialize before delete
         flash("success", "Patient has been deleted.");
 
         return redirect(routes.HomeController.searchPatient());

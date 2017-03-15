@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.io.Serializable;
 
 /**
  * Created by wdd on 03/03/17.
  */
 @Entity
-public class Patient extends Model{
+public class Patient extends Model implements Serializable{
     @Id
     private String mrn;
     private String fName;
