@@ -99,21 +99,55 @@ public class HomeController extends Controller {
 
     }
 
-    /* Need to pull appointment in for addAppointmentSubmit
     public Result rescheduleAppointment(String id){
+        DynamicForm newAppointmentForm = formFactory.form().bindFromRequest();
+        Form errorForm = formFactory.form().bindFromRequest();
         Appointment a = Appointment.find.byId(id);
+        Consultant c = a.getC();
         if(!session().containsKey("mrn")) {
             session("mrn", a.getP().getMrn());
         }
         Patient p = getPatientFromSession();
-        addAppointmentSubmit();
-        String s = "Appointment recheduled for " + p.getfName() + " " + p.getlName();
+        //handles processing of date
+        String dateString = newAppointmentForm.get("appDate") + "T" + newAppointmentForm.get("hours") + ":" + newAppointmentForm.get("minutes") + ":00";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getDefault());
+        Date date = new Date();
+        Date todayDate = new Date();
+        try{
+            date = sdf.parse(dateString);
+            dateString = output.format(date);
+
+        } catch (ParseException e) {
+            flash("error", "Could not create appointment for: " + dateString);
+            return badRequest(appointmentMain.render(getUserFromSession(), a));
+        }
+
+        if(date.before(todayDate)){     //check to see if appointment was made for the past
+            flash("error", "Cannot create an appointment in the past: " + dateString);
+            return badRequest(appointmentMain.render(getUserFromSession(), a));
+        }
+        //Checking if Consultant already has an appointment at that time
+        if(c.checkAppointments().size() != 0){ //if consultant has appointments
+            List<Date> appointments = c.checkAppointments();
+            for (Date d : appointments) {
+                if (d.compareTo(date) == 0) {
+                    flash("error", "Consultant already has an appointment at that time.");
+                    return badRequest(appointmentMain.render(getUserFromSession(), a));
+                }
+            }
+        }
+        a.setAppDate(date);
+        a.save();
+        c.popAppointments();
+        p.popAppointments();
+        String s = "Appointment rescheduled for " + p.getfName() + " " + p.getlName();
         flash("success", s);
-        a.delete();
         endPatientSession();
         return ok(appointmentMain.render(getUserFromSession(), a));
     }
-    */
+
     public Result makeAppointment(){
         Form<Appointment> addAppointmentForm = formFactory.form(Appointment.class);
         List<Consultant> consultants = Consultant.findAllConsultants();

@@ -10,6 +10,15 @@
               </div>
           </div>
       }
+      @if(flash().containsKey("success")) {
+          <div class="row">
+              <div class="col-xs-5">
+                  <div class="alert alert-success">
+                      <strong>@flash().get("success")</strong>
+                  </div>
+              </div>
+          </div>
+      }
       <div class="row">
         <div class="col-lg-12">
           <h1>Consultant: Dr. @appointment.getC().getLname</h1>
@@ -18,12 +27,21 @@
           <h1>Illness: @appointment.getP().getPrevIllnesses()</h1>
         </div>
       </div>
-      <div class="row">
-        <div class="col-lg-12">
-          <a href="@routes.HomeController.addAppointmentSubmit()"><button type="button" class="btn btn-primary text-center">Reschedule</button></a>
-          <a href="@routes.HomeController.cancelAppointment(appointment.getId)"><button type="button" class="btn btn-primary text-center" onclick="return confirmDel()";>Cancel Appointment</button></a>
-        </div>
-      </div>
+      <form method = "post" action="@routes.HomeController.rescheduleAppointment(appointment.getId)" class="form-horizontal">
+          <input type="date" id="appDate" name="appDate" dataformatas="yyyy-dd-MM" />
+          <select id="hours" name="hours">
+              <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
+              <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
+              <option id="18">18</option><option id="19">19</option><option id="20">20</option>
+          </select>
+          <select id="minutes" name="minutes">
+              <option id="00">00</option><option id="30">30</option>
+          </select>
+          <div class="actions">
+              <input type="submit" value="Reschedule" class="btn btn-primary">
+              <a href="@routes.HomeController.cancelAppointment(appointment.getId)"><button type="button" class="btn btn-primary text-center" onclick="return confirmDel()";>Cancel Appointment</button></a>
+          </div>
+      </form>
     <script>
             function confirmDel() {
               return confirm('Are you sure?');
@@ -34,6 +52,24 @@
   }
 @if(user.checkRole().equals("Consultant")){
   @consultantPages.mainConsultant("View Patient", user) {
+      @if(flash().containsKey("success")) {
+          <div class="row">
+              <div class="col-xs-5">
+                  <div class="alert alert-success">
+                      <strong>@flash().get("success")</strong>
+                  </div>
+              </div>
+          </div>
+      }
+      @if(flash().containsKey("error")) {
+          <div class="row">
+              <div class="col-xs-5">
+                  <div class="alert alert-success">
+                      <strong>@flash().get("error")</strong>
+                  </div>
+              </div>
+          </div>
+      }
     <div class="row">
       <div class="col-lg-12">
         <h1>Consultant: Dr. @appointment.getC().getLname</h1>
@@ -42,12 +78,21 @@
         <h1>Illness: @appointment.getP().getPrevIllnesses()</h1>
       </div>
     </div>
-    <div class="row">
-      <div class="col-lg-12">
-        <a href="@routes.HomeController.addAppointmentSubmit()"><button type="button" class="btn btn-primary text-center">Reschedule</button></a>
-        <a href="@routes.HomeController.cancelAppointment(appointment.getId)"><button type="button" class="btn btn-primary text-center" onclick="return confirmDel()">Cancel Appointment</button></a>
-      </div>
-    </div>
+      <form method = "post" action="@routes.HomeController.rescheduleAppointment(appointment.getId)" class="form-horizontal">
+          <input type="date" id="appDate" name="appDate" dataformatas="yyyy-dd-MM" />
+          <select id="hours" name="hours">
+              <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
+              <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
+              <option id="18">18</option><option id="19">19</option><option id="20">20</option>
+          </select>
+          <select id="minutes" name="minutes">
+              <option id="00">00</option><option id="30">30</option>
+          </select>
+          <div class="actions">
+              <input type="submit" value="Reschedule" class="btn btn-primary">
+              <a href="@routes.HomeController.cancelAppointment(appointment.getId)"><button type="button" class="btn btn-primary text-center" onclick="return confirmDel()";>Cancel Appointment</button></a>
+          </div>
+      </form>
     <script>
             function confirmDel() {
               return confirm('Are you sure?');
