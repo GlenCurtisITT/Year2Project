@@ -13,7 +13,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
+import com.avaje.ebean.*;
 import javax.inject.Inject;
 import models.users.*;
 import models.*;
@@ -322,6 +322,21 @@ public class HomeController extends Controller {
         }
 
     }
+
+    public Result searchByMRN(){
+        DynamicForm searchForm = formFactory.form().bindFromRequest();
+        String MRN = searchForm.get("mrn");
+        List<Patient> searchedPatients = Patient.find.where().like("mrn", MRN + "%").findList();
+        return ok(searchPatient.render(searchedPatients, getUserFromSession()));
+    }
+
+    public Result searchByLastName(){
+        DynamicForm searchForm = formFactory.form().bindFromRequest();
+        String lName = searchForm.get("lName");
+        List<Patient> searchedPatients = Patient.find.where().like("lName", lName + "%").findList();
+        return ok(searchPatient.render(searchedPatients, getUserFromSession()));
+    }
+
 
     public static User getUserFromSession(){
         if(User.getUserById(session().get("numId")) instanceof Consultant){

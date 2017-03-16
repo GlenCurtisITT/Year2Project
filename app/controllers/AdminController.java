@@ -1,5 +1,8 @@
 package controllers;
 
+import play.*;
+import play.mvc.*;
+import play.mvc.Http.*;
 import models.Patient;
 import play.db.ebean.Transactional;
 import play.mvc.Controller;
@@ -18,9 +21,9 @@ import java.util.*;
 
 import javax.inject.Inject;
 import models.users.*;
-/**
- * Created by Glen on 01/03/2017.
- */
+
+@Security.Authenticated(Secured.class)
+@With(AuthAdmin.class)
 public class AdminController extends Controller{
 
     private FormFactory formFactory;
