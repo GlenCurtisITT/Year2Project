@@ -25,6 +25,7 @@
           <h1>Patient: @appointment.getP().getfName() @appointment.getP().getlName()</h1>
           <h1>MRN: @appointment.getP().getMrn()</h1>
           <h1>Illness: @appointment.getP().getPrevIllnesses()</h1>
+            <h1>Using: @appointment.getE().getType()</h1>
         </div>
       </div>
 
@@ -81,9 +82,11 @@
         <h1>Patient: @appointment.getP().getfName() @appointment.getP().getlName()</h1>
         <h1>MRN: @appointment.getP().getMrn()</h1>
         <h1>Illness: @appointment.getP().getPrevIllnesses()</h1>
+          <h1>Using: @appointment.getE().getType()</h1>
+
       </div>
     </div>
-      <input style="margin-bottom: 30px;" type="button" id="margBot" class="btn btn-primary" onclick="unhide(this, 'form') " value="Rechedule Appointment">
+      <input style="margin-bottom: 30px;" type="button" id="margBot" class="btn btn-primary" onclick="unhide(this, 'form') " value="Reschedule Appointment">
 
       <div id="form" class="hidden">
       <form method = "post" action="@routes.HomeController.rescheduleAppointment(appointment.getId)" class="form-horizontal">

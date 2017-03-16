@@ -1,4 +1,4 @@
-@(addAppointmentForm: Form[models.Appointment], consultantlist: List[models.users.Consultant], user: models.users.User, patient: models.Patient, error: String)
+@(addAppointmentForm: Form[models.Appointment], consultantlist: List[models.users.Consultant], user: models.users.User, patient: models.Patient, equipmentlist: List[models.Equipment],error: String)
 @import helper._
 @if(user.checkRole().equals("Admin")) {
   @adminPages.mainAdmin("Add Appointment", user) {
@@ -30,6 +30,12 @@
                         <option value="select">--- Please Select ---</option>
                         @for(c <- consultantlist){
                             <option value="@c.getIdNum">@c.getFname @c.getLname</option>
+                        }
+                    </select>
+                    <select id="equipment" name="equipment">
+                        <option value="select">--- Please Select ---</option>
+                        @for(e <- equipmentlist){
+                            <option value="@e.getEquipId">@e.getType</option>
                         }
                     </select>
                     <div class="actions">
@@ -74,6 +80,36 @@
                             <option value="@c.getIdNum">@c.getFname @c.getLname</option>
                         }
                     </select>
+                    <select id="equipment" name="equipment">
+                        <option value="select">--- Please Select ---</option>
+                        @for(e <- equipmentlist){
+                            <option value="@e.getEquipId">@e.getType</option>
+                        }
+                    </select>
+                    @if(error.equals("Equipment is already booked for that time.")){
+                        <input style="margin-bottom: 30px;" type="button" id="margBot" class="btn btn-primary" onclick="unhide(this, 'timetable') " value="Show Equipment Bookings">
+                        <div id="timetable" class="hidden">
+                            <table class="table table-bordered table-hover table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Equipment</th>
+                                        <th>Booked</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @for(e <- equipmentlist) {
+                                    @for(a <- e.getAppointments){
+                                        <tr>
+                                            <td>@e.getType</td>
+                                            <td>@a.getAppDate</td>
+                                        </tr>
+                                    }
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                        <input style="margin-bottom: 30px;" type="button" id="margBot" class="btn btn-primary" onclick="hide(this, 'timetable') " value="Hide">
+                    }
                     <div class="actions">
                         <input type="submit" value="Add Appointment" class="btn btn-primary">
                         <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Cancel</button></a>
