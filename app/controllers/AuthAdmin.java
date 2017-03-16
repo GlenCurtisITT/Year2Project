@@ -10,7 +10,7 @@ import models.users.*;
  */
 public class AuthAdmin extends Action.Simple {
     public CompletionStage<Result> call(Http.Context ctx){
-        String id = ctx.session().get("email");
+        String id = ctx.session().get("numId");
         if(id != null){
             User u = User.getUserById(id);
             if("Admin".equals(u.checkRole())){
