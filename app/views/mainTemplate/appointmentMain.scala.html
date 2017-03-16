@@ -4,7 +4,7 @@
       @if(flash().containsKey("error")) {
           <div class="row">
               <div class="col-xs-5">
-                  <div class="alert alert-success">
+                  <div class="alert alert-warning">
                       <strong>@flash().get("error")</strong>
                   </div>
               </div>
@@ -27,26 +27,36 @@
           <h1>Illness: @appointment.getP().getPrevIllnesses()</h1>
         </div>
       </div>
-      <form method = "post" action="@routes.HomeController.rescheduleAppointment(appointment.getId)" class="form-horizontal">
-          <input type="date" id="appDate" name="appDate" dataformatas="yyyy-dd-MM" />
-          <select id="hours" name="hours">
-              <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
-              <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
-              <option id="18">18</option><option id="19">19</option><option id="20">20</option>
-          </select>
-          <select id="minutes" name="minutes">
-              <option id="00">00</option><option id="30">30</option>
-          </select>
-          <div class="actions">
-              <input type="submit" value="Reschedule" class="btn btn-primary">
-          </div>
-      </form>
-    <script>
-            function confirmDel() {
-              return confirm('Are you sure?');
-            }
-    </script>
+
+      <input style="margin-bottom: 30px;" type="button" id="margBot" class="btn btn-primary" onclick="unhide(this, 'form') " value="Rechedule Appointment">
+
+      <div id="form" class="hidden">
+          <form method = "post" action="@routes.HomeController.rescheduleAppointment(appointment.getId)" class="form-horizontal">
+              <label>Date (YYYY-MM-DD): </label>
+              <input type="date" id="appDate" name="appDate" dataformatas="yyyy-dd-MM" />
+              <label>Time: </label>
+              <select id="hours" name="hours">
+                  <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
+                  <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
+                  <option id="18">18</option><option id="19">19</option><option id="20">20</option>
+              </select>
+              <select style="margin-bottom: 10px;" id="minutes" name="minutes">
+                  <option id="00">00</option><option id="30">30</option>
+              </select>
+              <div class="actions">
+                  <input type="submit" value="Reschedule" class="btn btn-primary">
+              </div>
+          </form>
+          <script>
+                  function confirmDel() {
+                      return confirm('Are you sure?');
+                  }
+          </script>
+      </div>
+
+
     }
+
 
   }
 @if(user.checkRole().equals("Consultant")){
