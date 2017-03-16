@@ -94,7 +94,7 @@ public class User extends Model{
     public String checkRole(){
         if(this instanceof Consultant){
             return "Consultant";
-        }else {
+        }else{
             return "Admin";
         }
     }
