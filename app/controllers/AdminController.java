@@ -1,5 +1,8 @@
 package controllers;
 
+import play.*;
+import play.mvc.*;
+import play.mvc.Http.*;
 import models.Patient;
 import play.db.ebean.Transactional;
 import play.mvc.Controller;
@@ -11,13 +14,16 @@ import views.html.mainTemplate.*;
 import views.html.adminPages.*;
 import views.html.consultantPages.*;
 import play.data.*;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 import javax.inject.Inject;
 import models.users.*;
-/**
- * Created by Glen on 01/03/2017.
- */
+
+@Security.Authenticated(Secured.class)
+@With(AuthAdmin.class)
 public class AdminController extends Controller{
 
     private FormFactory formFactory;
@@ -34,9 +40,22 @@ public class AdminController extends Controller{
     }
 
     public Result deletePatient(String mrn){
-        Patient.find.ref(mrn).delete();
-        flash("success", "Patient has been deleted.");
-
+        Patient p = Patient.find.ref(mrn); //serialize before delete
+        if(p.getAppointments().size() != 0){
+            flash("error", "Cannot archive Patient while there are still appointments due");
+            return redirect(routes.HomeController.searchPatient());
+        }
+        try {
+            p.serialize();
+            p.delete();
+        } catch(FileNotFoundException e) {
+            flash("error", "Could not find file");
+            return redirect(routes.HomeController.searchPatient());
+        } catch(IOException e){
+            flash("error", "Could not archive patient");
+            return redirect(routes.HomeController.searchPatient());
+        }
+        flash("success", "Patient has been archived.");
         return redirect(routes.HomeController.searchPatient());
     }
 

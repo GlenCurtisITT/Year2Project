@@ -43,3 +43,12 @@ body{
     -o-transition: opacity 3s ease-in-out;
     opacity: 1;
 }
+
+.hidden{
+    display:none;
+}
+
+.unhidden{
+    display:block;
+}
+

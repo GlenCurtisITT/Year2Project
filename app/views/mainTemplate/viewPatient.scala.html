@@ -25,6 +25,25 @@
           <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">Make Appointment</button></a>
         </div>
       </div>
+      @if(patient.getAppointments.size() != 0){
+        <table class="table table-bordered table-hover table-condensed">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Consultant</th>
+          </tr>
+        </thead>
+        <tbody>
+        @for(a <- patient.getAppointments) {
+          <tr>
+            <td class="numeric">@a.getAppDate</td>
+            <td>Dr. @a.getC.getLname</td>
+            <td><a href="@routes.HomeController.appointmentMain(a.getId)">View Appointment</a></td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
     }
 
   }
@@ -54,6 +73,25 @@
           <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">Make Appointment</button></a>
         </div>
       </div>
+      @if(patient.getAppointments.size() != 0){
+        <table class="table table-bordered table-hover table-condensed">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Consultant</th>
+            </tr>
+          </thead>
+          <tbody>
+          @for(a <- patient.getAppointments) {
+            <tr>
+              <td class="numeric">@a.getAppDate</td>
+              <td>Dr. @a.getC.getLname</td>
+              <td><a href="@routes.HomeController.appointmentMain(a.getId)">View Appointment</a></td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      }
     }
 
   }

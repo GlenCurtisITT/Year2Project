@@ -13,7 +13,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
+import com.avaje.ebean.*;
 import javax.inject.Inject;
 import models.users.*;
 import models.*;
@@ -74,6 +74,80 @@ public class HomeController extends Controller {
         return ok(viewPatient.render(getUserFromSession(), getPatientFromSession()));
     }
 
+    public Result appointmentMain(String id){
+        Appointment a = Appointment.find.byId(id);
+        User u = getUserFromSession();
+        return ok(appointmentMain.render(u, a));
+    }
+
+    public Result cancelAppointment(String id){
+        Appointment a = Appointment.find.byId(id);
+        if(getUserFromSession() instanceof Consultant){
+            Consultant c = (Consultant) getUserFromSession();
+            a.delete();
+            String s = "Appointment Cancelled ";
+            flash("success", s);
+            c.popAppointments();
+            List<Appointment> appointments = c.getAppointments();
+            return ok(viewAppointments.render(c, appointments));
+        }
+        else{
+            String s = "Only Consultants may cancel appointments";
+            flash("error", s);
+            return ok(appointmentMain.render(getUserFromSession(), a));
+        }
+
+    }
+
+    public Result rescheduleAppointment(String id){
+        DynamicForm newAppointmentForm = formFactory.form().bindFromRequest();
+        Form errorForm = formFactory.form().bindFromRequest();
+        Appointment a = Appointment.find.byId(id);
+        Consultant c = a.getC();
+        if(!session().containsKey("mrn")) {
+            session("mrn", a.getP().getMrn());
+        }
+        Patient p = getPatientFromSession();
+        //handles processing of date
+        String dateString = newAppointmentForm.get("appDate") + "T" + newAppointmentForm.get("hours") + ":" + newAppointmentForm.get("minutes") + ":00";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getDefault());
+        Date date = new Date();
+        Date todayDate = new Date();
+        try{
+            date = sdf.parse(dateString);
+            dateString = output.format(date);
+
+        } catch (ParseException e) {
+            flash("error", "Could not create appointment for: " + dateString);
+            return badRequest(appointmentMain.render(getUserFromSession(), a));
+        }
+
+        if(date.before(todayDate)){     //check to see if appointment was made for the past
+            flash("error", "Cannot create an appointment in the past: " + dateString);
+            return badRequest(appointmentMain.render(getUserFromSession(), a));
+        }
+        //Checking if Consultant already has an appointment at that time
+        if(c.checkAppointments().size() != 0){ //if consultant has appointments
+            List<Date> appointments = c.checkAppointments();
+            for (Date d : appointments) {
+                if (d.compareTo(date) == 0) {
+                    flash("error", "Consultant already has an appointment at that time.");
+                    return badRequest(appointmentMain.render(getUserFromSession(), a));
+                }
+            }
+        }
+        a.setAppDate(date);
+        a.save();
+        c.popAppointments();
+        p.popAppointments();
+        String s = "Appointment rescheduled for " + p.getfName() + " " + p.getlName();
+        flash("success", s);
+        endPatientSession();
+        return ok(appointmentMain.render(getUserFromSession(), a));
+    }
+
     public Result makeAppointment(){
         Form<Appointment> addAppointmentForm = formFactory.form(Appointment.class);
         List<Consultant> consultants = Consultant.findAllConsultants();
@@ -99,7 +173,7 @@ public class HomeController extends Controller {
         String dateString = newAppointmentForm.get("appDate") + "T" + newAppointmentForm.get("hours") + ":" + newAppointmentForm.get("minutes") + ":00";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        sdf.setTimeZone(TimeZone.getDefault());
         Date date = new Date();
         Date todayDate = new Date();
         try{
@@ -124,7 +198,7 @@ public class HomeController extends Controller {
             }
         }
         //Adding Appointment to database
-        Appointment appointment = Appointment.create(date, c, p);
+        Appointment.create(date, c, p);
         c.popAppointments();
         p.popAppointments();
         //Flashing String s to memory to be used in view patient screen.
@@ -248,6 +322,21 @@ public class HomeController extends Controller {
         }
 
     }
+
+    public Result searchByMRN(){
+        DynamicForm searchForm = formFactory.form().bindFromRequest();
+        String MRN = searchForm.get("mrn");
+        List<Patient> searchedPatients = Patient.find.where().like("mrn", MRN + "%").findList();
+        return ok(searchPatient.render(searchedPatients, getUserFromSession()));
+    }
+
+    public Result searchByLastName(){
+        DynamicForm searchForm = formFactory.form().bindFromRequest();
+        String lName = searchForm.get("lName");
+        List<Patient> searchedPatients = Patient.find.where().like("lName", lName + "%").findList();
+        return ok(searchPatient.render(searchedPatients, getUserFromSession()));
+    }
+
 
     public static User getUserFromSession(){
         if(User.getUserById(session().get("numId")) instanceof Consultant){
