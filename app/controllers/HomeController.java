@@ -9,6 +9,7 @@ import views.html.loginPage.*;
 import views.html.mainTemplate.*;
 import play.data.*;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -345,6 +346,21 @@ public class HomeController extends Controller {
         DynamicForm searchForm = formFactory.form().bindFromRequest();
         String MRN = searchForm.get("mrn");
         List<Patient> searchedPatients = Patient.find.where().like("mrn", MRN + "%").findList();
+        return ok(searchPatient.render(searchedPatients, getUserFromSession()));
+    }
+
+    public Result searchArchiveByMRN(){
+        DynamicForm searchForm = formFactory.form().bindFromRequest();
+        String MRN = searchForm.get("archiveMrn");
+        List<Patient> searchedPatients = Patient.find.where().like("mrn", MRN + "%").findList();
+        try{
+            Patient p = Patient.readArchive(MRN);
+            searchedPatients.add(p);
+        } catch (IOException e) {
+            return ok(searchPatient.render(searchedPatients, getUserFromSession()));
+        } catch (ClassNotFoundException e) {
+            return ok(searchPatient.render(searchedPatients, getUserFromSession()));
+        }
         return ok(searchPatient.render(searchedPatients, getUserFromSession()));
     }
 
