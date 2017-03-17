@@ -21,6 +21,7 @@ GET     /appointmentMain/:id        controllers.HomeController.appointmentMain(i
 GET     /cancelAppointment/:id      controllers.HomeController.cancelAppointment(id:String)
 POST    /searchByMRN                controllers.HomeController.searchByMRN
 POST    /searchByLastName           controllers.HomeController.searchByLastName
+POST    /searchArchiveByMRN         controllers.HomeController.searchArchiveByMRN
 POST    /rescheduleAppointment/:id  controllers.HomeController.rescheduleAppointment(id:String)
 POST    /addUserSubmit              controllers.HomeController.addUserSubmit
 POST    /loginSubmit                controllers.LoginController.loginSubmit

@@ -125,18 +125,20 @@ public class Patient extends Model implements Serializable{
     public static Patient readArchive(String mrn) throws IOException, ClassNotFoundException {
         final String FILENAME = "public/Files/patients.gz";
         ArrayList<Patient> patients = new ArrayList<>();
-        Patient patientRead = null;
+        Patient patientRead;
+        Patient patientResult = null;
         try (FileInputStream fin = new FileInputStream(FILENAME);
              GZIPInputStream gis = new GZIPInputStream(fin);
              ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
             while (true) {
                 patientRead = (Patient) ois.readObject();
                 if(patientRead.getMrn().equals(mrn)){
-                    return patientRead;
+                    patientResult = patientRead;
+                    patientResult.save();
                 }
             }
         } finally{
-            return patientRead;
+            return patientResult;
         }
     }
 

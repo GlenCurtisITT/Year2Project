@@ -25,6 +25,7 @@
           <h1>Patient: @appointment.getP().getfName() @appointment.getP().getlName()</h1>
           <h1>MRN: @appointment.getP().getMrn()</h1>
           <h1>Illness: @appointment.getP().getPrevIllnesses()</h1>
+            <h1>Using: @appointment.getE().getType()</h1>
         </div>
       </div>
 
@@ -53,11 +54,7 @@
                   }
           </script>
       </div>
-
-
     }
-
-
   }
 @if(user.checkRole().equals("Consultant")){
   @consultantPages.mainConsultant("View Patient", user) {
@@ -85,8 +82,13 @@
         <h1>Patient: @appointment.getP().getfName() @appointment.getP().getlName()</h1>
         <h1>MRN: @appointment.getP().getMrn()</h1>
         <h1>Illness: @appointment.getP().getPrevIllnesses()</h1>
+          <h1>Using: @appointment.getE().getType()</h1>
+
       </div>
     </div>
+      <input style="margin-bottom: 30px;" type="button" id="margBot" class="btn btn-primary" onclick="unhide(this, 'form') " value="Reschedule Appointment">
+
+      <div id="form" class="hidden">
       <form method = "post" action="@routes.HomeController.rescheduleAppointment(appointment.getId)" class="form-horizontal">
           <input type="date" id="appDate" name="appDate" dataformatas="yyyy-dd-MM" />
           <select id="hours" name="hours">
@@ -99,14 +101,14 @@
           </select>
           <div class="actions">
               <input type="submit" value="Reschedule" class="btn btn-primary">
-              <a href="@routes.HomeController.cancelAppointment(appointment.getId)"><button type="button" class="btn btn-primary text-center" onclick="return confirmDel()";>Cancel Appointment</button></a>
           </div>
+          <a href="@routes.HomeController.cancelAppointment(appointment.getId)"><button type="button" class="btn btn-primary text-center" onclick="return confirmDel()";>Cancel Appointment</button></a>
       </form>
-    <script>
-            function confirmDel() {
-              return confirm('Are you sure?');
-            }
-    </script>
-    }
-
+          <script>
+                  function confirmDel() {
+                      return confirm('Are you sure?');
+                  }
+          </script>
+      </div>
+  }
   }

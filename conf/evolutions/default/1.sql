@@ -8,9 +8,17 @@ create table appointment (
   app_date                      timestamp,
   mrn                           varchar(255),
   idnum                         varchar(255),
+  equipid                       varchar(255),
   constraint pk_appointment primary key (id)
 );
 create sequence appointment_seq increment by 1;
+
+create table equipment (
+  equip_id                      varchar(255) not null,
+  type                          varchar(255),
+  status                        boolean,
+  constraint pk_equipment primary key (equip_id)
+);
 
 create table patient (
   mrn                           varchar(255) not null,
@@ -54,6 +62,9 @@ create index ix_appointment_mrn on appointment (mrn);
 alter table appointment add constraint fk_appointment_idnum foreign key (idnum) references user (id_num) on delete restrict on update restrict;
 create index ix_appointment_idnum on appointment (idnum);
 
+alter table appointment add constraint fk_appointment_equipid foreign key (equipid) references equipment (equip_id) on delete restrict on update restrict;
+create index ix_appointment_equipid on appointment (equipid);
+
 alter table patient add constraint fk_patient_idnum foreign key (idnum) references user (id_num) on delete restrict on update restrict;
 create index ix_patient_idnum on patient (idnum);
 
@@ -66,11 +77,16 @@ drop index if exists ix_appointment_mrn;
 alter table appointment drop constraint if exists fk_appointment_idnum;
 drop index if exists ix_appointment_idnum;
 
+alter table appointment drop constraint if exists fk_appointment_equipid;
+drop index if exists ix_appointment_equipid;
+
 alter table patient drop constraint if exists fk_patient_idnum;
 drop index if exists ix_patient_idnum;
 
 drop table if exists appointment;
 drop sequence if exists appointment_seq;
+
+drop table if exists equipment;
 
 drop table if exists patient;
 

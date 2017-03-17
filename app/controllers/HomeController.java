@@ -9,6 +9,7 @@ import views.html.loginPage.*;
 import views.html.mainTemplate.*;
 import play.data.*;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,6 +34,15 @@ public class HomeController extends Controller {
 
     public Result index() {
         Form<Login> loginForm = formFactory.form(Login.class);
+        if(Equipment.findAll().size() == 0) {
+            Equipment a = new Equipment("1", "Consultation Room", true);
+            Equipment b = new Equipment("2", "X-Ray", true);
+            Equipment c = new Equipment("3", "CT Scanner", true);
+
+            a.save();
+            b.save();
+            c.save();
+        }
         return ok(index.render(loginForm));
     }
 
@@ -151,24 +161,26 @@ public class HomeController extends Controller {
     public Result makeAppointment(){
         Form<Appointment> addAppointmentForm = formFactory.form(Appointment.class);
         List<Consultant> consultants = Consultant.findAllConsultants();
-        return ok(makeAppointment.render(addAppointmentForm, consultants, getUserFromSession(), getPatientFromSession(), null));
+        List<Equipment> equipments = Equipment.findAll();
+        return ok(makeAppointment.render(addAppointmentForm, consultants, getUserFromSession(), getPatientFromSession(), equipments, null));
     }
 
     public Result addAppointmentSubmit(){
         DynamicForm newAppointmentForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
+        List<Equipment> equipments = Equipment.findAll();
         List<Consultant> consultants = Consultant.findAllConsultants();
+        Equipment e = Equipment.find.byId(newAppointmentForm.get("equipment"));
         Patient p = getPatientFromSession();
         Consultant c = Consultant.getConsultantById(newAppointmentForm.get("consultant"));
         //Checking if Form has errors.
         if(newAppointmentForm.hasErrors()){
-            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Error in form."));
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Error in form."));
         }
         //Checking that Consultant and Date are not blank.
         if(newAppointmentForm.get("consultant") == null || newAppointmentForm.get("appDate") == null){
-            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Please enter a date and a consultant."));
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Please enter a date and a consultant."));
         }
-
         //handles processing of date
         String dateString = newAppointmentForm.get("appDate") + "T" + newAppointmentForm.get("hours") + ":" + newAppointmentForm.get("minutes") + ":00";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -180,12 +192,12 @@ public class HomeController extends Controller {
             date = sdf.parse(dateString);
             dateString = output.format(date);
 
-        } catch (ParseException e) {
-            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Could not create appointment for: " + dateString));
+        } catch (ParseException ex) {
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Could not create appointment for: " + dateString));
         }
 
         if(date.before(todayDate)){     //check to see if appointment was made for the past
-            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Cannot create an appointment in the past: " + dateString));
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Cannot create an appointment in the past: " + dateString));
         }
 
         //Checking if Consultant already has an appointment at that time
@@ -193,12 +205,19 @@ public class HomeController extends Controller {
             List<Date> appointments = c.checkAppointments();
             for (Date a : appointments) {
                 if (a.compareTo(date) == 0) {
-                    return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, "Consultant already has an appointment at that time."));
+                    return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Consultant already has an appointment at that time."));
                 }
             }
         }
+        for(Appointment a: e.getAppointments()){
+            if(a.getAppDate().compareTo(date) == 0){
+                return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Equipment is already booked for that time."));
+            }
+        }
         //Adding Appointment to database
-        Appointment.create(date, c, p);
+        Appointment a = new Appointment(date, c, p);
+        a.setEquipment(e);
+        Appointment.create(a);
         c.popAppointments();
         p.popAppointments();
         //Flashing String s to memory to be used in view patient screen.
@@ -327,6 +346,21 @@ public class HomeController extends Controller {
         DynamicForm searchForm = formFactory.form().bindFromRequest();
         String MRN = searchForm.get("mrn");
         List<Patient> searchedPatients = Patient.find.where().like("mrn", MRN + "%").findList();
+        return ok(searchPatient.render(searchedPatients, getUserFromSession()));
+    }
+
+    public Result searchArchiveByMRN(){
+        DynamicForm searchForm = formFactory.form().bindFromRequest();
+        String MRN = searchForm.get("archiveMrn");
+        List<Patient> searchedPatients = Patient.find.where().like("mrn", MRN + "%").findList();
+        try{
+            Patient p = Patient.readArchive(MRN);
+            searchedPatients.add(p);
+        } catch (IOException e) {
+            return ok(searchPatient.render(searchedPatients, getUserFromSession()));
+        } catch (ClassNotFoundException e) {
+            return ok(searchPatient.render(searchedPatients, getUserFromSession()));
+        }
         return ok(searchPatient.render(searchedPatients, getUserFromSession()));
     }
 

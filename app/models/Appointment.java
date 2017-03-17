@@ -1,8 +1,6 @@
 package models;
 import com.avaje.ebean.Model;
 
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +26,9 @@ public class Appointment extends Model {
     @ManyToOne()
     @JoinColumn(name = "idNum")
     private Consultant c;
+    @ManyToOne()
+    @JoinColumn(name = "equipId")
+    private Equipment e = null;
 
     public Appointment(Date appDate, Consultant c, Patient p){
         this.appDate = appDate;
@@ -41,11 +42,10 @@ public class Appointment extends Model {
         this.p = p;
     }
 
-    public static Appointment create(Date appDate, Consultant c, Patient p){
-        Appointment app = new Appointment(appDate, c, p);
-        if(c != null && p != null) {
-            app.save();
-            return app;
+    public static Appointment create(Appointment a){
+        if(a.getC() != null && a.getP() != null) {
+            a.save();
+            return a;
         }
         else
             return null;
@@ -84,5 +84,14 @@ public class Appointment extends Model {
 
     public void setC(Consultant c) {
         this.c = c;
+    }
+
+    public Equipment getE() {
+        return e;
+    }
+
+    public void setEquipment(Equipment e) {
+        this.e = e;
+        e.addAppointment(this);
     }
 }
