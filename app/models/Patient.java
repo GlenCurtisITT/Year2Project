@@ -22,6 +22,7 @@ public class Patient extends Model implements Serializable{
     private String mrn;
     private String fName;
     private String lName;
+    private Boolean gender;
     private String ppsNumber;
     @Formats.DateTime(pattern="yyyy/dd/MM")
     private Date dob;
@@ -38,19 +39,27 @@ public class Patient extends Model implements Serializable{
 
     @ManyToOne()    //signifies relationship with Consultant table
     @JoinColumn(name = "idNum")    //name of column which links tables
-    Consultant c;
+    private Consultant c;
+
+    @ManyToOne()    //signifies relationship with Ward table
+    @JoinColumn(name = "wardId")    //name of column which links tables
+    private Ward ward;
 
     @OneToMany(mappedBy = "p")
     private List<Appointment> appointments = new ArrayList<>();
+
+    @OneToOne(mappedBy = "p")
+    private Chart chart;
 
     public Patient() {
 
     }
 
-    public Patient(String fname, String lname, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness) {
+    public Patient(String fname, String lname, Boolean gender, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness) {
         this.mrn = genMrn();
         this.fName = fname;
         this.lName = lname;
+        this.gender = gender;
         this.ppsNumber = ppsNumber;
         this.dob = dob;
         this.address = address;
@@ -66,8 +75,8 @@ public class Patient extends Model implements Serializable{
         this.c = null;
     }
 
-    public static Patient create(String fname, String lname, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness){
-        Patient patient = new Patient(fname, lname, ppsNumber, dob, address, email, homePhone, mobilePhone, nokFName, nokLName, nokAddress, nokNumber, medicalCard, prevIllness);
+    public static Patient create(String fname, String lname, Boolean gender, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness){
+        Patient patient = new Patient(fname, lname, gender, ppsNumber, dob, address, email, homePhone, mobilePhone, nokFName, nokLName, nokAddress, nokNumber, medicalCard, prevIllness);
         patient.save();
         return patient;
     }
@@ -140,6 +149,22 @@ public class Patient extends Model implements Serializable{
         } finally{
             return patientResult;
         }
+    }
+
+    public Chart getChart() {
+        return chart;
+    }
+
+    public void setChart(Chart chart) {
+        this.chart = chart;
+    }
+
+    public void setWard(Ward ward) {
+        this.ward = ward;
+    }
+
+    public Ward getWard() {
+        return ward;
     }
 
     public String getMrn() {
