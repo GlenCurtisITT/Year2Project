@@ -43,6 +43,19 @@ public class HomeController extends Controller {
             b.save();
             c.save();
         }
+        if(Ward.findAll().size() == 0) {
+            Ward a = new Ward("1", "Maternity Ward", 20);
+            Ward b = new Ward("2", "Intensive Care Unit", 15);
+            Ward c = new Ward("3", "Psychiatric Ward", 20);
+            Ward d = new Ward("4", "Burns Unit", 5);
+            Ward e = new Ward("5", "Private Ward", 1);
+
+            a.save();
+            b.save();
+            c.save();
+            d.save();
+            e.save();
+        }
         return ok(index.render(loginForm));
     }
 
@@ -60,8 +73,8 @@ public class HomeController extends Controller {
     }
 
     public Result createUser(){
-        Form<User> adduserForm = formFactory.form(User.class);
-        return ok(createUser.render(adduserForm, null));
+        Form<User> addUserForm = formFactory.form(User.class);
+        return ok(createUser.render(addUserForm, null));
     }
 
     public Result searchPatient(){
@@ -82,6 +95,64 @@ public class HomeController extends Controller {
             session("mrn", mrn);
         }
         return ok(viewPatient.render(getUserFromSession(), getPatientFromSession()));
+    }
+
+    public Result admitPatient(){
+        Patient p = getPatientFromSession();
+        Form<Chart> addChartForm = formFactory.form(Chart.class);
+        User u = getUserFromSession();
+        List<Ward> wardList = Ward.findAll();
+        return ok(admitPatient.render(addChartForm, wardList, p, u, null));
+    }
+
+    public Result admitPatientSubmit(){
+        DynamicForm newChartForm = formFactory.form().bindFromRequest();
+        Form errorForm = formFactory.form().bindFromRequest();
+        List<Ward> wards = Ward.findAll();
+        Ward w = Ward.find.byId(newChartForm.get("wardId"));
+        Patient p = getPatientFromSession();
+        User u = getUserFromSession();
+        //Checking if Form has errors.
+        if(newChartForm.hasErrors()){
+            return badRequest(admitPatient.render(errorForm, wards, p, u, "Error in form."));
+        }
+        //Checking that Ward and Date are not blank.
+        if(newChartForm.get("wardId") == null || newChartForm.get("dischargeDate") == null){
+            return badRequest(admitPatient.render(errorForm, wards, p, u, "Please enter a date and a ward."));
+        }
+        //handles processing of date
+        String dateString = newChartForm.get("dischargeDate") + "T" + newChartForm.get("hours") + ":" + newChartForm.get("minutes") + ":00";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getDefault());
+        Date date = new Date();
+        Date todayDate = new Date();
+        try{
+            date = sdf.parse(dateString);
+            dateString = output.format(date);
+
+        } catch (ParseException ex) {
+            return badRequest(admitPatient.render(errorForm, wards, p, u, "Could not apply discharge date." + newChartForm.get("dischargeDate")));
+        }
+
+        if(date.before(todayDate)){     //check to see if dischargeDate was made for the past
+            return badRequest(admitPatient.render(errorForm, wards, p, u, "Cannot discharge a patient before admitting them first." + todayDate));
+        }
+
+        //Checking if ward is full
+        if(w.getCurrentCapacity() < w.getMaxCapacity()){
+            w.admitPatient(p);
+        } else{
+            return badRequest(admitPatient.render(errorForm, wards, p, u, "Ward is full."));
+        }
+
+        //Adding Appointment to database
+        Chart c = new Chart(w.getName(), new Date(), date, newChartForm.get("mealPlan"), p);
+        c.save();
+        //Flashing String s to memory to be used in view patient screen.
+        String s = p.getfName() + " " + p.getlName() + " admitted to " + w.getName();
+        flash("success", s);
+        return redirect(controllers.routes.HomeController.viewPatientByID(p.getMrn()));
     }
 
     public Result appointmentMain(String id){
@@ -317,18 +388,26 @@ public class HomeController extends Controller {
         //converting medicalCard from form from string to boolean
         String medicalCard = newPatientForm.get("medicalCard");
         boolean medCard;
+        String genderInput = newPatientForm.get("gender");
+        boolean gender;
         if(medicalCard.equals("true")){
             medCard = true;
         } else {
             medCard = false;
         }
 
+        if(genderInput.equals("Male")){
+            gender = true;
+        } else {
+            gender = false;
+        }
+
         //Adding user to database
-        Patient p = Patient.create(newPatientForm.get("fname"), newPatientForm.get("lname"), newPatientForm.get("ppsNumber"), date,
+        Patient p = Patient.create(newPatientForm.get("fname"), newPatientForm.get("lname"), gender, newPatientForm.get("ppsNumber"), date,
                 newPatientForm.get("address"),newPatientForm.get("email"), newPatientForm.get("homePhone"),
                 newPatientForm.get("mobilePhone"), newPatientForm.get("nokFName"), newPatientForm.get("nokLName")
                 , newPatientForm.get("nokAddress"), newPatientForm.get("nokNumber"), medCard, newPatientForm.get("prevIllness"));
-        String s = "Patient: " + newPatientForm.get("fname") + " " + newPatientForm.get("lname") + "was added successfully.\nMRN: " + p.getMrn();
+        String s = "Patient: " + newPatientForm.get("fname") + " " + newPatientForm.get("lname") + " was added successfully.\nMRN: " + p.getMrn();
         //Flashing String s to memory to be used in index screen.
         flash("success", s);
         User u = getUserFromSession();
@@ -351,16 +430,12 @@ public class HomeController extends Controller {
 
     public Result searchArchiveByMRN(){
         DynamicForm searchForm = formFactory.form().bindFromRequest();
-        String MRN = searchForm.get("archiveMrn");
-        List<Patient> searchedPatients = Patient.find.where().like("mrn", MRN).findList();
-        try{
-            Patient p = Patient.readArchive(MRN);
-            searchedPatients.add(p);
-        } catch (IOException e) {
-            return ok(searchPatient.render(searchedPatients, getUserFromSession()));
-        } catch (ClassNotFoundException e) {
-            return ok(searchPatient.render(searchedPatients, getUserFromSession()));
-        }
+        String mrn = searchForm.get("archiveMrn");
+        List<Patient> searchedPatients = new ArrayList<>();
+            Patient p = Patient.readArchive(mrn);
+            if(p != null) {
+                searchedPatients.add(p);
+            }
         return ok(searchPatient.render(searchedPatients, getUserFromSession()));
     }
 

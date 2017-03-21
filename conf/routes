@@ -11,6 +11,7 @@ GET     /createuser                 controllers.HomeController.createUser
 GET     /addPatient                 controllers.HomeController.addPatient
 GET     /logout                     controllers.LoginController.logout
 GET     /searchPatient              controllers.HomeController.searchPatient
+GET     /admitPatient               controllers.HomeController.admitPatient
 GET     /viewPatient                controllers.HomeController.viewPatient
 GET     /viewPatientByID/:mrn       controllers.HomeController.viewPatientByID(mrn: String)
 GET     /deletePatient/:mrn         controllers.AdminController.deletePatient(mrn: String)
@@ -19,6 +20,7 @@ GET     /viewAppointments           controllers.ConsultantController.viewAppoint
 GET     /makeAppointment            controllers.HomeController.makeAppointment
 GET     /appointmentMain/:id        controllers.HomeController.appointmentMain(id: String)
 GET     /cancelAppointment/:id      controllers.HomeController.cancelAppointment(id:String)
+POST    /admitPatientSubmit         controllers.HomeController.admitPatientSubmit
 POST    /searchByMRN                controllers.HomeController.searchByMRN
 POST    /searchByLastName           controllers.HomeController.searchByLastName
 POST    /searchArchiveByMRN         controllers.HomeController.searchArchiveByMRN
