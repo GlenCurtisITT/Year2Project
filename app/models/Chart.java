@@ -44,4 +44,24 @@ public class Chart extends Model {
     public void setCurrentWard(String currentWard) {
         this.currentWard = currentWard;
     }
+
+    public int getChartId() {
+        return chartId;
+    }
+
+    public String getCurrentWard() {
+        return currentWard;
+    }
+
+    public Date getDateOfAdmittance() {
+        return dateOfAdmittance;
+    }
+
+    public Date getDischargeDate() {
+        return dischargeDate;
+    }
+
+    public String getMealPlan() {
+        return mealPlan;
+    }
 }

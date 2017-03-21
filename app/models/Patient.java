@@ -107,6 +107,7 @@ public class Patient extends Model implements Serializable{
     private static String genMrn(){
         Random rand = new Random();
         List<Patient> allpatients = findAll();
+        List<Patient> archivedPatients = Patient.readAllArchive();
         int randNum = 0;
         boolean check = true;
         do{
@@ -117,12 +118,19 @@ public class Patient extends Model implements Serializable{
                     check = false;
                 }
             }
+            if(archivedPatients != null) {
+                for (Patient a : archivedPatients) {
+                    if (a.getMrn() == (Integer.toString(randNum))) {
+                        check = false;
+                    }
+                }
+            }
         }while(!check);
         String numberAsString = Integer.toString(randNum);
         return numberAsString;
     }
 
-    public void serialize() throws FileNotFoundException, IOException {
+    public void serialize() throws IOException {
         final String FILENAME = "public/Files/patients.gz";
         try(FileOutputStream fo = new FileOutputStream(FILENAME);
             GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
@@ -131,24 +139,58 @@ public class Patient extends Model implements Serializable{
         }
     }
 
-    public static Patient readArchive(String mrn) throws IOException, ClassNotFoundException {
+    public static Patient readArchive(String mrn){
         final String FILENAME = "public/Files/patients.gz";
-        ArrayList<Patient> patients = new ArrayList<>();
-        Patient patientRead;
+        Patient p = new Patient();
         Patient patientResult = null;
         try (FileInputStream fin = new FileInputStream(FILENAME);
              GZIPInputStream gis = new GZIPInputStream(fin);
              ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
             while (true) {
-                patientRead = (Patient) ois.readObject();
-                if(patientRead.getMrn().equals(mrn)){
-                    patientResult = patientRead;
-                    patientResult.save();
+                p = (Patient) ois.readObject();
+                if(p.getMrn().equals(mrn)){
+                    patientResult = p;
+                    patientResult.insert();
+                    return patientResult;
                 }
             }
-        } finally{
-            return patientResult;
+        }catch (ClassNotFoundException e) {
+            patientResult = null;
+        }catch (IOException e) {
+            patientResult = null;
         }
+        return null;
+    }
+
+    public static List<Patient> readAllArchive(){
+        final String FILENAME = "public/Files/patients.gz";
+        List<Patient> patients = new ArrayList<>();
+        try (FileInputStream fin = new FileInputStream(FILENAME);
+             GZIPInputStream gis = new GZIPInputStream(fin);
+             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
+            while (true) {
+                patients.add((Patient)ois.readObject());
+            }
+        }catch (EOFException e) {
+            return patients;
+        }catch (ClassNotFoundException e) {
+            patients = null;
+        }catch (IOException e) {
+            patients = null;
+        }
+        return patients;
+    }
+
+    public void setMrn(String mrn) {
+        this.mrn = mrn;
+    }
+
+    public Boolean getGender() {
+        return gender;
+    }
+
+    public void setGender(Boolean gender) {
+        this.gender = gender;
     }
 
     public Chart getChart() {

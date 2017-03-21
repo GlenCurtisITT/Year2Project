@@ -430,16 +430,12 @@ public class HomeController extends Controller {
 
     public Result searchArchiveByMRN(){
         DynamicForm searchForm = formFactory.form().bindFromRequest();
-        String MRN = searchForm.get("archiveMrn");
-        List<Patient> searchedPatients = Patient.find.where().like("mrn", MRN).findList();
-        try{
-            Patient p = Patient.readArchive(MRN);
-            searchedPatients.add(p);
-        } catch (IOException e) {
-            return ok(searchPatient.render(searchedPatients, getUserFromSession()));
-        } catch (ClassNotFoundException e) {
-            return ok(searchPatient.render(searchedPatients, getUserFromSession()));
-        }
+        String mrn = searchForm.get("archiveMrn");
+        List<Patient> searchedPatients = new ArrayList<>();
+            Patient p = Patient.readArchive(mrn);
+            if(p != null) {
+                searchedPatients.add(p);
+            }
         return ok(searchPatient.render(searchedPatients, getUserFromSession()));
     }
 
