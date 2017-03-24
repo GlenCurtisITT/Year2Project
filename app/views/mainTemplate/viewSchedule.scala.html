@@ -1,13 +1,33 @@
 @(user: models.users.User)
 @if(user.checkRole().equals("Admin")) {
   @adminPages.mainAdmin("View Schedule", user) {
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
 
+          <div id='calendar'></div>
+          
+
+        </div>
+      </div>
+
+    </div>
   }
 }
 
 @if(user.checkRole().equals("Consultant")) {
   @consultantPages.mainConsultant("View Schedule", user) {
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
 
+          <div id='calendar'></div>
+
+
+        </div>
+      </div>
+
+    </div>
 
   }
 }

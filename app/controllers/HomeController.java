@@ -105,7 +105,10 @@ public class HomeController extends Controller {
         return ok(admitPatient.render(addChartForm, wardList, p, u, null));
     }
 
-    public Result
+    public Result viewSchedule(){
+        User u = getUserFromSession();
+        return ok(viewSchedule.render(u));
+    }
 
     public Result admitPatientSubmit(){
         DynamicForm newChartForm = formFactory.form().bindFromRequest();
