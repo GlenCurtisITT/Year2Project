@@ -1,0 +1,14 @@
+@(user: models.users.User)
+@if(user.checkRole().equals("Admin")) {
+  @adminPages.mainAdmin("View Schedule", user) {
+
+  }
+}
+
+@if(user.checkRole().equals("Consultant")) {
+  @consultantPages.mainConsultant("View Schedule", user) {
+
+
+  }
+}
+
