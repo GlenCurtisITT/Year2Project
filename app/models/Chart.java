@@ -4,8 +4,11 @@ import com.avaje.ebean.Model;
 import play.data.format.Formats;
 
 import javax.persistence.*;
+import java.io.*;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Created by conno on 20/03/2017.
@@ -27,6 +30,9 @@ public class Chart extends Model {
     @JoinColumn(name = "mrn")
     private Patient p;
 
+    public Chart() {
+    }
+
     public Chart(String currentWard, Date dateOfAdmittance, Date dischargeDate, String mealPlan, Patient p) {
         this.currentWard = currentWard;
         this.dateOfAdmittance = dateOfAdmittance;
@@ -41,12 +47,56 @@ public class Chart extends Model {
         return Ward.find.all();
     }
 
+    public void serialize() throws IOException{
+        final String CHARTFILE = "public/Files/charts.gz";
+        try(FileOutputStream fo = new FileOutputStream(CHARTFILE);
+            GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
+            ObjectOutputStream oo = new ObjectOutputStream(gzipOut);){
+            oo.writeObject(this);
+        }
+    }
+
+    public static Chart readArchive(String mrn){
+        final String CHARTFILE = "public/Files/charts.gz";
+        Chart c = new Chart();
+        Chart chartResult = null;
+        try (FileInputStream fin = new FileInputStream(CHARTFILE);
+             GZIPInputStream gis = new GZIPInputStream(fin);
+             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
+            while (true) {
+                c = (Chart) ois.readObject();
+                if(c.getP().getMrn().equals(mrn)){
+                    chartResult = c;
+                    chartResult.insert();
+                    return chartResult;
+                }
+            }
+        }catch (ClassNotFoundException e) {
+            chartResult = null;
+        }catch (IOException e) {
+            chartResult = null;
+        }
+        return null;
+    }
+
     public void setCurrentWard(String currentWard) {
         this.currentWard = currentWard;
     }
 
     public int getChartId() {
         return chartId;
+    }
+
+    public Patient getP() {
+        return p;
+    }
+
+    public void setP(Patient p) {
+        this.p = p;
+    }
+
+    public void setDischargeDate(Date dischargeDate) {
+        this.dischargeDate = dischargeDate;
     }
 
     public String getCurrentWard() {

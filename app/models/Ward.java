@@ -14,7 +14,11 @@ public class Ward extends Model {
     private String wardId;
     private String name;
     private final int MAX_CAPACITY;
-    private int currentCapacity;
+    private int currentOccupancy;
+    private boolean status;
+
+    @OneToOne(mappedBy = "w")
+    private StandbyList sl;
 
     @OneToMany(mappedBy = "ward")
     private List<Patient> patients = new ArrayList<>();
@@ -23,7 +27,8 @@ public class Ward extends Model {
         this.wardId = wardId;
         this.name = name;
         this.MAX_CAPACITY = capacity;
-        this.currentCapacity = 0;
+        this.currentOccupancy = 0;
+        this.status = false;
     }
     public static Finder<String, Ward> find = new Finder<String, Ward>(Ward.class);
 
@@ -35,9 +40,44 @@ public class Ward extends Model {
     public void admitPatient(Patient p){
         patients.add(p);
         p.setWard(this);
-        currentCapacity++;
+        currentOccupancy++;
+        if(currentOccupancy == MAX_CAPACITY){
+            status = true;
+        }
         p.save();
         this.save();
+    }
+
+    public void dischargePatient(Patient p){
+        patients.remove(p);
+        p.removeWard();
+        currentOccupancy--;
+        if(status == true){
+            status = false;
+        }
+        if(sl.getPatients().size() != 0) {
+            patients.add(getSl().getPatients().get(0));
+            currentOccupancy++;
+            getSl().decrementOccupancy();
+            if(currentOccupancy == MAX_CAPACITY){
+                status = true;
+            }
+            getSl().getPatients().remove(0);
+        }
+        p.save();
+        this.save();
+    }
+
+    public boolean capacityStatus(){
+        return status;
+    }
+
+    public StandbyList getSl() {
+        return sl;
+    }
+
+    public void setSl(StandbyList sl) {
+        this.sl = sl;
     }
 
     public String getWardId() {
@@ -52,8 +92,8 @@ public class Ward extends Model {
         return MAX_CAPACITY;
     }
 
-    public int getCurrentCapacity() {
-        return currentCapacity;
+    public int getCurrentOccupancy() {
+        return currentOccupancy;
     }
 
 }

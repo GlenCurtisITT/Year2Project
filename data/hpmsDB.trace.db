@@ -2363,3 +2363,97 @@ org.h2.message.DbException: The connection was not closed by the application and
 Caused by: org.h2.jdbc.JdbcSQLException: The connection was not closed by the application and is garbage collected [90018-192]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
 	... 90 more
+2017-03-25 00:50:53 jdbc[158]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE WARD (
+WARD_ID                       VARCHAR(255) NOT NULL,
+NAME                          VARCHAR(255),
+MAX_CAPACITY                  INTEGER,
+CURRENT_OCCUPANCY             INTEGER,
+FULL[*]                          BOOLEAN,
+CONSTRAINT PK_WARD PRIMARY KEY (WARD_ID)
+) "; expected "identifier"; SQL statement:
+create table ward (
+ward_id                       varchar(255) not null,
+name                          varchar(255),
+max_capacity                  integer,
+current_occupancy             integer,
+full                          boolean,
+constraint pk_ward primary key (ward_id)
+) [42001-192]
+2017-03-25 00:56:09 jdbc[169]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT T0.WARD_ID C0, T0.NAME C1, T0.MAX_CAPACITY C2, T0.CURRENT_OCCUPANCY C3, T0.FULL[*] C4, T1.STANDBY_ID C5 FROM WARD T0 LEFT OUTER JOIN STANDBY_LIST T1 ON T1.WARDID = T0.WARD_ID  "; expected "identifier"; SQL statement:
+select t0.ward_id c0, t0.name c1, t0.max_capacity c2, t0.current_occupancy c3, t0.full c4, t1.standby_id c5 from ward t0 left outer join standby_list t1 on t1.wardId = t0.ward_id  [42001-192]
+2017-03-25 00:59:09 jdbc[180]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE WARD (
+WARD_ID                       VARCHAR(255) NOT NULL,
+NAME                          VARCHAR(255),
+MAX_CAPACITY                  INTEGER,
+CURRENT_OCCUPANCY             INTEGER,
+FULL[*]                          BOOLEAN,
+STANDBYID                     VARCHAR(255),
+CONSTRAINT UQ_WARD_STANDBYID UNIQUE (STANDBYID),
+CONSTRAINT PK_WARD PRIMARY KEY (WARD_ID)
+) "; expected "identifier"; SQL statement:
+create table ward (
+ward_id                       varchar(255) not null,
+name                          varchar(255),
+max_capacity                  integer,
+current_occupancy             integer,
+full                          boolean,
+standbyid                     varchar(255),
+constraint uq_ward_standbyid unique (standbyid),
+constraint pk_ward primary key (ward_id)
+) [42001-192]
+2017-03-25 01:04:20 jdbc[191]: exception
+org.h2.jdbc.JdbcSQLException: Table "WARD" not found; SQL statement:
+alter table ward drop constraint if exists fk_ward_standbyid [42102-192]
+2017-03-25 01:04:37 jdbc[191]: exception
+org.h2.jdbc.JdbcSQLException: Table "APPOINTMENT" already exists; SQL statement:
+create table appointment (
+id                            varchar(255) not null,
+app_date                      timestamp,
+mrn                           varchar(255),
+idnum                         varchar(255),
+equipid                       varchar(255),
+constraint pk_appointment primary key (id)
+) [42101-192]
+2017-03-25 01:04:42 jdbc[202]: exception
+org.h2.jdbc.JdbcSQLException: Table "WARD" not found; SQL statement:
+select t0.ward_id c0, t0.name c1, t0.max_capacity c2, t0.current_occupancy c3, t0.full_status c4, t0.standbyId c5 from ward t0 [42102-192]
+2017-03-25 01:05:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "WARD" not found; SQL statement:
+SELECT * FROM WARD [42102-192]
+2017-03-25 01:05:48 jdbc[202]: exception
+org.h2.jdbc.JdbcSQLException: Table "WARD" not found; SQL statement:
+select t0.ward_id c0, t0.name c1, t0.max_capacity c2, t0.current_occupancy c3, t0.full_status c4, t0.standbyId c5 from ward t0 [42102-192]
+2017-03-25 01:05:51 jdbc[202]: exception
+org.h2.jdbc.JdbcSQLException: Table "WARD" not found; SQL statement:
+select t0.ward_id c0, t0.name c1, t0.max_capacity c2, t0.current_occupancy c3, t0.full_status c4, t0.standbyId c5 from ward t0 [42102-192]
+2017-03-25 01:08:53 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Table "WARD" not found; SQL statement:
+select t0.ward_id c0, t0.name c1, t0.max_capacity c2, t0.current_occupancy c3, t0.full_status c4, t0.standbyId c5 from ward t0 [42102-192]
+2017-03-25 01:09:13 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Table "WARD" not found; SQL statement:
+select t0.ward_id c0, t0.name c1, t0.max_capacity c2, t0.current_occupancy c3, t0.full_status c4, t0.standbyId c5 from ward t0 [42102-192]
+2017-03-25 01:09:16 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Table "WARD" not found; SQL statement:
+select t0.ward_id c0, t0.name c1, t0.max_capacity c2, t0.current_occupancy c3, t0.full_status c4, t0.standbyId c5 from ward t0 [42102-192]
+2017-03-25 01:13:32 jdbc[16]: exception
+org.h2.jdbc.JdbcSQLException: Table "WARD" not found; SQL statement:
+alter table ward drop constraint if exists fk_ward_standbyid [42102-192]
+2017-03-25 01:25:06 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "APPOINTMENT" already exists; SQL statement:
+create table appointment (
+id                            varchar(255) not null,
+app_date                      timestamp,
+mrn                           varchar(255),
+idnum                         varchar(255),
+equipid                       varchar(255),
+constraint pk_appointment primary key (id)
+) [42101-192]
+2017-03-25 01:25:28 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "WARD" not found; SQL statement:
+select t0.ward_id c0, t0.name c1, t0.max_capacity c2, t0.current_occupancy c3, t0.status c4, t1.standby_id c5 from ward t0 left outer join standby_list t1 on t1.wardId = t0.ward_id  [42102-192]
+2017-03-25 01:25:57 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "DROP ALL TABLES[*]"; expected "OBJECTS"; SQL statement:
+DROP ALL TABLES [42001-192]

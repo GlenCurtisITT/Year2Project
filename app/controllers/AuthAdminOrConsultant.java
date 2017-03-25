@@ -21,7 +21,6 @@ public class AuthAdminOrConsultant extends Action.Simple{
             }else if("Consultant".equals(u.checkRole())){
                 return delegate.call(ctx);
             }
-
         }
         ctx.flash().put("error", "Admin/Consultant Login Required");
         return CompletableFuture.completedFuture(redirect(routes.HomeController.index()));
