@@ -1,0 +1,79 @@
+@(user: models.users.User, patient: models.Patient)
+@if(user.checkRole().equals("Consultant")) {
+  @consultantPages.mainConsultant("View Patient", user) {
+    @if(patient.getMrn == null) {
+      <h1>No patient selected</h1>
+    } else {
+      <div class="row">
+        <div class="col-lg-12">
+          @if(flash().containsKey("success")) {
+            <div class="col-xs-4">
+              <div class="alert alert-success">
+                <strong>@flash().get("success")</strong>
+              </div>
+            </div>
+          }
+            @if(flash().containsKey("error")) {
+                <div class="col-xs-4">
+                    <div class="centered">
+                        <div class="alert alert-error">
+                            <strong>@flash().get("error")</strong>
+                        </div>
+                    </div>
+                </div>
+            }
+          <h1>MRN: @patient.getMrn()</h1>
+          <h1>Name: @patient.getfName() @patient.getlName()</h1>
+        </div>
+      </div>
+        <table class="table table-bordered table-hover table-condensed">
+          <thead>
+            <tr>
+              <th>Chart Id</th>
+              <th>Ward</th>
+              <th>Date Of Admittance</th>
+              <th>Date Of Discharge</th>
+              <th>Meal Plan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="numeric">@patient.getChart.getChartId</td>
+              <td>@patient.getChart.getCurrentWard</td>
+              <td>@patient.getChart.getDateOfAdmittance</td>
+              <td>@patient.getChart.getDischargeDate</td>
+              <td>@patient.getChart.getMealPlan</td>
+            </tr>
+          </tbody>
+        </table>
+      @if(patient.getAppointments.size() != 0) {
+        <table class="table table-bordered table-hover table-condensed">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Consultant</th>
+            </tr>
+          </thead>
+          <tbody>
+          @for(a <- patient.getAppointments) {
+            <tr>
+              <td class="numeric">@a.getAppDate</td>
+              <td>Dr. @a.getC.getLname</td>
+              <td><a href="@routes.HomeController.appointmentMain(a.getId)">View Appointment</a></td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      }
+        <p>Are you sure you wish to discharge this patient?</p>
+      <div class="row">
+        <div class="col-lg-12">
+          <a href="@routes.ConsultantController.dischargePatient()"><button type="button" class="btn btn-primary text-center">
+            Confirm Discharge</button></a>
+            <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Cancel</button></a>
+        </div>
+      </div>
+
+    }
+  }
+}
