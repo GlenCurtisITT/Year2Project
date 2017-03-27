@@ -3,6 +3,7 @@ package controllers;
 import controllers.*;
 import play.mvc.*;
 
+import scala.App;
 import sun.rmi.runtime.Log;
 import views.html.*;
 import views.html.loginPage.*;
@@ -107,7 +108,18 @@ public class HomeController extends Controller {
 
     public Result viewSchedule(){
         User u = getUserFromSession();
-        return ok(viewSchedule.render(u));
+        List<Appointment> aList = new ArrayList<>();
+        List<DateForCalendar> dateList;
+        if(session("role").equals("Admin")) { //If role is admin find all appointments in system and format them.
+            aList = Appointment.findAll();
+            dateList = Appointment.formatedDateList(aList);
+        }else if(session("role").equals("Consultant")) { //If role is consultant find all appointments for that consultant and format them.
+            Consultant c = (Consultant) u;
+            dateList = Appointment.formatedDateList(c.getAppointments());
+        }else{
+            return badRequest();
+        }
+        return ok(viewSchedule.render(u, aList, dateList)); //Return view with the user from session, appointment list and formatted appointments for use in calendar.
     }
 
     public Result admitPatientSubmit(){
@@ -426,7 +438,7 @@ public class HomeController extends Controller {
 
     }
 
-    public Result searchByMRN(){
+    public Result searchByMRN(){ //
         DynamicForm searchForm = formFactory.form().bindFromRequest();
         String MRN = searchForm.get("mrn");
         List<Patient> searchedPatients = Patient.find.where().like("mrn", MRN).findList();

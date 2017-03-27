@@ -1,8 +1,8 @@
 package models;
 import com.avaje.ebean.Model;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.text.SimpleDateFormat;
 
 import models.users.*;
 import play.data.format.Formats;
@@ -31,13 +31,13 @@ public class Appointment extends Model {
     private Equipment e = null;
 
     public Appointment(Date appDate, Consultant c, Patient p){
-        this.appDate = appDate;
+        this.setAppDate(appDate);
         this.c = c;
         this.p = p;
     }
 
     public Appointment(Consultant c, Patient p){
-        appDate = new Date();
+        setAppDate(new Date());
         this.c = c;
         this.p = p;
     }
@@ -56,6 +56,19 @@ public class Appointment extends Model {
 
     public static List<Appointment> findAll(){
         return Appointment.find.all();
+    }
+
+    //Formatting for calendar, take in an ArrayList of appointments. Passes back out Full name of patient, Formatted date and Appointment ID.
+    public static List<DateForCalendar> formatedDateList(List<Appointment> appointmentsIn){
+        ArrayList<DateForCalendar> formattedDates = new ArrayList<>();
+        List<Appointment> appointments = appointmentsIn;
+        for(Appointment a : appointments){
+            Patient p = Patient.find.byId(a.getP().getMrn());
+            String fullname = p.getfName() + " " + p.getlName();
+            DateForCalendar date = new DateForCalendar(fullname, new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(a.appDate), a.getId());
+            formattedDates.add(date);
+        }
+        return formattedDates;
     }
 
     public String getId() {

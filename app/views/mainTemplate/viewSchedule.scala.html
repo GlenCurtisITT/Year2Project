@@ -1,10 +1,9 @@
-@(user: models.users.User)
+@(user: models.users.User, appointmentList: List[models.Appointment], formattedDates: List[DateForCalendar])
 @if(user.checkRole().equals("Admin")) {
   @adminPages.mainAdmin("View Schedule", user) {
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-
           <div id='calendar'></div>
           
 
@@ -12,6 +11,34 @@
       </div>
 
     </div>
+
+      <script>
+              $(document).ready(function() {
+                  // page is now ready, initialize the calendar...
+                  // options and github  - http://fullcalendar.io/
+                  $('#calendar').fullCalendar({
+                      timeFormat: 'hh:mm a',
+                      events: [
+                          @for(a <- formattedDates){
+                          {
+                              title : '@a.getPatientName',
+                              start : '@a.getAppointmentDate',
+                              url: '@routes.HomeController.appointmentMain(a.getAppointmentId)',
+                              allDay : false
+                          },
+                          }
+                      ],
+
+                      eventClick: function(event) {
+                          if (event.url) {
+                              window.open(event.url, _self);
+                              return false;
+                          }
+                      }
+
+                  });
+              });
+      </script>
   }
 }
 
@@ -23,12 +50,37 @@
 
           <div id='calendar'></div>
 
-
         </div>
       </div>
 
     </div>
+      <script>
+              $(document).ready(function() {
+                  // page is now ready, initialize the calendar...
+                  // options and github  - http://fullcalendar.io/
+                  $('#calendar').fullCalendar({
+                      timeFormat: 'hh:mm a',
+                      events: [
+                          @for(a <- formattedDates){
+                          {
+                              title : '@a.getPatientName',
+                              start : '@a.getAppointmentDate',
+                              url: '@routes.HomeController.appointmentMain(a.getAppointmentId)',
+                              allDay : false
+                          },
+                          }
+                      ],
 
+                      eventClick: function(event) {
+                          if (event.url) {
+                              window.open(event.url, _self);
+                              return false;
+                          }
+                      }
+
+                  });
+              });
+      </script>
   }
 }
 
