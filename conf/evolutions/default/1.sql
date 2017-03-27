@@ -51,8 +51,18 @@ create table patient (
   prev_illnesses                varchar(255),
   idnum                         varchar(255),
   wardid                        varchar(255),
+  standbyid                     varchar(255),
   constraint pk_patient primary key (mrn)
 );
+
+create table standby_list (
+  standby_id                    varchar(255) not null,
+  current_occupancy             integer,
+  wardid                        varchar(255),
+  constraint uq_standby_list_wardid unique (wardid),
+  constraint pk_standby_list primary key (standby_id)
+);
+create sequence standby_list_seq increment by 1;
 
 create table user (
   role                          varchar(31) not null,
@@ -74,7 +84,8 @@ create table ward (
   ward_id                       varchar(255) not null,
   name                          varchar(255),
   max_capacity                  integer,
-  current_capacity              integer,
+  current_occupancy             integer,
+  status                        boolean,
   constraint pk_ward primary key (ward_id)
 );
 
@@ -94,6 +105,11 @@ create index ix_patient_idnum on patient (idnum);
 
 alter table patient add constraint fk_patient_wardid foreign key (wardid) references ward (ward_id) on delete restrict on update restrict;
 create index ix_patient_wardid on patient (wardid);
+
+alter table patient add constraint fk_patient_standbyid foreign key (standbyid) references standby_list (standby_id) on delete restrict on update restrict;
+create index ix_patient_standbyid on patient (standbyid);
+
+alter table standby_list add constraint fk_standby_list_wardid foreign key (wardid) references ward (ward_id) on delete restrict on update restrict;
 
 
 # --- !Downs
@@ -115,6 +131,11 @@ drop index if exists ix_patient_idnum;
 alter table patient drop constraint if exists fk_patient_wardid;
 drop index if exists ix_patient_wardid;
 
+alter table patient drop constraint if exists fk_patient_standbyid;
+drop index if exists ix_patient_standbyid;
+
+alter table standby_list drop constraint if exists fk_standby_list_wardid;
+
 drop table if exists appointment;
 drop sequence if exists appointment_seq;
 
@@ -124,6 +145,9 @@ drop sequence if exists chart_seq;
 drop table if exists equipment;
 
 drop table if exists patient;
+
+drop table if exists standby_list;
+drop sequence if exists standby_list_seq;
 
 drop table if exists user;
 

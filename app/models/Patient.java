@@ -46,6 +46,10 @@ public class Patient extends Model implements Serializable{
     @JoinColumn(name = "wardId")    //name of column which links tables
     private Ward ward;
 
+    @ManyToOne()
+    @JoinColumn(name = "standbyId")
+    private StandbyList sl;
+
     @OneToMany(mappedBy = "p")
     private List<Appointment> appointments = new ArrayList<>();
 
@@ -180,6 +184,18 @@ public class Patient extends Model implements Serializable{
             patients = null;
         }
         return patients;
+    }
+
+    public void removeWard(){
+        this.ward = null;
+    }
+
+    public StandbyList getSl() {
+        return sl;
+    }
+
+    public void setSl(StandbyList sl) {
+        this.sl = sl;
     }
 
     public void setMrn(String mrn) {

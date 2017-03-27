@@ -1,21 +1,21 @@
 package controllers;
 
-import controllers.*;
 import play.mvc.*;
 
+<<<<<<< HEAD
 import scala.App;
 import sun.rmi.runtime.Log;
 import views.html.*;
+=======
+>>>>>>> refs/remotes/origin/SerializingPatient
 import views.html.loginPage.*;
 import views.html.mainTemplate.*;
 import play.data.*;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import com.avaje.ebean.*;
 import javax.inject.Inject;
 import models.users.*;
 import models.*;
@@ -51,11 +51,30 @@ public class HomeController extends Controller {
             Ward d = new Ward("4", "Burns Unit", 5);
             Ward e = new Ward("5", "Private Ward", 1);
 
+            StandbyList f = new StandbyList(a);
+            StandbyList g = new StandbyList(b);
+            StandbyList h = new StandbyList(c);
+            StandbyList i = new StandbyList(d);
+            StandbyList j = new StandbyList(e);
+
+            a.setSl(f);
+            b.setSl(g);
+            c.setSl(h);
+            d.setSl(i);
+            e.setSl(j);
+
+
             a.save();
             b.save();
             c.save();
             d.save();
             e.save();
+            f.save();
+            g.save();
+            h.save();
+            i.save();
+            j.save();
+
         }
         return ok(index.render(loginForm));
     }
@@ -157,10 +176,12 @@ public class HomeController extends Controller {
         }
 
         //Checking if ward is full
-        if(w.getCurrentCapacity() < w.getMaxCapacity()){
+        if(!w.capacityStatus()){
             w.admitPatient(p);
         } else{
-            return badRequest(admitPatient.render(errorForm, wards, p, u, "Ward is full."));
+            w.getSl().addPatient(p);
+            flash("Success", "Ward is full. Patient added to Standby List");
+            return redirect(controllers.routes.HomeController.viewPatientByID(p.getMrn()));
         }
 
         //Adding Appointment to database
@@ -170,6 +191,12 @@ public class HomeController extends Controller {
         String s = p.getfName() + " " + p.getlName() + " admitted to " + w.getName();
         flash("success", s);
         return redirect(controllers.routes.HomeController.viewPatientByID(p.getMrn()));
+    }
+
+    public Result discharge() {
+        Patient p = getPatientFromSession();
+        Consultant c = (Consultant)getUserFromSession();
+        return ok(discharge.render(c, p));
     }
 
     public Result appointmentMain(String id){
@@ -450,8 +477,13 @@ public class HomeController extends Controller {
         String mrn = searchForm.get("archiveMrn");
         List<Patient> searchedPatients = new ArrayList<>();
             Patient p = Patient.readArchive(mrn);
+            Chart c = Chart.readArchive(mrn);
             if(p != null) {
                 searchedPatients.add(p);
+                if(c != null) {
+                    p.setChart(c);
+                    c.setP(p);
+                }
             }
         return ok(searchPatient.render(searchedPatients, getUserFromSession()));
     }
