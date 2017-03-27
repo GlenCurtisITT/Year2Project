@@ -4,6 +4,7 @@ import javax.persistence.*;
 import com.avaje.ebean.Model;
 import models.users.Consultant;
 import play.data.format.Formats;
+import scala.App;
 
 import java.io.*;
 import java.util.ArrayList;

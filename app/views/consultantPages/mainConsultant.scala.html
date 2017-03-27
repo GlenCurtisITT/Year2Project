@@ -8,10 +8,16 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        <link rel='stylesheet' href='http://fullcalendar.io/js/fullcalendar-2.2.3/fullcalendar.css' />
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/bootstrap.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/navbar.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script><!--Make Jscript + bootstrap js work -->
+        <script src="@routes.Assets.versioned("javascripts/bootstrap.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("javascripts/main.js")" type="text/javascript"></script>
+        <script src='http://fullcalendar.io/js/fullcalendar-2.2.3/lib/moment.min.js'></script>
+        <script src='http://fullcalendar.io/js/fullcalendar-2.2.3/fullcalendar.min.js'></script>
 
     </head>
     <body>
@@ -84,7 +90,7 @@
                                 <b class="caret"></b>
                             </a>
                             <ul id="submenu-3" class="panel-collapse collapse panel-switch" role="menu">
-                                <li><a href="#"><i class="fa fa-caret-right"></i>View Schedule</a></li>
+                                <li><a href="@routes.HomeController.viewSchedule()"><i class="fa fa-caret-right"></i>View Schedule</a></li>
                                 <li><a href="#"><i class="fa fa-caret-right"></i>Edit Schedule</a></li>
                             </ul>
                         </li>
@@ -103,8 +109,5 @@
         </div>
 
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script><!--Make Jscript + bootstrap js work -->
-        <script src="@routes.Assets.versioned("javascripts/bootstrap.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.versioned("javascripts/main.js")" type="text/javascript"></script>
     </body>
 </html>
