@@ -438,7 +438,7 @@ public class HomeController extends Controller {
 
     }
 
-    public Result searchByMRN(){
+    public Result searchByMRN(){ //
         DynamicForm searchForm = formFactory.form().bindFromRequest();
         String MRN = searchForm.get("mrn");
         List<Patient> searchedPatients = Patient.find.where().like("mrn", MRN).findList();
