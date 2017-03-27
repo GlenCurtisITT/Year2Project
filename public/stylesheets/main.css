@@ -52,3 +52,14 @@ body{
     display:block;
 }
 
+.fc-day-grid-event > .fc-content:hover{
+    background-color:#35475E;
+}
+
+.fc-day-grid-event > .fc-content{
+    transition: background-color 0.4s ease;
+}
+
+.fc-unthemed .fc-today{
+    background: #b1b1b1;
+}
