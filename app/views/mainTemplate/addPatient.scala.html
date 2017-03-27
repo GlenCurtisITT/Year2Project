@@ -14,6 +14,7 @@
                 @helper.form(action = controllers.routes.HomeController.addPatientSubmit(), 'class -> "form-horizontal", 'role -> "form") {
                     @inputText(addPatientForm("fname"), '_label -> "First Name", 'class -> "form-control")
                     @inputText(addPatientForm("lname"), '_label -> "Last Name", 'class -> "form-control")
+                    @select(addPatientForm("gender"), options("select" -> "--- Please Select ---", "true" -> "Male", "false" -> "Female"), '_label -> "Gender")
                     @inputText(addPatientForm("ppsNumber"), '_label -> "PPS Number", 'class -> "form-control")
                     @inputDate(addPatientForm("dob"), '_label -> "Date Of Birth", '_help -> "format yyyy-dd-MM", 'class -> "form-control")
                     @inputText(addPatientForm("address"), '_label -> "Address", 'class -> "form-control")
@@ -55,6 +56,7 @@
                 @helper.form(action = controllers.routes.HomeController.addPatientSubmit(), 'class -> "form-horizontal", 'role -> "form") {
                     @inputText(addPatientForm("fname"), '_label -> "First Name", 'class -> "form-control")
                     @inputText(addPatientForm("lname"), '_label -> "Last Name", 'class -> "form-control")
+                    @select(addPatientForm("gender"), options("select" -> "--- Please Select ---", "true" -> "Male", "false" -> "Female"), '_label -> "Gender")
                     @inputText(addPatientForm("ppsNumber"), '_label -> "PPS Number", 'class -> "form-control")
                     @inputDate(addPatientForm("dob"), '_label -> "Date Of Birth", '_help -> "format yyyy-dd-MM", 'class -> "form-control")
                     @inputText(addPatientForm("address"), '_label -> "Address", 'class -> "form-control")

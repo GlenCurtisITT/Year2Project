@@ -40,10 +40,14 @@ public class AdminController extends Controller{
     }
 
     public Result deletePatient(String mrn){
-        Patient p = Patient.find.ref(mrn); //serialize before delete
+        Patient p = Patient.getPatientById(mrn); //serialize before delete
         if(p.getAppointments().size() != 0){
             flash("error", "Cannot archive Patient while there are still appointments due");
             return redirect(routes.HomeController.searchPatient());
+        }
+        if(p.getChart() != null){
+            flash("error", "Cannot archive Patient while they are staying in the hospital");
+            return redirect(routes.HomeController.searchPatient());            
         }
         try {
             p.serialize();
