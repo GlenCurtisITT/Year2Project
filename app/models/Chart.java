@@ -5,6 +5,7 @@ import play.data.format.Formats;
 
 import javax.persistence.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -30,13 +31,21 @@ public class Chart extends Model {
     @JoinColumn(name = "mrn")
     private Patient p;
 
+    @OneToOne
+    @JoinColumn(name = "billId")
+    private Bill b;
+
+    @ManyToMany
+    @JoinTable(name = "CHARTPRESCRIPTION")
+    private List<Prescription> prescriptionList = new ArrayList<>();
+
     public Chart() {
     }
 
-    public Chart(String currentWard, Date dateOfAdmittance, Date dischargeDate, String mealPlan, Patient p) {
+    public Chart(String currentWard, Date dateOfAdmittance, String mealPlan, Patient p) {
         this.currentWard = currentWard;
         this.dateOfAdmittance = dateOfAdmittance;
-        this.dischargeDate = dischargeDate;
+        this.dischargeDate = null;
         this.mealPlan = mealPlan;
         this.p = p;
     }
@@ -77,6 +86,22 @@ public class Chart extends Model {
             chartResult = null;
         }
         return null;
+    }
+
+    public Bill getB() {
+        return b;
+    }
+
+    public void setB(Bill b) {
+        this.b = b;
+    }
+
+    public List<Prescription> getPrescriptionList() {
+        return prescriptionList;
+    }
+
+    public void setPrescription(Prescription p) {
+        this.prescriptionList.add(p);
     }
 
     public void setCurrentWard(String currentWard) {

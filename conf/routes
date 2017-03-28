@@ -22,6 +22,9 @@ GET     /dischargePatient           controllers.ConsultantController.dischargePa
 GET     /makeAppointment            controllers.HomeController.makeAppointment
 GET     /appointmentMain/:id        controllers.HomeController.appointmentMain(id: String)
 GET     /cancelAppointment/:id      controllers.HomeController.cancelAppointment(id:String)
+GET     /makePrescription           controllers.HomeController.makePrescription
+GET     /viewMedicine               controllers.HomeController.viewMedicine
+GET     /addMedicine                controllers.HomeController.addMedicine
 POST    /admitPatientSubmit         controllers.HomeController.admitPatientSubmit
 POST    /searchByMRN                controllers.HomeController.searchByMRN
 POST    /searchByLastName           controllers.HomeController.searchByLastName
@@ -31,6 +34,8 @@ POST    /addUserSubmit              controllers.HomeController.addUserSubmit
 POST    /loginSubmit                controllers.LoginController.loginSubmit
 POST    /addPatientSubmit           controllers.HomeController.addPatientSubmit
 POST    /addAppointmentSubmit       controllers.HomeController.addAppointmentSubmit
+POST    /makePrescriptionSubmit     controllers.HomeController.makePrescriptionSubmit
+POST    /addMedicineSubmit          controllers.HomeController.addMedicineSubmit
 
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count

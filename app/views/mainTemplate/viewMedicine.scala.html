@@ -1,0 +1,34 @@
+@(user: models.users.User, medicineList: List[models.Medicine])
+@if(user.checkRole().equals("Consultant")) {
+  @consultantPages.mainConsultant("View Medicine", user) {
+    <div class="row">
+      <div class="col-sm-12">
+        <a href="@routes.HomeController.makePrescription()">Back</a>
+        <a href="@routes.HomeController.addMedicine()">Add Medicine</a>
+        <table class="table table-bordered table-hover table-condensed">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Side Affects</th>
+              <th>Ingredients</th>
+              <th>Unit Of Measurement</th>
+              <th>Price Per Unit</th>
+            </tr>
+          </thead>
+          <tbody>
+          @for(a <- medicineList) {
+            <tr>
+              <td>@a.getName</td>
+              <td>@a.getSideAffects</td>
+              <td>@a.getIngredients</td>
+              <td>@a.getUnitOfMeasurement</td>
+              <td>€@a.getPricePerUnit</td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  }
+}
