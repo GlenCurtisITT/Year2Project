@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Chart;
 import play.*;
 import play.mvc.*;
 import play.mvc.Http.*;
@@ -41,16 +42,19 @@ public class AdminController extends Controller{
 
     public Result deletePatient(String mrn){
         Patient p = Patient.getPatientById(mrn); //serialize before delete
+        Chart c = p.getChart();
         if(p.getAppointments().size() != 0){
             flash("error", "Cannot archive Patient while there are still appointments due");
             return redirect(routes.HomeController.searchPatient());
         }
-        if(p.getChart() != null){
+        if(c.getDischargeDate() == null){
             flash("error", "Cannot archive Patient while they are staying in the hospital");
             return redirect(routes.HomeController.searchPatient());            
         }
         try {
             p.serialize();
+            c.serialize();
+            c.delete();
             p.delete();
         } catch(FileNotFoundException e) {
             flash("error", "Could not find file");

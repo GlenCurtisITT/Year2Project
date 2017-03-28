@@ -38,7 +38,13 @@ public class ConsultantController extends Controller {
         Ward w = p.getWard();
         w.dischargePatient(p);
         c.setDischargeDate(new Date());
-        if(p.getAppointments().size() == 0){
+        if(p.getAppointments().size() == 0 && c.getB().isPaid()){
+            if(c.getB() != null){
+                if(!c.getB().isPaid()){
+                    flash("success", "Patient has been discharged. Bill has been generated");
+                    return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
+                }
+            }
             try {
                 p.serialize();
                 c.serialize();
@@ -50,13 +56,6 @@ public class ConsultantController extends Controller {
                 flash("error", "Could not archive patient or chart");
                 return redirect(routes.HomeController.discharge());
             }
-        }
-        try {
-            c.serialize();
-            c.delete();
-        } catch (IOException e) {
-            flash("error", "Could not archive chart");
-            return redirect(routes.HomeController.discharge());
         }
         flash("success", "Patient has been discharged.");
         return redirect(routes.HomeController.viewPatientByID(p.getMrn()));

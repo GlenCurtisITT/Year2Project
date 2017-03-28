@@ -71,6 +71,17 @@ public class HomeController extends Controller {
             j.save();
 
         }
+
+        if(Medicine.findAll().size() == 0) {
+            Medicine a = new Medicine("Zotepine","Anxiety, Flushing, dry skin, Arthralgia, Myalgia, Acne, Conjunctivitis, Thrombocythaemia", "metabolite, norzotepine", .4, "mg");
+            Medicine b = new Medicine("Corzide", "Dizziness, lightheadedness, slow heartbeat, tiredness, nausea, vomiting", "nadolol and bendroflumethiazide", .3, "mg");
+            Medicine c = new Medicine("Periactin", "Drowsiness, dizziness, blurred vision, constipation", "Cyproheptadine", .2, "mg");
+
+            a.save();
+            b.save();
+            c.save();
+        }
+
         return ok(index.render(loginForm));
     }
 
@@ -132,26 +143,8 @@ public class HomeController extends Controller {
             return badRequest(admitPatient.render(errorForm, wards, p, u, "Error in form."));
         }
         //Checking that Ward and Date are not blank.
-        if(newChartForm.get("wardId") == null || newChartForm.get("dischargeDate") == null){
-            return badRequest(admitPatient.render(errorForm, wards, p, u, "Please enter a date and a ward."));
-        }
-        //handles processing of date
-        String dateString = newChartForm.get("dischargeDate") + "T" + newChartForm.get("hours") + ":" + newChartForm.get("minutes") + ":00";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getDefault());
-        Date date = new Date();
-        Date todayDate = new Date();
-        try{
-            date = sdf.parse(dateString);
-            dateString = output.format(date);
-
-        } catch (ParseException ex) {
-            return badRequest(admitPatient.render(errorForm, wards, p, u, "Could not apply discharge date." + newChartForm.get("dischargeDate")));
-        }
-
-        if(date.before(todayDate)){     //check to see if dischargeDate was made for the past
-            return badRequest(admitPatient.render(errorForm, wards, p, u, "Cannot discharge a patient before admitting them first." + todayDate));
+        if(newChartForm.get("wardId") == null){
+            return badRequest(admitPatient.render(errorForm, wards, p, u, "Please enter a ward."));
         }
 
         //Checking if ward is full
@@ -164,7 +157,7 @@ public class HomeController extends Controller {
         }
 
         //Adding Appointment to database
-        Chart c = new Chart(w.getName(), new Date(), date, newChartForm.get("mealPlan"), p);
+        Chart c = new Chart(w.getName(), new Date(), newChartForm.get("mealPlan"), p);
         c.save();
         //Flashing String s to memory to be used in view patient screen.
         String s = p.getfName() + " " + p.getlName() + " admitted to " + w.getName();
@@ -487,6 +480,69 @@ public class HomeController extends Controller {
         return ok(searchPatient.render(searchedPatients, getUserFromSession()));
     }
 
+    public Result makePrescription(){
+        Form<Prescription> addPrescriptionForm = formFactory.form(Prescription.class);
+        List<Medicine> medicine = Medicine.findAll();
+        Patient p = getPatientFromSession();
+        User u = getUserFromSession();
+        return ok(makePrescription.render(addPrescriptionForm, medicine, p, u, null));
+    }
+
+    public Result viewMedicine(){
+        User u = getUserFromSession();
+        List<Medicine> medicine = Medicine.findAll();
+        return ok(viewMedicine.render(u, medicine));
+    }
+
+    public Result addMedicine(){
+        User u = getUserFromSession();
+        Form<Medicine> addMedicineForm = formFactory.form(Medicine.class);
+        return ok(addMedicine.render(u, addMedicineForm, null));
+    }
+
+    public Result makePrescriptionSubmit(){
+        DynamicForm newPrescriptionForm = formFactory.form().bindFromRequest();
+        Form errorForm = formFactory.form().bindFromRequest();
+        List<Medicine> medicine = Medicine.findAll();
+        Patient p = getPatientFromSession();
+        User u = getUserFromSession();
+        //Checking if Form has errors.
+        if(newPrescriptionForm.hasErrors()){
+            return badRequest(makePrescription.render(errorForm, medicine, p, u, "Error in form."));
+        }
+        if(newPrescriptionForm.get("frequency") == null || newPrescriptionForm.get("dosage") == null){
+            return badRequest(makePrescription.render(errorForm, medicine, p, u, "Must enter the dosage and how often patient is to take it"));
+        }
+        if(Medicine.find.byId(newPrescriptionForm.get("medicineId")) == null){
+            return badRequest(makePrescription.render(errorForm, medicine, p, u, "Must choose Medicine"));
+        }
+        //can enter checking against other medicine to prevent bad interactions later
+        Medicine m = Medicine.find.byId(newPrescriptionForm.get("medicineId"));
+        Prescription pres = new Prescription(newPrescriptionForm.get("frequency"), Integer.parseInt(newPrescriptionForm.get("dosage")), m);
+        pres.setMedicine(m);
+        pres.save();
+        String s = "Prescription for " + pres.getDosage() + pres.getMedicine().getUnitOfMeasurement() + " of " + pres.getMedicine().getName() + " written for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName();
+        flash("success", s);
+        return redirect(controllers.routes.HomeController.viewPatient());
+    }
+
+    public Result addMedicineSubmit(){
+        DynamicForm newMedicineForm = formFactory.form().bindFromRequest();
+        Form errorForm = formFactory.form().bindFromRequest();
+        List<Medicine> medicine = Medicine.findAll();
+        Patient p = getPatientFromSession();
+        User u = getUserFromSession();
+        //Checking if Form has errors.
+        if(newMedicineForm.hasErrors()){
+            return badRequest(addMedicine.render(u, errorForm, "Error in form."));
+        }
+        if(newMedicineForm.get("name") == null || newMedicineForm.get("ingredients") == null){
+            return badRequest(addMedicine.render(u, errorForm, "Must enter name and ingredients"));
+        }
+        Medicine m = new Medicine(newMedicineForm.get("name"), newMedicineForm.get("sideAffects"), newMedicineForm.get("ingredients"), Double.parseDouble(newMedicineForm.get("pricePerUnit")), newMedicineForm.get("unitOfMeasurement"));
+        m.save();
+        return redirect(controllers.routes.HomeController.makePrescription());
+    }
 
     public static User getUserFromSession(){
         if(User.getUserById(session().get("numId")) instanceof Consultant){

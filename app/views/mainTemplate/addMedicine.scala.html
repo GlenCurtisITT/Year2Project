@@ -1,0 +1,30 @@
+@(user: models.users.User, addMedicineForm: Form[models.Medicine], error: String)
+@import helper._
+
+@if(user.checkRole().equals("Consultant")){
+  @consultantPages.mainConsultant("Add Medicine", user) {
+  <div class="row">
+    <div class="col-lg-3">
+      @if(error != null){
+        <div class="alert alert-warning">
+          <strong>@error</strong>
+        </div>
+      }
+        <!--http://stackoverflow.com/questions/38379858/play-framework-get-value-from-form-->
+        <!--http://stackoverflow.com/questions/10127156/use-of-option-helper-in-play-framework-2-0-templates/10137190#10137190-->
+      @helper.form(action = controllers.routes.HomeController.addMedicineSubmit(), 'class -> "form-horizontal", 'role->"form"){
+        @inputText(addMedicineForm("name"), '_label -> "Name", 'class -> "form-control")
+        @inputText(addMedicineForm("sideAffects"), '_label -> "Side Affects", 'class -> "form-control")
+        @inputText(addMedicineForm("ingredients"), '_label -> "Ingredients", 'class -> "form-control")
+        @select(addMedicineForm("unitsOfMeasurement"), options("select" -> "--- Please Select ---", "Mg" -> "Mg", "Ml" -> "Ml"), '_label -> "Unit of Measurement")
+        @inputText(addMedicineForm("pricePerUnit"), '_label -> "Price Per Unit", 'class -> "form-control")
+
+        <div class="actions">
+          <input type="submit" value="Add Medicine" class="btn btn-primary">
+          <a href="@routes.HomeController.viewMedicine()" <button class="btn btn-warning">Cancel</button></a>
+        </div>
+      }
+    </div>
+  </div>
+}
+}
