@@ -2,6 +2,7 @@ package controllers;
 
 import play.mvc.*;
 
+import scala.App;
 import views.html.loginPage.*;
 import views.html.mainTemplate.*;
 import play.data.*;
@@ -366,6 +367,19 @@ public class HomeController extends Controller {
         //Flashing String s to memory to be used in index screen.
         flash("success", s);
         return redirect(controllers.routes.HomeController.index());
+    }
+
+    public Result viewSchedule(){
+        User u = getUserFromSession();
+        List<Appointment> appointments = Appointment.findAll();
+        List<DateForCalendar> formattedDates = new ArrayList<>();
+        if(session("role").equals("Admin")){
+            formattedDates = Appointment.formatedDateList(appointments);
+        }else if(session("role").equals("Consultant")){
+            Consultant c = (Consultant) u;
+            formattedDates = Appointment.formatedDateList(c.getAppointments());
+        }
+        return ok(viewSchedule.render(u, appointments, formattedDates));
     }
 
     public Result addPatientSubmit(){

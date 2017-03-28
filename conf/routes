@@ -14,6 +14,7 @@ GET     /searchPatient              controllers.HomeController.searchPatient
 GET     /admitPatient               controllers.HomeController.admitPatient
 GET     /discharge                  controllers.HomeController.discharge
 GET     /viewPatient                controllers.HomeController.viewPatient
+GET     /viewSchedule               controllers.HomeController.viewSchedule
 GET     /viewPatientByID/:mrn       controllers.HomeController.viewPatientByID(mrn: String)
 GET     /deletePatient/:mrn         controllers.AdminController.deletePatient(mrn: String)
 GET     /updatePatient/:mrn         controllers.AdminController.updatePatient(mrn: String)
