@@ -79,6 +79,14 @@ public class Appointment extends Model {
         return appDate;
     }
 
+    public String getFormattedAppDate(Date a){
+        return new SimpleDateFormat("dd MMM yyyy").format(a);
+    }
+
+    public String getFormattedAppTime(Date a){
+        return new SimpleDateFormat("hh:mm a").format(a);
+    }
+
     public void setAppDate(Date appDate) {
         this.appDate = appDate;
     }

@@ -63,3 +63,11 @@ body{
 .fc-unthemed .fc-today{
     background: #b1b1b1;
 }
+
+.smallText{
+    font-size:0.8em;
+}
+
+.blueText{
+    color: #35475E;
+}
