@@ -2,6 +2,7 @@ package controllers;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import scala.App;
 import sun.rmi.runtime.Log;
 import views.html.*;
 import views.html.loginPage.*;
@@ -22,8 +23,11 @@ import models.*;
 public class ConsultantController extends Controller {
     public Result consultantHomePage(){
         User u = HomeController.getUserFromSession();
+        Consultant c = (Consultant) u;
+        List<Appointment> appointments = c.getAppointments();
+        Collections.sort(appointments, new DateComparator());
         HomeController.endPatientSession();
-        return ok(consultantHomePage.render(u));
+        return ok(consultantHomePage.render(u, appointments));
     }
 
     public Result viewAppointments(){

@@ -71,3 +71,7 @@ body{
 .blueText{
     color: #35475E;
 }
+
+#page-content-wrapper{
+    padding-right: 10px;
+}

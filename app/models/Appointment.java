@@ -59,10 +59,10 @@ public class Appointment extends Model {
     }
 
     //Formatting for calendar, take in an ArrayList of appointments. Passes back out Full name of patient, Formatted date and Appointment ID.
-    public static List<DateForCalendar> formatedDateList(List<Appointment> appointmentsIn){
+    public static List<DateForCalendar> formatedDateList(List<Appointment> appointmentsIn) {
         ArrayList<DateForCalendar> formattedDates = new ArrayList<>();
         List<Appointment> appointments = appointmentsIn;
-        for(Appointment a : appointments){
+        for (Appointment a : appointments) {
             Patient p = Patient.find.byId(a.getP().getMrn());
             String fullname = p.getfName() + " " + p.getlName();
             DateForCalendar date = new DateForCalendar(fullname, new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(a.appDate), a.getId());

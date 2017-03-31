@@ -1,6 +1,36 @@
-@(user: models.users.User)
+@(user: models.users.User, appointmentList: List[models.Appointment])
 @consultantPages.mainConsultant("Consultant Homepage", user) {
-    <h1>This is the consultant homepage.</h1>
-    <h2>Name: @user.getFname @user.getLname</h2>
-    <h2>Email: @user.getEmail</h2>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>Welcome back Dr @user.getLname. </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>Your Appointments: </h1>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+            @if(appointmentList.size() == 0){
+                <div class="col-lg-12">
+                    <h2>No appointments.</h2>
+                </div>
+            }else{
+                @for(a <- appointmentList){
+                    <div class="col-lg-3">
+                        <div class="well">
+                            <h3><span class="blueText">Patient:</span> @a.getP.getfName() @a.getP.getlName()</h3>
+                            <h3><span class="blueText">Date:</span> @a.getFormattedAppDate(a.getAppDate)</h3>
+                            <h3><span class="blueText">Time:</span> @a.getFormattedAppTime(a.getAppDate)</h3>
+                            <a href="@routes.HomeController.appointmentMain(a.getId)"><button class="btn btn-primary">More Info</button></a>
+                        </div>
+                    </div>
+                }
+            }
+    </div>
+
+
 }
