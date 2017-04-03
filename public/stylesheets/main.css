@@ -27,6 +27,10 @@ body{
     margin-bottom:15px;
 }
 
+#margBotSmall{
+    margin-bottom: -10px;
+}
+
 #margLeft{
     margin-left:10px;
 }

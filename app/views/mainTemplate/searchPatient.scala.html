@@ -73,7 +73,7 @@
                             <td class="numeric">@p.getMrn</td>
                             <td>@p.getfName() @p.getlName()</td>
                             <td>@p.getPpsNumber</td>
-                            <td>@p.getDob</td>
+                            <td>@p.getFormattedDOB(p.getDob)</td>
                             <td>@p.getPrevIllnesses</td>
                             <td><a href="@routes.HomeController.viewPatientByID(p.getMrn)">View Profile</a></td>
                             <td>
@@ -168,7 +168,7 @@
                                 <td class="numeric">@p.getMrn</td>
                                 <td>@p.getfName() @p.getlName()</td>
                                 <td>@p.getPpsNumber</td>
-                                <td>@p.getDob</td>
+                                <td>@p.getFormattedDOB(p.getDob)</td>
                                 <td>@p.getPrevIllnesses</td>
                                 <td><a href="@routes.HomeController.viewPatientByID(p.getMrn)">View Profile</a></td>
                             </tr>

@@ -7,6 +7,7 @@ import play.data.format.Formats;
 import scala.App;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -94,6 +95,10 @@ public class Patient extends Model implements Serializable{
                 appointments.add(a);
             }
         }
+    }
+
+    public String getFormattedDOB(Date a){
+        return new SimpleDateFormat("dd MMM yyyy").format(a);
     }
 
     public static Finder<String, Patient> find = new Finder<String, Patient>(Patient.class);
