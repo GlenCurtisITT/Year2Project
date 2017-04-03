@@ -1,0 +1,26 @@
+@(user: models.users.User, logEntries: List[String])
+@adminPages.mainAdmin("View Log", user){
+  <div class="row">
+    <div class="col-lg-12">
+      <h1>Log File</h1>
+      <hr />
+    </div>
+  </div>
+  <div class="row">
+    @for(entry <- logEntries) {
+      <div class="col-lg-12">
+        <p>@entry</p>
+      </div>
+    }
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <a href="@routes.AdminController.deleteLogFile" onclick="return confirmDel()";><button class="btn btn-danger">Delete Log</button></a>
+    </div>
+  </div>
+  <script>
+          function confirmDel() {
+            return confirm('Are you sure?');
+          }
+  </script>
+}

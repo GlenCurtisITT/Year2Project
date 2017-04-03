@@ -152,6 +152,10 @@ public class HomeController extends Controller {
             w.admitPatient(p);
         } else{
             w.getSl().addPatient(p);
+            //Writing to log file
+            String logFileString = p.getfName() + " "
+                    + p.getlName() + " was put on standby-list for ward " + w.getName();
+            LogFile.writeToLog(logFileString);
             flash("Success", "Ward is full. Patient added to Standby List");
             return redirect(controllers.routes.HomeController.viewPatientByID(p.getMrn()));
         }
@@ -162,6 +166,13 @@ public class HomeController extends Controller {
         //Flashing String s to memory to be used in view patient screen.
         String s = p.getfName() + " " + p.getlName() + " admitted to " + w.getName();
         flash("success", s);
+        //Writing to log file.
+        String logFileString = getUserFromSession().checkRole() + " "
+                + getUserFromSession().getFname() + " "
+                + getUserFromSession().getLname() + " admitted patient "
+                + p.getfName() + " "
+                + p.getlName() + " to ward " + w.getName();
+        LogFile.writeToLog(logFileString);
         return redirect(controllers.routes.HomeController.viewPatientByID(p.getMrn()));
     }
 
@@ -181,12 +192,22 @@ public class HomeController extends Controller {
         Appointment a = Appointment.find.byId(id);
         if(getUserFromSession() instanceof Consultant){
             Consultant c = (Consultant) getUserFromSession();
+            Patient p = Patient.find.byId(a.getP().getMrn());
+            String logFileString = getUserFromSession().checkRole() + " "
+                    + getUserFromSession().getFname() + " "
+                    + getUserFromSession().getLname() + " cancelled an appointment with "
+                    + p.getfName() + " "
+                    + p.getlName() + " the appointment that was cancelled was on the "
+                    + a.getFormattedAppDate(a.getAppDate()) + " at "
+                    + a.getFormattedAppTime(a.getAppDate());
+            LogFile.writeToLog(logFileString);
             a.delete();
             String s = "Appointment Cancelled ";
             flash("success", s);
             c.popAppointments();
             List<Appointment> appointments = c.getAppointments();
             return ok(viewAppointments.render(c, appointments));
+
         }
         else{
             String s = "Only Consultants may cancel appointments";
@@ -242,6 +263,14 @@ public class HomeController extends Controller {
         String s = "Appointment rescheduled for " + p.getfName() + " " + p.getlName();
         flash("success", s);
         endPatientSession();
+        String logFileString = getUserFromSession().checkRole() + " "
+                + getUserFromSession().getFname() + " "
+                + getUserFromSession().getLname() + " rescheduled appointment for "
+                + p.getfName() + " "
+                + p.getlName() + " for the "
+                + a.getFormattedAppDate(a.getAppDate()) + " at "
+                + a.getFormattedAppTime(a.getAppDate());
+        LogFile.writeToLog(logFileString);
         return ok(appointmentMain.render(getUserFromSession(), a));
     }
 
@@ -249,6 +278,7 @@ public class HomeController extends Controller {
         Form<Appointment> addAppointmentForm = formFactory.form(Appointment.class);
         List<Consultant> consultants = Consultant.findAllConsultants();
         List<Equipment> equipments = Equipment.findAll();
+
         return ok(makeAppointment.render(addAppointmentForm, consultants, getUserFromSession(), getPatientFromSession(), equipments, null));
     }
 
@@ -310,6 +340,15 @@ public class HomeController extends Controller {
         //Flashing String s to memory to be used in view patient screen.
         String s = "Appointment booked for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName() + " with Dr." + c.getLname() + " at " + dateString;
         flash("success", s);
+        //Writing to log file.
+        String logFileString = getUserFromSession().checkRole() + " "
+                + getUserFromSession().getFname() + " "
+                + getUserFromSession().getLname() + " made an appointment for "
+                + p.getfName() + " "
+                + p.getlName() + " for the "
+                + a.getFormattedAppDate(a.getAppDate()) + " at "
+                + a.getFormattedAppTime(a.getAppDate());
+        LogFile.writeToLog(logFileString);
         return redirect(controllers.routes.HomeController.viewPatient());
     }
 

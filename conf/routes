@@ -26,6 +26,8 @@ GET     /cancelAppointment/:id      controllers.HomeController.cancelAppointment
 GET     /makePrescription           controllers.HomeController.makePrescription
 GET     /viewMedicine               controllers.HomeController.viewMedicine
 GET     /addMedicine                controllers.HomeController.addMedicine
+GET     /viewFullLog                controllers.AdminController.viewFullLog
+GET     /deleteLogFile              controllers.AdminController.deleteLogFile
 POST    /admitPatientSubmit         controllers.HomeController.admitPatientSubmit
 POST    /searchByMRN                controllers.HomeController.searchByMRN
 POST    /searchByLastName           controllers.HomeController.searchByLastName
