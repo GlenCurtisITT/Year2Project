@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Chart;
+import models.LogFile;
 import play.*;
 import play.mvc.*;
 import play.mvc.Http.*;
@@ -37,7 +38,8 @@ public class AdminController extends Controller{
     public Result adminHomePage(){
         User u = HomeController.getUserFromSession();
         HomeController.endPatientSession();
-        return ok(adminHomePage.render(u));
+        List<String> logEntries = LogFile.readTodaysLogEntries();
+        return ok(adminHomePage.render(u, logEntries));
     }
 
     public Result deletePatient(String mrn){
@@ -65,6 +67,19 @@ public class AdminController extends Controller{
         }
         flash("success", "Patient has been archived.");
         return redirect(routes.HomeController.searchPatient());
+    }
+
+    public Result viewFullLog(){
+        User u = HomeController.getUserFromSession();
+        List<String> logEntries = LogFile.readAllLogEntries();
+        return ok(viewFullLog.render(u, logEntries));
+    }
+
+    public Result deleteLogFile(){
+        LogFile.deleteLogFile();
+        User u = HomeController.getUserFromSession();
+        List<String> logEntries = LogFile.readAllLogEntries();
+        return ok(viewFullLog.render(u, logEntries));
     }
 
     @Transactional

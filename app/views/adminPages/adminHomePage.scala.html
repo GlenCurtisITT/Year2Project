@@ -1,4 +1,4 @@
-@(user: models.users.User)
+@(user: models.users.User, logEntries: List[String])
 @adminPages.mainAdmin("Admin Homepage", user){
   @if(flash.containsKey("success")){
     <div class="row">
@@ -10,10 +10,23 @@
     </div>
   }
   <div class="row">
-    <div class="col-lg-6">
-      <h1>This is the admin homepage.</h1>
-      <h2>Name: @user.getFname @user.getLname</h2>
-      <h2>Email: @user.getEmail</h2>
+    <div class="col-lg-12">
+      <h1>Welcome back Admin @user.getFname @user.getLname</h1>
+      <h2>Today's Activity:</h2>
+      <hr />
     </div>
+    <div class="col-lg-12">
+      @if(logEntries.size() == 0){
+        <h2>No log entries today</h2>
+      }else {
+        @for(entry <- logEntries) {
+          <p>@entry</p>
+        }
+      }
+    </div>
+    <div class="col-lg-12">
+      <a href="@routes.AdminController.viewFullLog()"><button class="btn btn-primary">View Full Log</button></a>
+    </div>
+
   </div>
 }
