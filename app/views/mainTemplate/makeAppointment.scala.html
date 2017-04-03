@@ -17,7 +17,7 @@
                 <label>Appointment Date, Time and Consultant</label>
                 <!-- Be sure to change id to value. Value is what gets included in the POST request to the method -->
                 <form method = "post" action="@routes.HomeController.addAppointmentSubmit()" class="form-horizontal">
-                    <input type="date" id="appDate" name="appDate" dataformatas="yyyy-dd-MM" />
+                    <input type="date" id="appDate" name="appDate" value="YYYY-MM-DD" dataformatas="yyyy-dd-MM" />
                     <select id="margBot" name="hours">
                         <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
                         <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
@@ -65,7 +65,7 @@
                 <label>Appointment Date, Time and Consultant</label>
                     <!-- Be sure to change id to value. Value is what gets included in the POST request to the method -->
                 <form method = "post" action="@routes.HomeController.addAppointmentSubmit()" class="form-horizontal">
-                    <input type="date" id="appDate" name="appDate" dataformatas="yyyy-dd-MM" />
+                    <input type="date" id="appDate" name="appDate" value="YYYY-MM-DD" dataformatas="yyyy-dd-MM" />
                     <select id="hours" name="hours">
                         <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
                         <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>

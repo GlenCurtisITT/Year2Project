@@ -5,12 +5,10 @@
           <h1>No patient selected</h1>
       } else {
           <div class="row">
-              <div class="col-lg-7">
+              <div class="col-lg-6">
               @if(flash().containsKey("success")) {
-                  <div class="col-xs-4">
-                      <div class="alert alert-success">
-                          <strong>@flash().get("success")</strong>
-                      </div>
+                  <div class="alert alert-success">
+                      <strong>@flash().get("success")</strong>
                   </div>
               }
               </div>
@@ -116,14 +114,12 @@
             <h1>No patient selected</h1>
         } else {
             <div class="row">
-                <div class="col-lg-7">
-                    @if(flash().containsKey("success")) {
-                        <div class="col-xs-4">
-                            <div class="alert alert-success">
-                                <strong>@flash().get("success")</strong>
-                            </div>
-                        </div>
-                    }
+                <div class="col-lg-6">
+                @if(flash().containsKey("success")) {
+                    <div class="alert alert-success">
+                        <strong>@flash().get("success")</strong>
+                    </div>
+                }
                 </div>
             </div>
             <div class="row">
