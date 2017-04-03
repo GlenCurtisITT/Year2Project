@@ -249,6 +249,7 @@ public class HomeController extends Controller {
         Form<Appointment> addAppointmentForm = formFactory.form(Appointment.class);
         List<Consultant> consultants = Consultant.findAllConsultants();
         List<Equipment> equipments = Equipment.findAll();
+
         return ok(makeAppointment.render(addAppointmentForm, consultants, getUserFromSession(), getPatientFromSession(), equipments, null));
     }
 
@@ -310,6 +311,15 @@ public class HomeController extends Controller {
         //Flashing String s to memory to be used in view patient screen.
         String s = "Appointment booked for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName() + " with Dr." + c.getLname() + " at " + dateString;
         flash("success", s);
+        //Writing to log file.
+        String logFileString = getUserFromSession().checkRole() + " "
+                + getUserFromSession().getFname() + " "
+                + getUserFromSession().getLname() + " made an appointment for "
+                + p.getfName() + " "
+                + p.getlName() + " for the "
+                + a.getFormattedAppDate(a.getAppDate()) + " at "
+                + a.getFormattedAppTime(a.getAppDate());
+        LogFile.writeToLog(logFileString);
         return redirect(controllers.routes.HomeController.viewPatient());
     }
 
