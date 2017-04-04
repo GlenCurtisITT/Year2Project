@@ -23,9 +23,16 @@
           </div>
           <div class="row">
               <div class="col-lg-12">
-                  <a href="#"><button type="button" class="btn btn-primary text-center">Add Consultant</button></a>
+                  @if(patient.getC == null) {
+                      <a href="@routes.AdminController.listConsultants()"><button type="button" class="btn btn-primary text-center">
+                          Add Consultant</button></a>
+                  }
                   <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">
                       Make Appointment</button></a>
+                  @if(patient.getAppointments.size() != 0 || patient.getChart.getPrescriptionList.size() != 0 || patient.getChart.getDateOfAdmittance != null || patient.getChart.getDischargeDate != null) {
+                      <a href="@routes.AdminController.genBill()"><button type="button" class="btn btn-primary text-center">
+                          Generate Bill</button></a>
+                  }
               </div>
           </div>
           @if(patient.getChart() != null) {
@@ -131,17 +138,20 @@
                 </div>
                 <div class="col-lg-6">
                     <div id="margBotSmall">
-                        <a href="#"><button type="button" class="btn btn-primary text-center">Add Consultant</button></a>
-                        <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">
-                            Make Appointment</button></a>
+                        @if(patient.getC == null) {
+                            <a href="@routes.ConsultantController.addConsultant()"><button type="button" class="btn btn-primary text-center">
+                                Accept Patient</button></a>
+                        }
+                        <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">Make Appointment</button></a>
                     </div>
                     <br />
                     <a href="@routes.HomeController.makePrescription()"><button type="button" class="btn btn-primary text-center">
                         Add Prescription</button></a>
-                    @if(patient.getChart() == null) {
+                    @if(patient.getChart().getDateOfAdmittance == null) {
                         <a href="@routes.HomeController.admitPatient"><button type="button" class="btn btn-primary text-center">
                             Admit Patient</button></a>
-                    } else {
+                    }
+                    @if(patient.getChart().getDateOfAdmittance != null && patient.getChart().getDischargeDate == null){
                         <a href="@routes.HomeController.discharge"><button type="button" class="btn btn-warning text-center">
                             Discharge Patient</button></a>
                     }
@@ -190,6 +200,11 @@
                                 <td>@pr.getMedicine.getName</td>
                                 <td>@pr.getDosage@pr.getMedicine.getUnitOfMeasurement</td>
                                 <td>@pr.getDosage</td>
+                                <td>
+                                    <a href="@routes.ConsultantController.removePrescription(pr.getPrescriptionId)" class="btn-xs btn-danger" onclick="return confirmDel();">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                </td>
                             </tr>
                         }
                         </tbody>

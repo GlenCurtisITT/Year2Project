@@ -74,7 +74,7 @@
                             <td>@p.getfName() @p.getlName()</td>
                             <td>@p.getPpsNumber</td>
                             <td>@p.getFormattedDOB(p.getDob)</td>
-                            <td>@p.getPrevIllnesses</td>
+                            <td>@p.getIllness</td>
                             <td><a href="@routes.HomeController.viewPatientByID(p.getMrn)">View Profile</a></td>
                             <td>
                                 <a href="@routes.AdminController.updatePatient(p.getMrn)" class="btn-xs btn-danger">
@@ -169,7 +169,7 @@
                                 <td>@p.getfName() @p.getlName()</td>
                                 <td>@p.getPpsNumber</td>
                                 <td>@p.getFormattedDOB(p.getDob)</td>
-                                <td>@p.getPrevIllnesses</td>
+                                <td>@p.getIllness</td>
                                 <td><a href="@routes.HomeController.viewPatientByID(p.getMrn)">View Profile</a></td>
                             </tr>
                         }<!-- End for each loop -->

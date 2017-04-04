@@ -1,11 +1,8 @@
 package models;
 
 import com.avaje.ebean.Model;
-import play.db.ebean.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by conno on 27/03/2017.
@@ -19,18 +16,21 @@ public class Prescription extends Model {
     private String frequency;
     private int dosage;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "medicineId")
     private Medicine medicine;
 
-    @ManyToMany(mappedBy = "prescriptionList")
-    private List<Chart> charts = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "chartId")
+    private Chart chart;
 
     public Prescription(String frequency, int dosage, Medicine medicine) {
         this.frequency = frequency;
         this.dosage = dosage;
         this.medicine = medicine;
     }
+
+    public static Finder<String, Prescription> find = new Finder<String, Prescription>(Prescription.class);
 
     public String getPrescriptionId() {
         return prescription_Id;
@@ -66,6 +66,7 @@ public class Prescription extends Model {
     }
 
     public void setChart(Chart c) {
-        this.charts.add(c);
+        this.chart = c;
+        c.setPrescription(this);
     }
 }

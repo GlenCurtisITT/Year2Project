@@ -161,8 +161,11 @@ public class HomeController extends Controller {
         }
 
         //Adding Appointment to database
-        Chart c = new Chart(w.getName(), new Date(), newChartForm.get("mealPlan"), p);
-        c.save();
+        Chart c = p.getChart();
+        c.setCurrentWard(w.getName());
+        c.setMealPlan(newChartForm.get("mealPlan"));
+        c.setDateOfAdmittance(new Date());
+        c.update();
         //Flashing String s to memory to be used in view patient screen.
         String s = p.getfName() + " " + p.getlName() + " admitted to " + w.getName();
         flash("success", s);
@@ -289,6 +292,9 @@ public class HomeController extends Controller {
         List<Consultant> consultants = Consultant.findAllConsultants();
         Equipment e = Equipment.find.byId(newAppointmentForm.get("equipment"));
         Patient p = getPatientFromSession();
+        if(Consultant.find.byId(newAppointmentForm.get("consultant")) == null){
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Please enter a consultant."));
+        }
         Consultant c = Consultant.getConsultantById(newAppointmentForm.get("consultant"));
         //Checking if Form has errors.
         if(newAppointmentForm.hasErrors()){
@@ -559,7 +565,9 @@ public class HomeController extends Controller {
         Medicine m = Medicine.find.byId(newPrescriptionForm.get("medicineId"));
         Prescription pres = new Prescription(newPrescriptionForm.get("frequency"), Integer.parseInt(newPrescriptionForm.get("dosage")), m);
         pres.setMedicine(m);
+        pres.setChart(p.getChart());
         pres.save();
+        p.getChart().save();
         String s = "Prescription for " + pres.getDosage() + pres.getMedicine().getUnitOfMeasurement() + " of " + pres.getMedicine().getName() + " written for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName();
         flash("success", s);
         return redirect(controllers.routes.HomeController.viewPatient());

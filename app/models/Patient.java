@@ -4,7 +4,6 @@ import javax.persistence.*;
 import com.avaje.ebean.Model;
 import models.users.Consultant;
 import play.data.format.Formats;
-import scala.App;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -37,7 +36,7 @@ public class Patient extends Model implements Serializable{
     private String nokAddress;
     private String nokNumber;
     private Boolean medicalCard;
-    private String prevIllnesses;
+    private String illness;
 
     @ManyToOne()    //signifies relationship with Consultant table
     @JoinColumn(name = "idNum")    //name of column which links tables
@@ -77,14 +76,28 @@ public class Patient extends Model implements Serializable{
         this.nokAddress = nokAddress;
         this.nokNumber = nokNumber;
         this.medicalCard = medicalCard;
-        this.prevIllnesses = prevIllness;
+        this.illness = prevIllness;
         this.c = null;
+
     }
 
     public static Patient create(String fname, String lname, Boolean gender, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness){
         Patient patient = new Patient(fname, lname, gender, ppsNumber, dob, address, email, homePhone, mobilePhone, nokFName, nokLName, nokAddress, nokNumber, medicalCard, prevIllness);
+        patient.chart = new Chart(patient);
         patient.save();
+        patient.chart.save();
         return patient;
+    }
+
+    public void assignConsultant(Consultant c){
+        this.c = c;
+        c.addPatient(this);
+        this.save();
+        c.save();
+    }
+
+    public Consultant getC() {
+        return c;
     }
 
     public void popAppointments(){
@@ -343,11 +356,11 @@ public class Patient extends Model implements Serializable{
         this.medicalCard = medicalCard;
     }
 
-    public String getPrevIllnesses() {
-        return prevIllnesses;
+    public String getIllness() {
+        return illness;
     }
 
-    public void setPrevIllnesses(String prevIllnesses) {
-        this.prevIllnesses = prevIllnesses;
+    public void setIllness(String illness) {
+        this.illness = illness;
     }
 }

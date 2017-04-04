@@ -24,10 +24,18 @@ public class ConsultantController extends Controller {
     public Result consultantHomePage(){
         User u = HomeController.getUserFromSession();
         Consultant c = (Consultant) u;
-        List<Appointment> appointments = c.getAppointments();
-        Collections.sort(appointments, new DateComparator());
-        HomeController.endPatientSession();
-        return ok(consultantHomePage.render(u, appointments));
+        List<Appointment> appointments = new ArrayList<>();
+        if(c.getSpecialization() == null){
+            flash("error", "You have not declared your specialization");
+        }
+        if(c.getAppointments().size() != 0) {
+            appointments = c.getAppointments();
+            Collections.sort(appointments, new DateComparator());
+            HomeController.endPatientSession();
+            return ok(consultantHomePage.render(c, appointments));
+        }
+        else
+            return ok(consultantHomePage.render(c, appointments));
     }
 
     public Result viewAppointments(){
@@ -42,7 +50,13 @@ public class ConsultantController extends Controller {
         Ward w = p.getWard();
         w.dischargePatient(p);
         c.setDischargeDate(new Date());
-        if(p.getAppointments().size() == 0 && c.getB().isPaid()){
+        c.update();
+        w.update();
+        Bill b = new Bill();
+        if(c.getB() != null){
+            b = c.getB();
+        }
+        if(p.getAppointments().size() == 0 && b.isPaid()){
             if(c.getB() != null){
                 if(!c.getB().isPaid()){
                     flash("success", "Patient has been discharged. Bill has been generated");
@@ -61,7 +75,29 @@ public class ConsultantController extends Controller {
                 return redirect(routes.HomeController.discharge());
             }
         }
+
         flash("success", "Patient has been discharged.");
+        return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
+    }
+
+    public Result removePrescription(String prescription_id){
+        Patient p = HomeController.getPatientFromSession();
+        Consultant c = (Consultant)HomeController.getUserFromSession();
+        Prescription pres = Prescription.find.byId(prescription_id);
+        pres.delete();
+        String logFileString = "Prescription " + prescription_id + " removed for Patient(" + p.getMrn() + ") by Dr." + c.getLname() + "(" + c.getIdNum() + ")";
+        LogFile.writeToLog(logFileString);
+        flash("success", "Prescription has been removed.");
+        return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
+    }
+
+    public Result addConsultant(){
+        Consultant c = (Consultant) HomeController.getUserFromSession();
+        Patient p = HomeController.getPatientFromSession();
+        p.assignConsultant(c);
+        String logFileString = "Dr. " + c.getLname() + "(" + c.getIdNum() + ") assigned to patient(" + p.getMrn() + ")";
+        LogFile.writeToLog(logFileString);
+        flash("success", "Patient assigned to Dr. " + c.getLname());
         return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
     }
 }

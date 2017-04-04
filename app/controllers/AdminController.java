@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Bill;
 import models.Chart;
 import models.LogFile;
 import play.*;
@@ -94,6 +95,48 @@ public class AdminController extends Controller{
         }
 
         return ok(addPatient.render(patientForm,null, HomeController.getUserFromSession()));
+    }
+
+    public Result listConsultants(){
+        List<Consultant> consultants = Consultant.findAllConsultants();
+        Patient p = HomeController.getPatientFromSession();
+        User u = HomeController.getUserFromSession();
+
+        return ok(listConsultants.render(consultants, u, p));
+    }
+
+    public Result addConsultant(String idNum){
+        Consultant c = Consultant.find.byId(idNum);
+        Patient p = HomeController.getPatientFromSession();
+        User u = HomeController.getUserFromSession();
+        p.assignConsultant(c);
+        String logFileString = "Dr. " + c.getLname() + "(" + c.getIdNum() + ") assigned to patient(" + p.getMrn() + ")";
+        LogFile.writeToLog(logFileString);
+        flash("success", "Patient assigned to Dr. " + c.getLname());
+        return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
+    }
+
+    public Result genBill(){
+        Patient p = HomeController.getPatientFromSession();
+        User u = HomeController.getUserFromSession();
+        Chart c = p.getChart();
+        Bill b;
+        if(c.getB() == null) {
+            b = new Bill(p.getChart());
+            c.setB(b);
+            c.save();
+            b.calcBill();
+            b.save();
+        }else{
+            b = c.getB();
+            b.calcBill();
+            b.update();
+        }
+
+        String logFileString = "Bill generated for patient(" + p.getMrn() + ") by User '" + u.getFname() + " " + u.getLname() + "'(" + u.getIdNum() + ")";
+        LogFile.writeToLog(logFileString);
+        flash("success", "Bill generated ");
+        return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
     }
 
 }

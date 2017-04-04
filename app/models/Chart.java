@@ -35,11 +35,14 @@ public class Chart extends Model {
     @JoinColumn(name = "billId")
     private Bill b;
 
-    @ManyToMany
-    @JoinTable(name = "CHARTPRESCRIPTION")
+    @OneToMany (mappedBy = "chart")
     private List<Prescription> prescriptionList = new ArrayList<>();
 
     public Chart() {
+    }
+
+    public Chart(Patient p) {
+        this.p = p;
     }
 
     public Chart(String currentWard, Date dateOfAdmittance, String mealPlan, Patient p) {
@@ -86,6 +89,14 @@ public class Chart extends Model {
             chartResult = null;
         }
         return null;
+    }
+
+    public void setDateOfAdmittance(Date dateOfAdmittance) {
+        this.dateOfAdmittance = dateOfAdmittance;
+    }
+
+    public void setMealPlan(String mealPlan) {
+        this.mealPlan = mealPlan;
     }
 
     public Bill getB() {
