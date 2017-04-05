@@ -11,7 +11,6 @@ create table appointment (
   equipid                       varchar(255),
   constraint pk_appointment primary key (id)
 );
-create sequence appointment_seq increment by 1;
 
 create table bill (
   bill_id                       varchar(255) not null,
@@ -184,7 +183,6 @@ drop index if exists ix_prescription_chartid;
 alter table standby_list drop constraint if exists fk_standby_list_wardid;
 
 drop table if exists appointment;
-drop sequence if exists appointment_seq;
 
 drop table if exists bill;
 drop sequence if exists bill_seq;

@@ -1,0 +1,52 @@
+@(consultants: List[models.users.Consultant], user: models.users.User, patient: models.Patient)
+
+@if(user.checkRole().equals("Admin")) {
+  @adminPages.mainAdmin("Search Patient", user) {
+    @if(flash().containsKey("success")) {
+      <div class="col-xs-4">
+        <div class="centered">
+          <div class="alert alert-success">
+            <strong>@flash().get("success")</strong>
+          </div>
+        </div>
+      </div>
+    }
+    @if(flash().containsKey("error")) {
+      <div class="col-xs-4">
+        <div class="centered">
+          <div class="alert alert-error">
+            <strong>@flash().get("error")</strong>
+          </div>
+        </div>
+      </div>
+    }
+    <div class="row">
+      <div class="col-sm-12">
+        <table class="table table-bordered table-hover table-condensed" id="sortableTable">
+        @if(!consultants.isEmpty){
+          <thead>
+            <tr>
+              <th onclick="sortTable(0)">Id</th>
+              <th onclick="sortTable(1)">Name</th>
+              <th onclick="sortTable(2)">Specialization</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(p <- consultants) {
+              <tr>
+                <td class="numeric">@p.getIdNum</td>
+                <td>@p.getFname @p.getLname</td>
+                <td>@p.getSpecialization</td>
+                <td><a href="@routes.AdminController.addConsultant(p.getIdNum)">View Profile</a></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        }else{
+        <h1>No patients found.</h1>
+        <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Back to Patient</button></a>
+      }
+      </div>
+    </div>
+  }
+}
