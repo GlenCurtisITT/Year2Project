@@ -101,6 +101,10 @@ public class Patient extends Model implements Serializable{
         return new SimpleDateFormat("dd MMM yyyy").format(a);
     }
 
+    public String getFormattedDOBForUpdate(Date a){
+        return new SimpleDateFormat("yyyy-dd-MM").format(a);
+    }
+
     public static Finder<String, Patient> find = new Finder<String, Patient>(Patient.class);
 
     public static List<Patient> findAll(){

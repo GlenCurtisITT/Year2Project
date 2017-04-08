@@ -464,7 +464,7 @@ public class HomeController extends Controller {
             medCard = false;
         }
 
-        if(genderInput.equals("Male")){
+        if(genderInput.equals("true")){
             gender = true;
         } else {
             gender = false;
@@ -582,6 +582,7 @@ public class HomeController extends Controller {
         m.save();
         return redirect(controllers.routes.HomeController.makePrescription());
     }
+
 
     public static User getUserFromSession(){
         if(User.getUserById(session().get("numId")) instanceof Consultant){

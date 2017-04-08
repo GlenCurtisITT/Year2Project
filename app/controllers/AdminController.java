@@ -19,6 +19,9 @@ import play.data.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.inject.Inject;
@@ -82,18 +85,59 @@ public class AdminController extends Controller{
         return ok(viewFullLog.render(u, logEntries));
     }
 
-    @Transactional
     public Result updatePatient(String mrn){
-        Patient p;
-        Form<Patient> patientForm;
-        try{
-            p = Patient.find.byId(mrn);
-            patientForm = formFactory.form(Patient.class).fill(p);
-        }catch(Exception e){
-            return badRequest();
-        }
+        User u = HomeController.getUserFromSession();
+        Patient p = Patient.find.byId(mrn);
+        return ok(updatePatient.render(u, p));
+    }
 
-        return ok(addPatient.render(patientForm,null, HomeController.getUserFromSession()));
+    public Result updatePatientSubmit(){
+        DynamicForm df = formFactory.form().bindFromRequest();
+        Patient p = Patient.find.byId(df.get("mrn"));
+        User u = HomeController.getUserFromSession();
+        if(df.get("email").equals("") || df.get("fname").equals("") || df.get("lname").equals("")){
+            flash("error", "Email, First Name or Last Name cannot be blank.");
+            return badRequest(updatePatient.render(u, p));
+        }
+        p.setfName(df.get("fname"));
+        p.setlName(df.get("lname"));
+        if(df.get("gender").equals("true")){
+            p.setGender(true);
+        }else{
+            p.setGender(false);
+        }
+        p.setPpsNumber(df.get("ppsNumber"));
+        p.setEmail(df.get("email"));
+        p.setAddress(df.get("address"));
+        p.setHomePhone(df.get("homePhone"));
+        p.setMobilePhone(df.get("mobileNum"));
+        p.setNokFName(df.get("nokFname"));
+        p.setNokLName(df.get("nokLname"));
+        p.setNokAddress(df.get("nokAdd"));
+        p.setNokNumber(df.get("nokPhone"));
+        String dateString = df.get("date");
+        if(df.get("medicalCard").equals("true")){
+            p.setMedicalCard(true);
+        }else{
+            p.setMedicalCard(false);
+        }
+        p.setPrevIllnesses(df.get("illness"));
+        DateFormat format = new SimpleDateFormat("yyyy-dd-MM");
+        Date date = new Date();
+        try{
+            date = format.parse(dateString);
+        } catch (ParseException e) {
+            flash("error", "Error with date. Must be yyyy-dd-MM");
+            return ok(updatePatient.render(u, p));
+        }
+        p.setDob(date);
+
+        p.update();
+        String logFileString = u.checkRole() + " " + u.getFname() + " " + u.getLname() + " updated patient "
+                + p.getfName() + " " + p.getlName() + "'s information.";
+        LogFile.writeToLog(logFileString);
+        flash("success", "Patient Updated");
+        return redirect(routes.HomeController.searchPatient());
     }
 
 }
