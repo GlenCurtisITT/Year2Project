@@ -12,7 +12,7 @@
     }
     <div class="row">
       <form method="post" action="@routes.AdminController.updatePatientSubmit" class="form-horizontal">
-        <div class="col-lg-4">
+        <div class="col-lg-4" id="margBot">
           <label>First Name</label>
           <input type="text" name="fname" value="@patient.getfName()" class="form-control" />
 
@@ -44,6 +44,8 @@
 
           <label>Home Phone No.</label>
           <input type="text" name="homePhone" value="@patient.getHomePhone" class="form-control" />
+        </div>
+        <div class="col-lg-4">
 
           <label>Mobile Phone No.</label>
           <input type="text" name="mobileNum" value="@patient.getMobilePhone"  class="form-control" />
@@ -75,9 +77,10 @@
           <input type="text" name="illness" value="@patient.getPrevIllnesses" class="form-control" />
 
           <input type="hidden" name="mrn" value="@patient.getMrn" class="form-control" />
-
-          <input type="submit" value="Update Patient" class="btn btn-primary">
         </div>
+          <div class="col-lg-12">
+            <input type="submit" value="Update Patient" class="btn btn-primary">
+          </div>
       </form>
     </div>
   }

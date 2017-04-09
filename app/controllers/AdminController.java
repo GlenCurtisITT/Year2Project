@@ -96,7 +96,7 @@ public class AdminController extends Controller{
         Patient p = Patient.find.byId(df.get("mrn"));
         User u = HomeController.getUserFromSession();
         if(df.get("email").equals("") || df.get("fname").equals("") || df.get("lname").equals("")){
-            flash("error", "Email, First Name or Last Name cannot be blank.");
+            flash("error", "Email, First Name and Last Name cannot be blank.");
             return badRequest(updatePatient.render(u, p));
         }
         p.setfName(df.get("fname"));
@@ -106,6 +106,18 @@ public class AdminController extends Controller{
         }else{
             p.setGender(false);
         }
+
+        //Find all patients in system. Check PPS number against all but self.
+        List<Patient> allPatients = Patient.findAll();
+        allPatients.remove(p);
+        for(Patient patient : allPatients){
+            if(patient.getPpsNumber().equals(df.get("ppsNumber"))){
+                //Return bad request if PPS number is the same as another patient.
+                flash("error", "Another patient with same PPS.");
+                return badRequest(updatePatient.render(u, p));
+            }
+        }
+
         p.setPpsNumber(df.get("ppsNumber"));
         p.setEmail(df.get("email"));
         p.setAddress(df.get("address"));

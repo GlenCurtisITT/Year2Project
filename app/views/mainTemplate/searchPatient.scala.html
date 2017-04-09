@@ -3,19 +3,24 @@
 @if(user.checkRole().equals("Admin")) {
     @adminPages.mainAdmin("Search Patient", user) {
         @if(flash().containsKey("success")) {
-            <div class="col-xs-4">
-                <div class="centered">
-                    <div class="alert alert-success">
-                        <strong>@flash().get("success")</strong>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="centered">
+                        <div class="alert alert-success">
+                            <strong>@flash().get("success")</strong>
+                        </div>
                     </div>
                 </div>
             </div>
+
         }
         @if(flash().containsKey("error")) {
-            <div class="col-xs-4">
-                <div class="centered">
-                    <div class="alert alert-error">
-                        <strong>@flash().get("error")</strong>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="centered">
+                        <div class="alert alert-error">
+                            <strong>@flash().get("error")</strong>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,10 +112,12 @@
 @if(user.checkRole().equals("Consultant")) {
     @consultantPages.mainConsultant("Search Patient", user) {
         @if(flash().containsKey("success")) {
-            <div class="col-xs-4">
-                <div class="centered">
-                    <div class="alert alert-success">
-                        <strong>@flash().get("success")</strong>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="centered">
+                        <div class="alert alert-success">
+                            <strong>@flash().get("success")</strong>
+                        </div>
                     </div>
                 </div>
             </div>
