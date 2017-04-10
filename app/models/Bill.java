@@ -97,8 +97,8 @@ public class Bill extends Model implements MedBilling{
         double prescriptions = 0;
         double stay = 0;
         stay = days * COST_PER_DAY;
-        if(c.getPrescriptionList().size() != 0) {
-            for(Prescription p : c.getPrescriptionList()){
+        if(c.getP().getPrescriptionList().size() != 0) {
+            for(Prescription p : c.getP().getPrescriptionList()){
                 prescriptions += p.getDosage() * p.getMedicine().getPricePerUnit();
             }
         }

@@ -22,7 +22,7 @@
         }
         <div class="row">
             <div class="col-md-3">
-                <form method="post" action="@routes.HomeController.searchByMRN()" class="navbar-form" role="search">
+                <form method="post" action="@routes.SearchController.searchByMRN()" class="navbar-form" role="search">
                     <div class="input-group add-on">
                         <input class="form-control" placeholder="Search by MRN" name="mrn" id="srch-term" type="text">
                         <div class="input-group-btn">
@@ -32,7 +32,7 @@
                 </form>
             </div>
             <div class="col-md-3">
-                <form method="post" action="@routes.HomeController.searchByLastName()" class="navbar-form" role="search">
+                <form method="post" action="@routes.SearchController.searchByLastName()" class="navbar-form" role="search">
                     <div class="input-group add-on">
                         <input class="form-control" placeholder="Search by Last Name" name="lName" id="srch-term" type="text">
                         <div class="input-group-btn">
@@ -42,7 +42,7 @@
                 </form>
             </div>
             <div class="col-md-3">
-            <form method="post" action="@routes.HomeController.searchArchiveByMRN()" class="navbar-form" role="search">
+            <form method="post" action="@routes.SearchController.searchArchiveByMRN()" class="navbar-form" role="search">
                 <div class="input-group add-on">
                     <input class="form-control" placeholder="Search Archive by MRN" name="archiveMrn" id="srch-term" type="text">
                     <div class="input-group-btn">
@@ -92,7 +92,7 @@
                 </table>
                 }else{
                 <h1>No patients found.</h1>
-                <a href="@routes.HomeController.searchPatient()"><button type="button" class="btn btn-primary text-center">Back to Full Patient List</button></a>
+                <a href="@routes.SearchController.searchPatient()"><button type="button" class="btn btn-primary text-center">Back to Full Patient List</button></a>
                 }<!--End Patients not null if statement -->
             </div>
         </div>
@@ -117,7 +117,7 @@
         }
         <div class="row">
             <div class="col-md-3">
-                <form method="post" action="@routes.HomeController.searchByMRN()" class="navbar-form" role="search">
+                <form method="post" action="@routes.SearchController.searchByMRN()" class="navbar-form" role="search">
                     <div class="input-group add-on">
                         <input class="form-control" placeholder="Search by MRN" name="mrn" id="srch-term" type="text">
                         <div class="input-group-btn">
@@ -127,7 +127,7 @@
                 </form>
             </div>
             <div class="col-md-3">
-                <form method="post" action="@routes.HomeController.searchByLastName()" class="navbar-form" role="search">
+                <form method="post" action="@routes.SearchController.searchByLastName()" class="navbar-form" role="search">
                     <div class="input-group add-on">
                         <input class="form-control" placeholder="Search by Last Name" name="lName" id="srch-term" type="text">
                         <div class="input-group-btn">
@@ -137,7 +137,7 @@
                 </form>
             </div>
             <div class="col-md-3">
-                <form method="post" action="@routes.HomeController.searchArchiveByMRN()" class="navbar-form" role="search">
+                <form method="post" action="@routes.SearchController.searchArchiveByMRN()" class="navbar-form" role="search">
                     <div class="input-group add-on">
                         <input class="form-control" placeholder="Search Archive by MRN" name="archiveMrn" id="srch-term" type="text">
                         <div class="input-group-btn">
@@ -177,7 +177,7 @@
                 </table>
                 }else{
                 <h1>No patients found.</h1>
-                <a href="@routes.HomeController.searchPatient()"><button type="button" class="btn btn-primary text-center">Back to Full Patient List</button></a>
+                <a href="@routes.SearchController.searchPatient()"><button type="button" class="btn btn-primary text-center">Back to Full Patient List</button></a>
             }<!--End Patients not null if statement -->
             </div>
         </div>

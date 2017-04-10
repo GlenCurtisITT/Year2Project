@@ -2,7 +2,6 @@ package controllers;
 
 import play.mvc.*;
 
-import scala.App;
 import views.html.loginPage.*;
 import views.html.mainTemplate.*;
 import play.data.*;
@@ -103,22 +102,23 @@ public class HomeController extends Controller {
         return ok(createUser.render(addUserForm, null));
     }
 
-    public Result searchPatient(){
-        endPatientSession();
-        List<Patient> patientList = Patient.findAll();
-        return ok(searchPatient.render(patientList, getUserFromSession()));
-    }
-
     public Result viewPatient(){
         Patient p = getPatientFromSession();
         return ok(viewPatient.render(getUserFromSession(), p));
     }
 
-    public Result viewPatientByID(java.lang.String mrn){
+    public Result viewPatientByID(String mrn){
         endPatientSession();
         Patient p = Patient.find.byId(mrn);
         if(!session().containsKey("mrn")) {
             session("mrn", mrn);
+        }
+        if(p.getCharts().size() == 0){
+            Chart c = new Chart(p);
+            c.save();
+            p.setChart(c);
+            p.update();
+
         }
         return ok(viewPatient.render(getUserFromSession(), getPatientFromSession()));
     }
@@ -135,6 +135,7 @@ public class HomeController extends Controller {
         DynamicForm newChartForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
         List<Ward> wards = Ward.findAll();
+        Form<Chart> addChartForm = formFactory.form(Chart.class);
         Ward w = Ward.find.byId(newChartForm.get("wardId"));
         Patient p = getPatientFromSession();
         User u = getUserFromSession();
@@ -151,23 +152,34 @@ public class HomeController extends Controller {
         if(!w.capacityStatus()){
             w.admitPatient(p);
         } else{
+            if(p.getSl() != null){
+                if(p.getSl().getW().getWardId().equals(w.getWardId())){
+                    return ok(admitPatient.render(addChartForm, wards, p, u, "Patient is already on the standby list for this ward."));
+                }
+            }
             w.getSl().addPatient(p);
             //Writing to log file
             String logFileString = p.getfName() + " "
                     + p.getlName() + " was put on standby-list for ward " + w.getName();
             LogFile.writeToLog(logFileString);
-            flash("Success", "Ward is full. Patient added to Standby List");
+            flash("success", "Ward is full. Patient added to Standby List");
             return redirect(controllers.routes.HomeController.viewPatientByID(p.getMrn()));
         }
 
         //Adding Appointment to database
-        Chart c = p.getChart();
+        Chart c = p.getCurrentChart();
         c.setCurrentWard(w.getName());
         c.setMealPlan(newChartForm.get("mealPlan"));
         c.setDateOfAdmittance(new Date());
         c.update();
         //Flashing String s to memory to be used in view patient screen.
-        String s = p.getfName() + " " + p.getlName() + " admitted to " + w.getName();
+        String s = "";
+        if(p.getSl() != null){
+            p.setSl(null);
+
+            s = p.getfName() + " " + p.getlName() + " was removed from the " + p.getSl().getW().getName() + " waiting list.\n";
+        }
+        s += p.getfName() + " " + p.getlName() + " admitted to " + w.getName();
         flash("success", s);
         //Writing to log file.
         String logFileString = getUserFromSession().checkRole() + " "
@@ -495,36 +507,6 @@ public class HomeController extends Controller {
 
     }
 
-    public Result searchByMRN(){
-        DynamicForm searchForm = formFactory.form().bindFromRequest();
-        String MRN = searchForm.get("mrn");
-        List<Patient> searchedPatients = Patient.find.where().like("mrn", MRN).findList();
-        return ok(searchPatient.render(searchedPatients, getUserFromSession()));
-    }
-
-    public Result searchArchiveByMRN(){
-        DynamicForm searchForm = formFactory.form().bindFromRequest();
-        String mrn = searchForm.get("archiveMrn");
-        List<Patient> searchedPatients = new ArrayList<>();
-            Patient p = Patient.readArchive(mrn);
-            Chart c = Chart.readArchive(mrn);
-            if(p != null) {
-                searchedPatients.add(p);
-                if(c != null) {
-                    p.setChart(c);
-                    c.setP(p);
-                }
-            }
-        return ok(searchPatient.render(searchedPatients, getUserFromSession()));
-    }
-
-    public Result searchByLastName(){
-        DynamicForm searchForm = formFactory.form().bindFromRequest();
-        String lName = searchForm.get("lName");
-        List<Patient> searchedPatients = Patient.find.where().like("lName", lName + "%").findList();
-        return ok(searchPatient.render(searchedPatients, getUserFromSession()));
-    }
-
     public Result makePrescription(){
         Form<Prescription> addPrescriptionForm = formFactory.form(Prescription.class);
         List<Medicine> medicine = Medicine.findAll();
@@ -565,9 +547,9 @@ public class HomeController extends Controller {
         Medicine m = Medicine.find.byId(newPrescriptionForm.get("medicineId"));
         Prescription pres = new Prescription(newPrescriptionForm.get("frequency"), Integer.parseInt(newPrescriptionForm.get("dosage")), m);
         pres.setMedicine(m);
-        pres.setChart(p.getChart());
+        pres.setPatient(p);
         pres.save();
-        p.getChart().save();
+        p.update();
         String s = "Prescription for " + pres.getDosage() + pres.getMedicine().getUnitOfMeasurement() + " of " + pres.getMedicine().getName() + " written for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName();
         flash("success", s);
         return redirect(controllers.routes.HomeController.viewPatient());

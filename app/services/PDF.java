@@ -1,8 +1,6 @@
 package services;
 
-import models.Chart;
 import models.Prescription;
-import models.users.Consultant;
 import models.Patient;
 
 import com.itextpdf.text.Anchor;
@@ -20,10 +18,8 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 
 
@@ -70,7 +66,7 @@ public class PDF {
                 smallBold));
 
         addEmptyLine(preface, 8);
-        if(p.getChart().getCurrentWard() != null) {
+        if(p.getCurrentChart().getCurrentWard() != null) {
             preface.add(new Paragraph(
                     "Duration of stay: ",
                     smallBold));
@@ -122,7 +118,7 @@ public class PDF {
 
         addEmptyLine(paragraph, 5);
         subCatPart.add(paragraph);
-        if(p.getChart().getPrescriptionList().size() != 0) {
+        if(p.getPrescriptionList().size() != 0) {
             createPresList(subCatPart, p , prescriptionCost);
         }
 
@@ -140,7 +136,7 @@ public class PDF {
         // t.setBorderWidth(1);
 
         PdfPCell c1;
-        if(p.getChart().getDateOfAdmittance() != null) {
+        if(p.getCurrentChart().getDateOfAdmittance() != null) {
             c1 = new PdfPCell(new Phrase("Appointments"));
             c1.setHorizontalAlignment(Element.ALIGN_CENTER);
             table.addCell(c1);
@@ -155,7 +151,7 @@ public class PDF {
             table.addCell("€" + Double.toString(costOfDays));
         }
 
-        if(p.getAppointments().size() != 0 || p.getChart().getDateOfAdmittance() != null) {
+        if(p.getAppointments().size() != 0 || p.getCurrentChart().getDateOfAdmittance() != null) {
             subCatPart.add(table);
         }
 
@@ -163,7 +159,7 @@ public class PDF {
 
     public static void createPresList(Section subCatPart, Patient p, double prescriptionCost) {
         List list = new List(true, false, 10);
-        for (Prescription pres : p.getChart().getPrescriptionList()) {
+        for (Prescription pres : p.getPrescriptionList()) {
             list.add(new ListItem(pres.getMedicine().getName() + " " + pres.getDosage() + pres.getMedicine().getUnitOfMeasurement() + " €" + prescriptionCost));
         }
         subCatPart.add(list);

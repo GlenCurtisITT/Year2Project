@@ -7,10 +7,8 @@ import play.data.format.Formats;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -53,8 +51,11 @@ public class Patient extends Model implements Serializable{
     @OneToMany(mappedBy = "p")
     private List<Appointment> appointments = new ArrayList<>();
 
-    @OneToOne(mappedBy = "p")
-    private Chart chart;
+    @OneToMany(mappedBy = "p")
+    private List<Chart> charts;
+
+    @OneToMany (mappedBy = "patient")
+    private List<Prescription> prescriptionList = new ArrayList<>();
 
     public Patient() {
 
@@ -83,9 +84,10 @@ public class Patient extends Model implements Serializable{
 
     public static Patient create(String fname, String lname, Boolean gender, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness){
         Patient patient = new Patient(fname, lname, gender, ppsNumber, dob, address, email, homePhone, mobilePhone, nokFName, nokLName, nokAddress, nokNumber, medicalCard, prevIllness);
-        patient.chart = new Chart(patient);
+        Chart c = new Chart(patient);
+        patient.charts.add(c);
         patient.save();
-        patient.chart.save();
+        c.save();
         return patient;
     }
 
@@ -204,6 +206,18 @@ public class Patient extends Model implements Serializable{
         return patients;
     }
 
+    public List<Prescription> getPrescriptionList() {
+        return prescriptionList;
+    }
+
+    public void setPrescriptionList(List<Prescription> p){
+        prescriptionList = p;
+    }
+
+    public void setPrescription(Prescription p) {
+        this.prescriptionList.add(p);
+    }
+
     public void removeWard(){
         this.ward = null;
     }
@@ -228,12 +242,38 @@ public class Patient extends Model implements Serializable{
         this.gender = gender;
     }
 
-    public Chart getChart() {
-        return chart;
+    public Chart getCurrentChart() {
+        return charts.get(charts.size() - 1);
+    }
+
+    public Chart getBillingChart() {
+        List<Chart> billingCharts = charts.stream().filter(c -> c.getDateOfAdmittance() != null).collect(Collectors.toList());
+
+        if(billingCharts.size() != 0) {
+            final Iterator<Chart> itr = billingCharts.iterator();
+            Chart lastElement = itr.next();
+
+            while (itr.hasNext()) {
+                lastElement = itr.next();
+            }
+
+            return lastElement;
+        }
+        else{
+            return getCurrentChart();
+        }
+    }
+
+    public List<Chart> getCharts(){
+        return charts;
     }
 
     public void setChart(Chart chart) {
-        this.chart = chart;
+        this.charts.add(chart);
+    }
+
+    public void setChartList(List<Chart> charts){
+        this.charts = charts;
     }
 
     public void setWard(Ward ward) {

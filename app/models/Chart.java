@@ -27,16 +27,13 @@ public class Chart extends Model {
     private Date dischargeDate;
     private String mealPlan;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "mrn")
     private Patient p;
 
     @OneToOne
     @JoinColumn(name = "billId")
     private Bill b;
-
-    @OneToMany (mappedBy = "chart")
-    private List<Prescription> prescriptionList = new ArrayList<>();
 
     public Chart() {
     }
@@ -68,27 +65,29 @@ public class Chart extends Model {
         }
     }
 
-    public static Chart readArchive(String mrn){
+    public static List<Chart> readArchive(String mrn){
         final String CHARTFILE = "public/Files/charts.gz";
-        Chart c = new Chart();
-        Chart chartResult = null;
+        List<Chart> chartResult = new ArrayList<>();
+        Chart c = null;
         try (FileInputStream fin = new FileInputStream(CHARTFILE);
              GZIPInputStream gis = new GZIPInputStream(fin);
              ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
             while (true) {
                 c = (Chart) ois.readObject();
                 if(c.getP().getMrn().equals(mrn)){
-                    chartResult = c;
-                    chartResult.insert();
-                    return chartResult;
+                    chartResult.add(c);
+                    c.insert();
                 }
             }
         }catch (ClassNotFoundException e) {
             chartResult = null;
+        }catch (EOFException e) {
+            return chartResult;
         }catch (IOException e) {
             chartResult = null;
         }
-        return null;
+
+        return chartResult;
     }
 
     public void setDateOfAdmittance(Date dateOfAdmittance) {
@@ -105,14 +104,6 @@ public class Chart extends Model {
 
     public void setB(Bill b) {
         this.b = b;
-    }
-
-    public List<Prescription> getPrescriptionList() {
-        return prescriptionList;
-    }
-
-    public void setPrescription(Prescription p) {
-        this.prescriptionList.add(p);
     }
 
     public void setCurrentWard(String currentWard) {

@@ -34,3 +34,23 @@
 [04/04/2017 14:33:00] - Consultant Glen Connolly admitted patient test3 test to ward Burns Unit
 [04/04/2017 14:33:49] - Bill generated for patient(13492152) by User 'Glen Connolly'(70772382)
 [04/04/2017 14:34:37] - Prescription 33 removed for Patient(13492152) by Dr.Connolly(22121987)
+[07/04/2017 17:03:29] - Consultant Glen Connolly made an appointment for John Dinkle for the 08 Apr 2017 at 06:00 AM
+[07/04/2017 17:03:59] - Consultant Glen Connolly admitted patient John Dinkle to ward Private Ward
+[07/04/2017 17:05:17] - Glen Connolly was put on standby-list for ward Private Ward
+[07/04/2017 17:10:32] - Glen Connolly was put on standby-list for ward Private Ward
+[07/04/2017 17:11:04] - Glen Connolly was put on standby-list for ward Private Ward
+[07/04/2017 17:25:37] - Glen Connolly was put on standby-list for ward Private Ward
+[07/04/2017 17:25:51] - Glen Connolly was put on standby-list for ward Private Ward
+[07/04/2017 17:27:45] - Glen Connolly was put on standby-list for ward Private Ward
+[07/04/2017 17:27:58] - Glen Connolly was put on standby-list for ward Private Ward
+[10/04/2017 11:12:47] - Consultant Glen Connolly admitted patient John Jacobs to ward Maternity Ward
+[10/04/2017 12:05:00] - Consultant Glen Connolly admitted patient John Jacobs to ward Maternity Ward
+[10/04/2017 13:16:00] - Consultant Glen Connolly admitted patient Jean Janson to ward Burns Unit
+[10/04/2017 13:27:51] - Consultant Glen Connolly admitted patient John Jacobs to ward Intensive Care Unit
+[10/04/2017 13:30:27] - Consultant Glen Connolly admitted patient Jean Janson to ward Private Ward
+[10/04/2017 13:30:38] - Consultant Glen Connolly admitted patient Jean Janson to ward Psychiatric Ward
+[10/04/2017 13:59:43] - Consultant Glen Connolly admitted patient John Jacobs to ward Maternity Ward
+[10/04/2017 14:10:17] - Consultant Glen Connolly admitted patient John Jacobs to ward Intensive Care Unit
+[10/04/2017 14:10:37] - Consultant Glen Connolly admitted patient John Jacobs to ward Burns Unit
+[10/04/2017 14:11:04] - Consultant Glen Connolly admitted patient John Jacobs to ward Psychiatric Ward
+[10/04/2017 14:12:25] - Consultant Glen Connolly made an appointment for John Jacobs for the 11 May 2017 at 06:00 AM

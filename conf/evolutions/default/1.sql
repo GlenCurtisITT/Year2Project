@@ -11,6 +11,7 @@ create table appointment (
   equipid                       varchar(255),
   constraint pk_appointment primary key (id)
 );
+create sequence appointment_seq increment by 1;
 
 create table bill (
   bill_id                       varchar(255) not null,
@@ -28,7 +29,6 @@ create table chart (
   meal_plan                     varchar(255),
   mrn                           varchar(255),
   billid                        varchar(255),
-  constraint uq_chart_mrn unique (mrn),
   constraint uq_chart_billid unique (billid),
   constraint pk_chart primary key (chart_id)
 );
@@ -80,7 +80,7 @@ create table prescription (
   frequency                     varchar(255),
   dosage                        integer,
   medicineid                    varchar(255),
-  chartid                       integer,
+  mrn                           varchar(255),
   constraint pk_prescription primary key (prescription_id)
 );
 create sequence prescription_seq increment by 1;
@@ -129,6 +129,7 @@ alter table appointment add constraint fk_appointment_equipid foreign key (equip
 create index ix_appointment_equipid on appointment (equipid);
 
 alter table chart add constraint fk_chart_mrn foreign key (mrn) references patient (mrn) on delete restrict on update restrict;
+create index ix_chart_mrn on chart (mrn);
 
 alter table chart add constraint fk_chart_billid foreign key (billid) references bill (bill_id) on delete restrict on update restrict;
 
@@ -144,8 +145,8 @@ create index ix_patient_standbyid on patient (standbyid);
 alter table prescription add constraint fk_prescription_medicineid foreign key (medicineid) references medicine (medicine_id) on delete restrict on update restrict;
 create index ix_prescription_medicineid on prescription (medicineid);
 
-alter table prescription add constraint fk_prescription_chartid foreign key (chartid) references chart (chart_id) on delete restrict on update restrict;
-create index ix_prescription_chartid on prescription (chartid);
+alter table prescription add constraint fk_prescription_mrn foreign key (mrn) references patient (mrn) on delete restrict on update restrict;
+create index ix_prescription_mrn on prescription (mrn);
 
 alter table standby_list add constraint fk_standby_list_wardid foreign key (wardid) references ward (ward_id) on delete restrict on update restrict;
 
@@ -162,6 +163,7 @@ alter table appointment drop constraint if exists fk_appointment_equipid;
 drop index if exists ix_appointment_equipid;
 
 alter table chart drop constraint if exists fk_chart_mrn;
+drop index if exists ix_chart_mrn;
 
 alter table chart drop constraint if exists fk_chart_billid;
 
@@ -177,12 +179,13 @@ drop index if exists ix_patient_standbyid;
 alter table prescription drop constraint if exists fk_prescription_medicineid;
 drop index if exists ix_prescription_medicineid;
 
-alter table prescription drop constraint if exists fk_prescription_chartid;
-drop index if exists ix_prescription_chartid;
+alter table prescription drop constraint if exists fk_prescription_mrn;
+drop index if exists ix_prescription_mrn;
 
 alter table standby_list drop constraint if exists fk_standby_list_wardid;
 
 drop table if exists appointment;
+drop sequence if exists appointment_seq;
 
 drop table if exists bill;
 drop sequence if exists bill_seq;
