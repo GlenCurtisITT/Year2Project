@@ -141,7 +141,7 @@ public class AdminController extends Controller{
         }else{
             p.setMedicalCard(false);
         }
-        p.setPrevIllnesses(df.get("illness"));
+        p.setIllness(df.get("illness"));
         DateFormat format = new SimpleDateFormat("yyyy-dd-MM");
         Date date = new Date();
         try{
@@ -157,7 +157,7 @@ public class AdminController extends Controller{
                 + p.getfName() + " " + p.getlName() + "'s information.";
         LogFile.writeToLog(logFileString);
         flash("success", "Patient Updated");
-        return redirect(routes.HomeController.searchPatient());
+        return redirect(routes.SearchController.searchPatient());
     }
 
     public Result listConsultants(){
