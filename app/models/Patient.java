@@ -52,7 +52,7 @@ public class Patient extends Model implements Serializable{
     private List<Appointment> appointments = new ArrayList<>();
 
     @OneToMany(mappedBy = "p")
-    private List<Chart> charts;
+    private List<Chart> charts = new ArrayList<>();
 
     @OneToMany (mappedBy = "patient")
     private List<Prescription> prescriptionList = new ArrayList<>();
@@ -84,10 +84,10 @@ public class Patient extends Model implements Serializable{
 
     public static Patient create(String fname, String lname, Boolean gender, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness){
         Patient patient = new Patient(fname, lname, gender, ppsNumber, dob, address, email, homePhone, mobilePhone, nokFName, nokLName, nokAddress, nokNumber, medicalCard, prevIllness);
-        Chart c = new Chart(patient);
-        patient.charts.add(c);
+        Chart chart = new Chart(patient);
+        patient.setChart(chart);
         patient.save();
-        c.save();
+        chart.save();
         return patient;
     }
 

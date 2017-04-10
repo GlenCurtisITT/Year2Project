@@ -46,7 +46,7 @@ public class Prescription extends Model {
 
 
     public void serialize() throws IOException {
-        final String CHARTFILE = "public/Files/charts.gz";
+        final String CHARTFILE = "public/Files/prescriptions.gz";
         try(FileOutputStream fo = new FileOutputStream(CHARTFILE);
             GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
             ObjectOutputStream oo = new ObjectOutputStream(gzipOut);){

@@ -62,7 +62,7 @@ public class SearchController {
             }
             if(pres != null){
                 p.setPrescriptionList(pres);
-                for(Prescription x : p.getPrescriptionList()){
+                for(Prescription x : pres){
                     x.setPatient(p);
                 }
             }

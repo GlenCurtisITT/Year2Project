@@ -37,11 +37,19 @@ public class AdminController extends Controller{
     public Result deletePatient(String mrn){
         Patient p = Patient.getPatientById(mrn); //serialize before delete
         Chart c = p.getCurrentChart();
+        Bill b = new Bill();
+        if(c.getB() != null){
+            b = c.getB();
+            if(!b.isPaid()) {
+                flash("error", "Cannot archive Patient while bill is overdue");
+                return redirect(routes.SearchController.searchPatient());
+            }
+        }
         if(p.getAppointments().size() != 0){
             flash("error", "Cannot archive Patient while there are still appointments due");
             return redirect(routes.SearchController.searchPatient());
         }
-        if(c.getDischargeDate() == null){
+        if(c.getDateOfAdmittance() != null){
             flash("error", "Cannot archive Patient while they are staying in the hospital");
             return redirect(routes.SearchController.searchPatient());
         }
