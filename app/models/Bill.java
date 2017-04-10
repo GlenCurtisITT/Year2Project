@@ -1,12 +1,15 @@
 package models;
 
 import com.avaje.ebean.Model;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import services.PDF;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,14 +19,19 @@ import java.util.concurrent.TimeUnit;
  * Created by conno on 27/03/2017.
  */
 @Entity
+@SequenceGenerator(name = "bill_gen", allocationSize=1, initialValue=1)
 public class Bill extends Model implements MedBilling{
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bill_gen")
     private String billId;
     private double amount;
     private boolean isPaid;
 
     @OneToOne(mappedBy = "b")
     private Chart c;
+
+    public Bill() {
+    }
 
     public Bill(Chart c) {
         this.c = c;
@@ -56,15 +64,20 @@ public class Bill extends Model implements MedBilling{
 
     public int calcNumberOfDays(){
         SimpleDateFormat myFormat = new SimpleDateFormat("dd MM yyyy");
-        String inputString1 = c.getDateOfAdmittance().toString();
-        String inputString2 = c.getDischargeDate().toString();
         long days;
-        try {
-            java.util.Date date1 = myFormat.parse(inputString1);
-            java.util.Date date2 = myFormat.parse(inputString2);
-            long diff = date2.getTime() - date1.getTime();
-            days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-        } catch (ParseException e) {
+        if(c.getDateOfAdmittance() != null) {
+            String inputString1 = c.getDateOfAdmittance().toString();
+            String inputString2 = c.getDischargeDate().toString();
+            try {
+                java.util.Date date1 = myFormat.parse(inputString1);
+                java.util.Date date2 = myFormat.parse(inputString2);
+                long diff = date2.getTime() - date1.getTime();
+                days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+            } catch (ParseException e) {
+                days = 0;
+            }
+        }
+        else{
             days = 0;
         }
         return (int) days;
@@ -84,8 +97,8 @@ public class Bill extends Model implements MedBilling{
         double prescriptions = 0;
         double stay = 0;
         stay = days * COST_PER_DAY;
-        if(c.getPrescriptionList().size() != 0) {
-            for(Prescription p : c.getPrescriptionList()){
+        if(c.getP().getPrescriptionList().size() != 0) {
+            for(Prescription p : c.getP().getPrescriptionList()){
                 prescriptions += p.getDosage() * p.getMedicine().getPricePerUnit();
             }
         }
@@ -98,20 +111,23 @@ public class Bill extends Model implements MedBilling{
         else{
             amount = stay + prescriptions + appointments;
         }
-/*
-        PDF pdf = new PDF(amount, c.getP());
+
+        if(amount == 0){
+            isPaid = true;
+        }
+        PDF pdf = new PDF(c.getP());
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(PDF.FILE));
+            PdfWriter.getInstance(document, new FileOutputStream(pdf.FILE));
             document.open();
-            PDF.addMetaData(document);
-            PDF.addTitlePage(document);
-            PDF.addContent(document);
+            PDF.addMetaData(document, c.getP());
+            PDF.addContent(document, c.getP(), days, stay, appointments, prescriptions);
             document.close();
-        } catch (Exception e) {
-
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (DocumentException e) {
+            e.printStackTrace();
         }
-*/
     }
 
 

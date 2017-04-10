@@ -1,8 +1,17 @@
-@(user: models.users.User, appointmentList: List[models.Appointment])
-@consultantPages.mainConsultant("Consultant Homepage", user) {
+@(consultant: models.users.Consultant, appointmentList: List[models.Appointment])
+@consultantPages.mainConsultant("Consultant Homepage", consultant) {
+    <div class="row">
+        <div class="col-lg-6">
+        @if(flash().containsKey("error")) {
+            <div class="alert alert-warning">
+                <strong>@flash().get("error")</strong>
+            </div>
+        }
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-12">
-            <h1>Welcome back Dr @user.getLname. </h1>
+            <h1>Welcome back Dr @consultant.getLname. </h1>
         </div>
     </div>
 

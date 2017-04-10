@@ -21,7 +21,7 @@ public class Medicine extends Model {
     private double pricePerUnit;
     private String unitOfMeasurement;
 
-    @OneToOne(mappedBy = "medicine")
+    @OneToMany(mappedBy = "medicine")
     private Prescription p;
 
     public Medicine(String name, String sideAffects, String ingredients, double pricePerUnit, String unitOfMeasurement) {

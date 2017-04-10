@@ -12,15 +12,6 @@
           <h1>Name: @patient.getfName() @patient.getlName()</h1>
           <label>Please include discharge date, ward and a meal plan</label>
           <form method = "post" action="@routes.HomeController.admitPatientSubmit()" class="form-horizontal">
-            <input type="date" id="dischargeDate" name="dischargeDate" dataformatas="yyyy-dd-MM" />
-            <select id="margBot" name="hours">
-              <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
-              <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
-              <option id="18">18</option><option id="19">19</option><option id="20">20</option>
-            </select>
-            <select id="minutes" name="minutes">
-              <option id="00">00</option><option id="30">30</option>
-            </select>
             <select id="wardId" name="wardId">
               <option value="select">--- Please Select Ward ---</option>
               @for(w <- wardlist){
@@ -51,15 +42,6 @@
         <h1>Name: @patient.getfName() @patient.getlName()</h1>
         <label>Please include discharge date, ward and a meal plan</label>
         <form method = "post" action="@routes.HomeController.admitPatientSubmit()" class="form-horizontal">
-          <input type="date" id="dischargeDate" name="dischargeDate" dataformatas="yyyy-dd-MM" />
-          <select id="margBot" name="hours">
-            <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
-            <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
-            <option id="18">18</option><option id="19">19</option><option id="20">20</option>
-          </select>
-          <select id="minutes" name="minutes">
-            <option id="00">00</option><option id="30">30</option>
-          </select>
           <select id="wardId" name="wardId">
             <option value="select">--- Please Select Ward ---</option>
             @for(w <- wardlist){

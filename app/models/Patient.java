@@ -4,14 +4,11 @@ import javax.persistence.*;
 import com.avaje.ebean.Model;
 import models.users.Consultant;
 import play.data.format.Formats;
-import scala.App;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -37,7 +34,7 @@ public class Patient extends Model implements Serializable{
     private String nokAddress;
     private String nokNumber;
     private Boolean medicalCard;
-    private String prevIllnesses;
+    private String illness;
 
     @ManyToOne()    //signifies relationship with Consultant table
     @JoinColumn(name = "idNum")    //name of column which links tables
@@ -54,8 +51,11 @@ public class Patient extends Model implements Serializable{
     @OneToMany(mappedBy = "p")
     private List<Appointment> appointments = new ArrayList<>();
 
-    @OneToOne(mappedBy = "p")
-    private Chart chart;
+    @OneToMany(mappedBy = "p")
+    private List<Chart> charts = new ArrayList<>();
+
+    @OneToMany (mappedBy = "patient")
+    private List<Prescription> prescriptionList = new ArrayList<>();
 
     public Patient() {
 
@@ -77,14 +77,29 @@ public class Patient extends Model implements Serializable{
         this.nokAddress = nokAddress;
         this.nokNumber = nokNumber;
         this.medicalCard = medicalCard;
-        this.prevIllnesses = prevIllness;
+        this.illness = prevIllness;
         this.c = null;
+
     }
 
     public static Patient create(String fname, String lname, Boolean gender, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness){
         Patient patient = new Patient(fname, lname, gender, ppsNumber, dob, address, email, homePhone, mobilePhone, nokFName, nokLName, nokAddress, nokNumber, medicalCard, prevIllness);
+        Chart chart = new Chart(patient);
+        patient.setChart(chart);
         patient.save();
+        chart.save();
         return patient;
+    }
+
+    public void assignConsultant(Consultant c){
+        this.c = c;
+        c.addPatient(this);
+        this.save();
+        c.save();
+    }
+
+    public Consultant getC() {
+        return c;
     }
 
     public void popAppointments(){
@@ -195,6 +210,18 @@ public class Patient extends Model implements Serializable{
         return patients;
     }
 
+    public List<Prescription> getPrescriptionList() {
+        return prescriptionList;
+    }
+
+    public void setPrescriptionList(List<Prescription> p){
+        prescriptionList = p;
+    }
+
+    public void setPrescription(Prescription p) {
+        this.prescriptionList.add(p);
+    }
+
     public void removeWard(){
         this.ward = null;
     }
@@ -219,12 +246,38 @@ public class Patient extends Model implements Serializable{
         this.gender = gender;
     }
 
-    public Chart getChart() {
-        return chart;
+    public Chart getCurrentChart() {
+        return charts.get(charts.size() - 1);
+    }
+
+    public Chart getBillingChart() {
+        List<Chart> billingCharts = charts.stream().filter(c -> c.getDateOfAdmittance() != null).collect(Collectors.toList());
+
+        if(billingCharts.size() != 0) {
+            final Iterator<Chart> itr = billingCharts.iterator();
+            Chart lastElement = itr.next();
+
+            while (itr.hasNext()) {
+                lastElement = itr.next();
+            }
+
+            return lastElement;
+        }
+        else{
+            return getCurrentChart();
+        }
+    }
+
+    public List<Chart> getCharts(){
+        return charts;
     }
 
     public void setChart(Chart chart) {
-        this.chart = chart;
+        this.charts.add(chart);
+    }
+
+    public void setChartList(List<Chart> charts){
+        this.charts = charts;
     }
 
     public void setWard(Ward ward) {
@@ -347,11 +400,11 @@ public class Patient extends Model implements Serializable{
         this.medicalCard = medicalCard;
     }
 
-    public String getPrevIllnesses() {
-        return prevIllnesses;
+    public String getIllness() {
+        return illness;
     }
 
-    public void setPrevIllnesses(String prevIllnesses) {
-        this.prevIllnesses = prevIllnesses;
+    public void setIllness(String illness) {
+        this.illness = illness;
     }
 }

@@ -75,9 +75,14 @@
                         <option id="00">00</option><option id="30">30</option>
                     </select>
                     <select id="consultant" name="consultant">
-                        <option value="select">--- Please Select ---</option>
-                        @for(c <- consultantlist){
-                            <option value="@c.getIdNum">@c.getFname @c.getLname</option>
+                        @if(patient.getC != null){
+                            <option value="@patient.getC.getIdNum">@patient.getC().getFname @patient.getC().getLname
+                            </option>
+                        }else {
+                            <option value="select">--- Please Select ---</option>
+                            @for(c <- consultantlist) {
+                                <option value="@c.getIdNum">@c.getFname @c.getLname</option>
+                            }
                         }
                     </select>
                     <select id="equipment" name="equipment">

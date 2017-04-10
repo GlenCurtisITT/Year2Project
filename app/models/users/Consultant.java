@@ -46,6 +46,10 @@ public class Consultant extends User{
             return find.byId(id);
     }
 
+    public void addPatient(Patient p){
+        patients.add(p);
+    }
+
     public List<Date> checkAppointments(){
         ArrayList<Date> appointmentDates = new ArrayList<>();
         if(appointments.size() != 0){ //no existing appointments for this consultant

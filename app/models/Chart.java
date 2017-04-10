@@ -27,7 +27,7 @@ public class Chart extends Model {
     private Date dischargeDate;
     private String mealPlan;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "mrn")
     private Patient p;
 
@@ -35,11 +35,11 @@ public class Chart extends Model {
     @JoinColumn(name = "billId")
     private Bill b;
 
-    @ManyToMany
-    @JoinTable(name = "CHARTPRESCRIPTION")
-    private List<Prescription> prescriptionList = new ArrayList<>();
-
     public Chart() {
+    }
+
+    public Chart(Patient p) {
+        this.p = p;
     }
 
     public Chart(String currentWard, Date dateOfAdmittance, String mealPlan, Patient p) {
@@ -65,27 +65,37 @@ public class Chart extends Model {
         }
     }
 
-    public static Chart readArchive(String mrn){
+    public static List<Chart> readArchive(String mrn){
         final String CHARTFILE = "public/Files/charts.gz";
-        Chart c = new Chart();
-        Chart chartResult = null;
+        List<Chart> chartResult = new ArrayList<>();
+        Chart c = null;
         try (FileInputStream fin = new FileInputStream(CHARTFILE);
              GZIPInputStream gis = new GZIPInputStream(fin);
              ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
             while (true) {
                 c = (Chart) ois.readObject();
                 if(c.getP().getMrn().equals(mrn)){
-                    chartResult = c;
-                    chartResult.insert();
-                    return chartResult;
+                    chartResult.add(c);
+                    c.insert();
                 }
             }
         }catch (ClassNotFoundException e) {
             chartResult = null;
+        }catch (EOFException e) {
+            return chartResult;
         }catch (IOException e) {
             chartResult = null;
         }
-        return null;
+
+        return chartResult;
+    }
+
+    public void setDateOfAdmittance(Date dateOfAdmittance) {
+        this.dateOfAdmittance = dateOfAdmittance;
+    }
+
+    public void setMealPlan(String mealPlan) {
+        this.mealPlan = mealPlan;
     }
 
     public Bill getB() {
@@ -94,14 +104,6 @@ public class Chart extends Model {
 
     public void setB(Bill b) {
         this.b = b;
-    }
-
-    public List<Prescription> getPrescriptionList() {
-        return prescriptionList;
-    }
-
-    public void setPrescription(Prescription p) {
-        this.prescriptionList.add(p);
     }
 
     public void setCurrentWard(String currentWard) {
