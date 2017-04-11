@@ -5,6 +5,7 @@ import models.*;
 import java.util.*;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 /**
  * Created by conno on 11/03/2017.
@@ -53,7 +54,7 @@ public class Consultant extends User{
     public List<Date> checkAppointments(){
         ArrayList<Date> appointmentDates = new ArrayList<>();
         if(appointments.size() != 0){ //no existing appointments for this consultant
-            for(Appointment a : appointments){
+            for(Appointment a : appointments.stream().filter(a ->!a.isComplete()).collect(Collectors.toList())){
                 appointmentDates.add(a.getAppDate());
             }
         }else{
@@ -82,6 +83,6 @@ public class Consultant extends User{
     }
 
     public List<Appointment> getAppointments() {
-        return appointments;
+        return appointments.stream().filter(a ->!a.isComplete()).collect(Collectors.toList());
     }
 }

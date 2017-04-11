@@ -91,8 +91,10 @@ public class Patient extends Model implements Serializable{
     public static Patient create(String fname, String lname, Boolean gender, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness){
         Patient patient = new Patient(fname, lname, gender, ppsNumber, dob, address, email, homePhone, mobilePhone, nokFName, nokLName, nokAddress, nokNumber, medicalCard, prevIllness);
         Chart chart = new Chart(patient);
+        Bill b = new Bill(patient);
         patient.setChart(chart);
         patient.save();
+        b.save();
         chart.save();
         return patient;
     }

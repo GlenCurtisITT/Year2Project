@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import models.users.*;
 import models.*;
@@ -427,7 +428,7 @@ public class HomeController extends Controller {
 
     public Result viewSchedule(){
         User u = getUserFromSession();
-        List<Appointment> appointments = Appointment.findAll();
+        List<Appointment> appointments = Appointment.findAll().stream().filter(a ->!a.isComplete()).collect(Collectors.toList());
         List<DateForCalendar> formattedDates = new ArrayList<>();
         if(session("role").equals("Admin")){
             formattedDates = Appointment.formatedDateList(appointments);

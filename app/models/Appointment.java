@@ -20,6 +20,9 @@ public class Appointment extends Model {
     private String id;
     @Formats.DateTime(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date appDate = new Date();
+
+    private boolean complete;
+
     @ManyToOne()
     @JoinColumn(name = "mrn")
     private Patient p;
@@ -34,12 +37,14 @@ public class Appointment extends Model {
         this.setAppDate(appDate);
         this.c = c;
         this.p = p;
+        complete = false;
     }
 
     public Appointment(Consultant c, Patient p){
         setAppDate(new Date());
         this.c = c;
         this.p = p;
+        complete = false;
     }
 
     public static Appointment create(Appointment a){
@@ -69,6 +74,16 @@ public class Appointment extends Model {
             formattedDates.add(date);
         }
         return formattedDates;
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void complete() {
+        this.complete = true;
+        this.update();
+        p.update();
     }
 
     public String getId() {

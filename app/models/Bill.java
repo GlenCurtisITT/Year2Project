@@ -13,10 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -108,7 +105,8 @@ public class Bill extends Model implements MedBilling{
             }
         }
         if (p.getAppointments().size() != 0) {
-            appointments += p.getAppointments().size() * APPOINTMENT_COST;
+            appointments += p.getAppointments().stream().filter(a -> a.getAppDate().before(new Date())).count() * APPOINTMENT_COST; //only charge for appointments which have been completed
+            appointments += p.getAppointments().stream().filter(a -> a.isComplete()).count() * APPOINTMENT_COST; // add addition of appointments whose appDate was not before today but which have been confirmed to have been completed by Consultant
         }
         amount = prescriptions + appointments;
         for(Chart c : p.getAllBillingCharts()) {
@@ -127,7 +125,7 @@ public class Bill extends Model implements MedBilling{
             costOfStay.add(stayCost);
             charts.add(c);
         }
-            try {
+            try {   //generation of PDF
                 Document document = new Document();
                 PdfWriter.getInstance(document, new FileOutputStream(pdf.FILE));
                     document.open();
