@@ -55,15 +55,6 @@ public class Ward extends Model {
         if(status == true){
             status = false;
         }
-        if(sl.getPatients().size() != 0) {
-            patients.add(getSl().getPatients().get(0));
-            currentOccupancy++;
-            getSl().decrementOccupancy();
-            if(currentOccupancy == MAX_CAPACITY){
-                status = true;
-            }
-            getSl().getPatients().remove(0);
-        }
         p.save();
         this.save();
     }

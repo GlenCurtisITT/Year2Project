@@ -13,6 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,13 +32,13 @@ public class Bill extends Model implements MedBilling{
     private boolean isPaid;
 
     @OneToOne(mappedBy = "b")
-    private Chart c;
+    private Patient p;
 
     public Bill() {
     }
 
-    public Bill(Chart c) {
-        this.c = c;
+    public Bill(Patient p) {
+        this.p = p;
         isPaid = false;
     }
 
@@ -54,18 +58,18 @@ public class Bill extends Model implements MedBilling{
         this.amount = amount;
     }
 
-    public Chart getC() {
-        return c;
+    public Patient getP() {
+        return p;
     }
 
-    public void setC(Chart c) {
-        this.c = c;
+    public void setP(Patient p) {
+        this.p = p;
     }
 
-    public int calcNumberOfDays(){
+    public int calcNumberOfDays(Chart c){
         SimpleDateFormat myFormat = new SimpleDateFormat("dd MM yyyy");
         long days;
-        if(c.getDateOfAdmittance() != null) {
+        if(c.getDateOfAdmittance() != null && c.getDischargeDate() != null) {
             String inputString1 = c.getDateOfAdmittance().toString();
             String inputString2 = c.getDischargeDate().toString();
             try {
@@ -92,42 +96,49 @@ public class Bill extends Model implements MedBilling{
     }
 
     public void calcBill(){
-        int days = calcNumberOfDays();
+        PDF pdf = new PDF(p);
         double appointments = 0;
         double prescriptions = 0;
-        double stay = 0;
-        stay = days * COST_PER_DAY;
-        if(c.getP().getPrescriptionList().size() != 0) {
-            for(Prescription p : c.getP().getPrescriptionList()){
-                prescriptions += p.getDosage() * p.getMedicine().getPricePerUnit();
+        ArrayList<Chart> charts = new ArrayList<>();
+        ArrayList<Integer> stay = new ArrayList<>();
+        ArrayList<Double> costOfStay = new ArrayList<>();
+        if (p.getPrescriptionList().size() != 0) {
+            for (Prescription prescription : p.getPrescriptionList()) {
+                prescriptions += prescription.getDosage() * prescription.getMedicine().getPricePerUnit();
             }
         }
-        if(c.getP().getAppointments().size() != 0){
-            appointments += c.getP().getAppointments().size() * APPOINTMENT_COST;
+        if (p.getAppointments().size() != 0) {
+            appointments += p.getAppointments().size() * APPOINTMENT_COST;
         }
-        if(c.getP().getMedicalCard() == true){
-            amount = stay;
+        amount = prescriptions + appointments;
+        for(Chart c : p.getAllBillingCharts()) {
+            int days = calcNumberOfDays(c);
+            double stayCost = 0;
+            stayCost = days * COST_PER_DAY;
+            if (p.getMedicalCard() == true) {
+                amount = stayCost;
+            } else {
+                amount += stayCost;
+            }
+            if (amount == 0) {
+                isPaid = true;
+            }
+            stay.add(days);
+            costOfStay.add(stayCost);
+            charts.add(c);
         }
-        else{
-            amount = stay + prescriptions + appointments;
-        }
-
-        if(amount == 0){
-            isPaid = true;
-        }
-        PDF pdf = new PDF(c.getP());
-        try {
-            Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(pdf.FILE));
-            document.open();
-            PDF.addMetaData(document, c.getP());
-            PDF.addContent(document, c.getP(), days, stay, appointments, prescriptions);
-            document.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
+            try {
+                Document document = new Document();
+                PdfWriter.getInstance(document, new FileOutputStream(pdf.FILE));
+                    document.open();
+                PDF.addMetaData(document, p);
+                PDF.addContent(document, charts, p, stay , costOfStay, appointments, prescriptions);
+                document.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
     }
 
 

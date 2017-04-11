@@ -28,8 +28,6 @@ create table chart (
   discharge_date                timestamp,
   meal_plan                     varchar(255),
   mrn                           varchar(255),
-  billid                        varchar(255),
-  constraint uq_chart_billid unique (billid),
   constraint pk_chart primary key (chart_id)
 );
 create sequence chart_seq increment by 1;
@@ -72,6 +70,8 @@ create table patient (
   idnum                         varchar(255),
   wardid                        varchar(255),
   standbyid                     varchar(255),
+  billid                        varchar(255),
+  constraint uq_patient_billid unique (billid),
   constraint pk_patient primary key (mrn)
 );
 
@@ -131,8 +131,6 @@ create index ix_appointment_equipid on appointment (equipid);
 alter table chart add constraint fk_chart_mrn foreign key (mrn) references patient (mrn) on delete restrict on update restrict;
 create index ix_chart_mrn on chart (mrn);
 
-alter table chart add constraint fk_chart_billid foreign key (billid) references bill (bill_id) on delete restrict on update restrict;
-
 alter table patient add constraint fk_patient_idnum foreign key (idnum) references user (id_num) on delete restrict on update restrict;
 create index ix_patient_idnum on patient (idnum);
 
@@ -141,6 +139,8 @@ create index ix_patient_wardid on patient (wardid);
 
 alter table patient add constraint fk_patient_standbyid foreign key (standbyid) references standby_list (standby_id) on delete restrict on update restrict;
 create index ix_patient_standbyid on patient (standbyid);
+
+alter table patient add constraint fk_patient_billid foreign key (billid) references bill (bill_id) on delete restrict on update restrict;
 
 alter table prescription add constraint fk_prescription_medicineid foreign key (medicineid) references medicine (medicine_id) on delete restrict on update restrict;
 create index ix_prescription_medicineid on prescription (medicineid);
@@ -165,8 +165,6 @@ drop index if exists ix_appointment_equipid;
 alter table chart drop constraint if exists fk_chart_mrn;
 drop index if exists ix_chart_mrn;
 
-alter table chart drop constraint if exists fk_chart_billid;
-
 alter table patient drop constraint if exists fk_patient_idnum;
 drop index if exists ix_patient_idnum;
 
@@ -175,6 +173,8 @@ drop index if exists ix_patient_wardid;
 
 alter table patient drop constraint if exists fk_patient_standbyid;
 drop index if exists ix_patient_standbyid;
+
+alter table patient drop constraint if exists fk_patient_billid;
 
 alter table prescription drop constraint if exists fk_prescription_medicineid;
 drop index if exists ix_prescription_medicineid;

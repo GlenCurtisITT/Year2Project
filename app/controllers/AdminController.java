@@ -41,8 +41,8 @@ public class AdminController extends Controller{
         Patient p = Patient.getPatientById(mrn); //serialize before delete
         Chart c = p.getCurrentChart();
         Bill b = new Bill();
-        if(c.getB() != null){
-            b = c.getB();
+        if(p.getB() != null){
+            b = p.getB();
             if(!b.isPaid()) {
                 flash("error", "Cannot archive Patient while bill is overdue");
                 return redirect(routes.SearchController.searchPatient());
@@ -54,6 +54,10 @@ public class AdminController extends Controller{
         }
         if(c.getDateOfAdmittance() != null){
             flash("error", "Cannot archive Patient while they are staying in the hospital");
+            return redirect(routes.SearchController.searchPatient());
+        }
+        if(p.getSl() != null){
+            flash("error", "Cannot archive Patient while they are on a standby list");
             return redirect(routes.SearchController.searchPatient());
         }
         try {
@@ -182,16 +186,15 @@ public class AdminController extends Controller{
     public Result genBill(){
         Patient p = HomeController.getPatientFromSession();
         User u = HomeController.getUserFromSession();
-        Chart c = p.getCurrentChart();
         Bill b;
-        if(c.getB() == null) {
-            b = new Bill(p.getCurrentChart());
-            c.setB(b);
-            c.save();
+        if(p.getB() == null) {
+            b = new Bill(p);
+            p.setB(b);
+            p.update();
             b.calcBill();
             b.save();
         }else{
-            b = c.getB();
+            b = p.getB();
             b.calcBill();
             b.update();
         }

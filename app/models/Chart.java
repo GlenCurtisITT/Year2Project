@@ -31,10 +31,6 @@ public class Chart extends Model {
     @JoinColumn(name = "mrn")
     private Patient p;
 
-    @OneToOne
-    @JoinColumn(name = "billId")
-    private Bill b;
-
     public Chart() {
     }
 
@@ -50,10 +46,9 @@ public class Chart extends Model {
         this.p = p;
     }
 
-    public static Finder<String, Ward> find = new Finder<String, Ward>(Ward.class);
-
-    public static List<Ward> findAll(){
-        return Ward.find.all();
+    public static Finder<String, Chart> find = new Finder<String, Chart>(Chart.class);
+    public static List<Chart> findAll(){
+        return Chart.find.all();
     }
 
     public void serialize() throws IOException{
@@ -96,14 +91,6 @@ public class Chart extends Model {
 
     public void setMealPlan(String mealPlan) {
         this.mealPlan = mealPlan;
-    }
-
-    public Bill getB() {
-        return b;
-    }
-
-    public void setB(Bill b) {
-        this.b = b;
     }
 
     public void setCurrentWard(String currentWard) {

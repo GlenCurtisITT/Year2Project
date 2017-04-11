@@ -40,19 +40,37 @@ public class ConsultantController extends Controller {
     public Result dischargePatient() {
         Patient p = HomeController.getPatientFromSession();
         Chart c = p.getCurrentChart();
+        Consultant consultant = (Consultant)HomeController.getUserFromSession();
         Ward w = p.getWard();
-        w.dischargePatient(p);
         c.setDischargeDate(new Date());
-        Bill b = new Bill(c);
-        c.setB(b);
+        w.dischargePatient(p);
+        Bill b = new Bill();
+        if(p.getB() == null) {
+            b = new Bill(p);
+            p.setB(b);
+            b.save();
+        }else{
+            b = p.getB();
+        }
         Chart newChart = new Chart(p);
         newChart.save();
         p.setChart(newChart);
         p.update();
-        b.save();
         c.update();
         w.update();
         b.calcBill();
+        b.update();
+        if(w.getSl().getPatients().size() != 0){
+            Patient nextP = w.getSl().getPatients().get(0);
+            String logFileString = "Patient " + nextP.getfName() + " " + nextP.getlName() + "(" + nextP.getMrn() + ")" + " is next on the stanby list for " + w.getName();
+            LogFile.writeToLog(logFileString);
+            String logFileString2 = "Patient " + p.getfName() + " " + p.getlName() + "(" + p.getMrn() + ")" + " was discharged from " + w.getName() + " by Dr." + consultant.getLname() + "ID (" + consultant.getIdNum() + ")";
+            LogFile.writeToLog(logFileString2);
+            flash("success", "Patient has been discharged. Bill has been generated. Patient " + nextP.getMrn() + " is next on the standby list (See Logs)");
+            return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
+        }
+        String logFileString2 = "Patient " + p.getfName() + " " + p.getlName() + "(" + p.getMrn() + ")" + " was discharged from " + w.getName() + " by Dr." + consultant.getLname() + "ID (" + consultant.getIdNum() + ")";
+        LogFile.writeToLog(logFileString2);
         flash("success", "Patient has been discharged. Bill has been generated");
         return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
     }

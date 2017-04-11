@@ -56,3 +56,34 @@
 [10/04/2017 14:12:25] - Consultant Glen Connolly made an appointment for John Jacobs for the 11 May 2017 at 06:00 AM
 [10/04/2017 14:38:08] - Consultant Glen Connolly admitted patient tes test to ward Intensive Care Unit
 [10/04/2017 14:42:07] - Consultant Glen Connolly admitted patient Glen Connolly to ward Private Ward
+[10/04/2017 22:21:37] - Bill generated for patient(11111211) by User 'Glen Connolly'(72347406)
+[10/04/2017 22:24:16] - Bill generated for patient(11111211) by User 'Glen Connolly'(72347406)
+[10/04/2017 22:24:45] - Bill generated for patient(11111211) by User 'Glen Connolly'(72347406)
+[10/04/2017 22:28:22] - Bill generated for patient(11111211) by User 'Glen Connolly'(72347406)
+[11/04/2017 10:40:36] - Consultant Glen Connolly admitted patient John Jacobs to ward Maternity Ward
+[11/04/2017 10:42:29] - Dr. Connolly(93389456) assigned to patient(22222221)
+[11/04/2017 10:42:40] - Consultant Glen Connolly admitted patient Jean Janson to ward Psychiatric Ward
+[11/04/2017 10:56:45] - Consultant Glen Connolly admitted patient test test to ward Intensive Care Unit
+[11/04/2017 10:59:28] - Consultant Glen Connolly admitted patient test test to ward Private Ward
+[11/04/2017 10:59:55] - Consultant Glen Connolly admitted patient test test to ward Private Ward
+[11/04/2017 11:00:51] - test test was put on standby-list for ward Private Ward
+[11/04/2017 11:02:47] - Consultant Glen Connolly admitted patient test test to ward Burns Unit
+[11/04/2017 11:25:17] - John Jacobs was put on standby-list for ward Private Ward
+[11/04/2017 11:26:04] - Patient test test(50381969) is next on the stanby list for Private Ward
+[11/04/2017 11:26:04] - Patient test test(94687706) was discharged from Private Ward by Dr.ConnollyID (93389456)
+[11/04/2017 11:27:16] - Consultant Glen Connolly admitted patient John Jacobs to ward Private Ward
+[11/04/2017 11:27:26] - Patient test test(50381969) is next on the stanby list for Private Ward
+[11/04/2017 11:27:26] - Patient John Jacobs(11111215) was discharged from Private Ward by Dr.ConnollyID (93389456)
+[11/04/2017 11:32:59] - Consultant Glen Connolly admitted patient John Jacobs to ward Maternity Ward
+[11/04/2017 11:33:05] - Patient John Jacobs(11111212) was discharged from Maternity Ward by Dr.ConnollyID (93389456)
+[11/04/2017 11:33:17] - Consultant Glen Connolly admitted patient John Jacobs to ward Psychiatric Ward
+[11/04/2017 11:33:22] - Patient John Jacobs(11111212) was discharged from Psychiatric Ward by Dr.ConnollyID (93389456)
+[11/04/2017 12:28:19] - Consultant Glen Connolly admitted patient John Jacobs to ward Burns Unit
+[11/04/2017 12:28:26] - Patient John Jacobs(11111212) was discharged from Burns Unit by Dr.ConnollyID (93389456)
+[11/04/2017 12:28:39] - Consultant Glen Connolly admitted patient John Jacobs to ward Intensive Care Unit
+[11/04/2017 12:28:45] - Patient John Jacobs(11111212) was discharged from Intensive Care Unit by Dr.ConnollyID (93389456)
+[11/04/2017 12:58:06] - Bill generated for patient(11111212) by User 'Glen Connolly'(29812471)
+[11/04/2017 13:01:51] - Bill generated for patient(11111212) by User 'Glen Connolly'(29812471)
+[11/04/2017 13:04:33] - Bill generated for patient(11111212) by User 'Glen Connolly'(29812471)
+[11/04/2017 13:08:42] - Bill generated for patient(11111212) by User 'Glen Connolly'(29812471)
+[11/04/2017 13:10:27] - Bill generated for patient(11111212) by User 'Glen Connolly'(29812471)
