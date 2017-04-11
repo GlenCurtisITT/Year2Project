@@ -40,13 +40,10 @@ public class AdminController extends Controller{
     public Result deletePatient(String mrn){
         Patient p = Patient.getPatientById(mrn); //serialize before delete
         Chart c = p.getCurrentChart();
-        Bill b = new Bill();
-        if(p.getB() != null){
-            b = p.getB();
-            if(!b.isPaid()) {
-                flash("error", "Cannot archive Patient while bill is overdue");
-                return redirect(routes.SearchController.searchPatient());
-            }
+        Bill b = p.getB();
+        if(!b.isPaid()) {
+            flash("error", "Cannot archive Patient while bill is overdue");
+            return redirect(routes.SearchController.searchPatient());
         }
         if(p.getAppointments().size() != 0){
             flash("error", "Cannot archive Patient while there are still appointments due");
@@ -186,18 +183,9 @@ public class AdminController extends Controller{
     public Result genBill(){
         Patient p = HomeController.getPatientFromSession();
         User u = HomeController.getUserFromSession();
-        Bill b;
-        if(p.getB() == null) {
-            b = new Bill(p);
-            p.setB(b);
-            p.update();
-            b.calcBill();
-            b.save();
-        }else{
-            b = p.getB();
-            b.calcBill();
-            b.update();
-        }
+        Bill b = p.getB();
+        b.calcBill();
+        b.update();
 
         String logFileString = "Bill generated for patient(" + p.getMrn() + ") by User '" + u.getFname() + " " + u.getLname() + "'(" + u.getIdNum() + ")";
         LogFile.writeToLog(logFileString);

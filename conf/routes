@@ -28,6 +28,7 @@ GET     /dischargePatient           controllers.ConsultantController.dischargePa
 GET     /makeAppointment            controllers.HomeController.makeAppointment
 GET     /appointmentMain/:id        controllers.HomeController.appointmentMain(id: String)
 GET     /cancelAppointment/:id      controllers.HomeController.cancelAppointment(id:String)
+GET     /completeAppointment/:id    controllers.ConsultantController.completeAppointment(id:String)
 GET     /makePrescription           controllers.HomeController.makePrescription
 GET     /viewMedicine               controllers.HomeController.viewMedicine
 GET     /addMedicine                controllers.HomeController.addMedicine

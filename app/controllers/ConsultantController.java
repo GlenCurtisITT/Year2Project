@@ -8,6 +8,8 @@ import views.html.consultantPages.*;
 import java.io.IOException;
 import java.util.*;
 
+import java.util.stream.Collectors;
+
 import models.users.*;
 import models.*;
 /**
@@ -22,7 +24,7 @@ public class ConsultantController extends Controller {
             flash("error", "You have not declared your specialization");
         }
         if(c.getAppointments().size() != 0) {
-            appointments = c.getAppointments();
+            appointments = c.getAppointments().stream().filter(a ->!a.isComplete()).collect(Collectors.toList());
             Collections.sort(appointments, new DateComparator());
             HomeController.endPatientSession();
             return ok(consultantHomePage.render(c, appointments));
@@ -33,7 +35,7 @@ public class ConsultantController extends Controller {
 
     public Result viewAppointments(){
         Consultant c = (Consultant)HomeController.getUserFromSession();
-        List<Appointment> appointmentList = c.getAppointments();
+        List<Appointment> appointmentList = c.getAppointments().stream().filter(a ->!a.isComplete()).collect(Collectors.toList());
         return ok(viewAppointments.render(c, appointmentList));
     }
 
@@ -44,14 +46,7 @@ public class ConsultantController extends Controller {
         Ward w = p.getWard();
         c.setDischargeDate(new Date());
         w.dischargePatient(p);
-        Bill b = new Bill();
-        if(p.getB() == null) {
-            b = new Bill(p);
-            p.setB(b);
-            b.save();
-        }else{
-            b = p.getB();
-        }
+        Bill b = p.getB();
         Chart newChart = new Chart(p);
         newChart.save();
         p.setChart(newChart);
@@ -95,4 +90,19 @@ public class ConsultantController extends Controller {
         flash("success", "Patient assigned to Dr. " + c.getLname());
         return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
     }
+
+    public Result completeAppointment(String id){
+        Consultant c = (Consultant) HomeController.getUserFromSession();
+        List<Appointment> appointments = c.getAppointments();
+        Appointment a = Appointment.find.byId(id);
+        Patient p = a.getP();
+
+        a.complete();
+        String log ="Appointment for Patient " + p.getfName() + p.getlName() + "(" + p.getMrn() + ") was completed by Dr." + c.getLname();
+        LogFile.writeToLog(log);
+        flash("success", log);
+        return ok(viewAppointments.render(c, appointments));
+
+    }
+
 }

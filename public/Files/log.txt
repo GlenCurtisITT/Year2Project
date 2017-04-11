@@ -87,3 +87,5 @@
 [11/04/2017 13:04:33] - Bill generated for patient(11111212) by User 'Glen Connolly'(29812471)
 [11/04/2017 13:08:42] - Bill generated for patient(11111212) by User 'Glen Connolly'(29812471)
 [11/04/2017 13:10:27] - Bill generated for patient(11111212) by User 'Glen Connolly'(29812471)
+[11/04/2017 14:06:28] - Consultant Glen Connolly made an appointment for John Jacobs for the 12 Apr 2017 at 06:00 AM
+[11/04/2017 14:06:40] - Appointment for Patient JohnJacobs(11111215) was completed by Dr.Connolly

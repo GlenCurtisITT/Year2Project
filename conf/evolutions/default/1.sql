@@ -6,6 +6,7 @@
 create table appointment (
   id                            varchar(255) not null,
   app_date                      timestamp,
+  complete                      boolean,
   mrn                           varchar(255),
   idnum                         varchar(255),
   equipid                       varchar(255),
