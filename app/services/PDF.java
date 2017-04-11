@@ -135,7 +135,7 @@ public class PDF {
         subCatPart.add(new Paragraph("Total cost of Prescriptions: €" + prescriptionCost, subFont));
         subCatPart.add(new Paragraph("Total cost of Appointments: €" + costOfAppointments, subFont));
         subCatPart.add(new Paragraph("Total cost of Stay: €" + costOfStay.stream().mapToInt(Double::intValue).sum(), subFont));
-        subCatPart.add(new Paragraph("Gross Cost: €" + (p.getB().getAmount() + prescriptionCost + costOfAppointments), subFont));
+        subCatPart.add(new Paragraph("Gross Cost: €" + (costOfStay.stream().mapToInt(Double::intValue).sum() + prescriptionCost + costOfAppointments), subFont));
 
         if(p.getMedicalCard() == true) {
             subCatPart.add(new Paragraph("Patient has a medical card. Amount covered:" + (prescriptionCost + costOfAppointments), subFont));
