@@ -314,7 +314,7 @@ public class Patient extends Model implements Serializable{
     }
 
     public List<Appointment> getAppointments() {
-        return appointments;
+        return appointments.stream().filter( a -> !a.isComplete()).collect(toList());
     }
 
     public String getfName() {

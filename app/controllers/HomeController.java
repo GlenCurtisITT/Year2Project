@@ -568,8 +568,12 @@ public class HomeController extends Controller {
         if(newMedicineForm.get("name") == null || newMedicineForm.get("ingredients") == null){
             return badRequest(addMedicine.render(u, errorForm, "Must enter name and ingredients"));
         }
-        Medicine m = new Medicine(newMedicineForm.get("name"), newMedicineForm.get("sideAffects"), newMedicineForm.get("ingredients"), Double.parseDouble(newMedicineForm.get("pricePerUnit")), newMedicineForm.get("unitOfMeasurement"));
-        m.save();
+        try {
+            Medicine m = new Medicine(newMedicineForm.get("name"), newMedicineForm.get("sideAffects"), newMedicineForm.get("ingredients"), Double.parseDouble(newMedicineForm.get("pricePerUnit")), newMedicineForm.get("unitOfMeasurement"));
+            m.save();
+        }catch(NumberFormatException e){
+            return badRequest(addMedicine.render(u, errorForm, "Invalid number entered for Price"));
+        }
         return redirect(controllers.routes.HomeController.makePrescription());
     }
 
