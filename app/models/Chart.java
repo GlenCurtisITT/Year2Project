@@ -46,10 +46,9 @@ public class Chart extends Model {
         this.p = p;
     }
 
-    public static Finder<String, Ward> find = new Finder<String, Ward>(Ward.class);
-
-    public static List<Ward> findAll(){
-        return Ward.find.all();
+    public static Finder<String, Chart> find = new Finder<String, Chart>(Chart.class);
+    public static List<Chart> findAll(){
+        return Chart.find.all();
     }
 
     public void serialize() throws IOException{

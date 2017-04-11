@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * Created by wdd on 03/03/17.
  */
@@ -251,11 +253,12 @@ public class Patient extends Model implements Serializable{
     }
 
     public Chart getCurrentChart() {
+        setChartList(Chart.findAll().stream().filter(c -> c.getP().getMrn().equals(this.mrn)).collect(toList()));
         return charts.get(charts.size() - 1);
     }
 
     public Chart getBillingChart() {
-        List<Chart> billingCharts = charts.stream().filter(c -> c.getDateOfAdmittance() != null).collect(Collectors.toList());
+        List<Chart> billingCharts = charts.stream().filter(c -> c.getDateOfAdmittance() != null).collect(toList());
 
         if(billingCharts.size() != 0) {
             final Iterator<Chart> itr = billingCharts.iterator();
@@ -273,7 +276,7 @@ public class Patient extends Model implements Serializable{
     }
 
     public List<Chart> getAllBillingCharts() {
-        return charts.stream().filter(c -> c.getDateOfAdmittance() != null).collect(Collectors.toList());
+        return charts.stream().filter(c -> c.getDateOfAdmittance() != null).collect(toList());
     }
 
     public List<Chart> getCharts(){

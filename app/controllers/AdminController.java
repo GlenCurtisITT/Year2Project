@@ -56,6 +56,10 @@ public class AdminController extends Controller{
             flash("error", "Cannot archive Patient while they are staying in the hospital");
             return redirect(routes.SearchController.searchPatient());
         }
+        if(p.getSl() != null){
+            flash("error", "Cannot archive Patient while they are on a standby list");
+            return redirect(routes.SearchController.searchPatient());
+        }
         try {
             p.serialize();
             for(Chart chart: p.getCharts()) {

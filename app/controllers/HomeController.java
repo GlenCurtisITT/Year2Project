@@ -175,9 +175,8 @@ public class HomeController extends Controller {
         //Flashing String s to memory to be used in view patient screen.
         String s = "";
         if(p.getSl() != null){
-            p.setSl(null);
-
             s = p.getfName() + " " + p.getlName() + " was removed from the " + p.getSl().getW().getName() + " waiting list.\n";
+            p.getSl().removePatient(p);
         }
         s += p.getfName() + " " + p.getlName() + " admitted to " + w.getName();
         flash("success", s);

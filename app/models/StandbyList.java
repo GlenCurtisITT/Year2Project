@@ -50,11 +50,16 @@ public class StandbyList extends Model{
         this.update();
     }
 
+    public void removePatient(Patient p){
+        patients.remove(p);
+        currentOccupancy--;
+        p.setSl(null);
+        p.update();
+        this.update();
+    }
+
     public int getCurrentOccupancy() {
         return currentOccupancy;
     }
 
-    public void decrementOccupancy() {
-        this.currentOccupancy--;
-    }
 }

@@ -20,8 +20,11 @@ import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 
 public class PDF {
@@ -34,10 +37,6 @@ public class PDF {
             Font.BOLD);
     static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12,
             Font.BOLD);
-
-    public static boolean presWritten = false;
-    public static boolean appWritten = false;
-
 
     public PDF(Patient p) {
         FILE = "public/pdfFolder/" + p.getMrn() + ".pdf";
@@ -87,7 +86,7 @@ public class PDF {
         document.newPage();
     }
 
-    public static void addContent(Document document, Chart c, Patient p, int duration, double costOfStay, double costOfAppointments, double prescriptionCost) throws DocumentException {
+    public static void addContent(Document document, ArrayList<Chart> charts, Patient p, ArrayList<Integer> stay, ArrayList<Double> costOfStay, double costOfAppointments, double prescriptionCost) throws DocumentException {
         Anchor anchor = new Anchor("Medical Bill", catFont);
         anchor.setName("Medical Bill");
         Paragraph preface = new Paragraph();
@@ -126,33 +125,31 @@ public class PDF {
         subCatPart.add(paragraph);
 
         // add a table
-        createTable(subCatPart, p, duration, costOfAppointments, costOfStay);
+        createTable(subCatPart, p, charts, costOfAppointments, stay, costOfStay);
 
         addEmptyLine(paragraph, 2);
         subCatPart.add(paragraph);
-        if(p.getPrescriptionList().size() != 0 && presWritten == false) {
+        if(p.getPrescriptionList().size() != 0) {
             createPresList(subCatPart, p , prescriptionCost);
-            presWritten = true;
-
         }
         subCatPart.add(new Paragraph("Total cost of Prescriptions: €" + prescriptionCost, subFont));
         subCatPart.add(new Paragraph("Total cost of Appointments: €" + costOfAppointments, subFont));
-        subCatPart.add(new Paragraph("Total cost of Stay: €" + costOfStay, subFont));
-        subCatPart.add(new Paragraph("Gross Cost: €" + p.getB().getAmount(), subFont));
+        subCatPart.add(new Paragraph("Total cost of Stay: €" + costOfStay.stream().mapToInt(Double::intValue).sum(), subFont));
+        subCatPart.add(new Paragraph("Gross Cost: €" + (p.getB().getAmount() + prescriptionCost + costOfAppointments), subFont));
 
         if(p.getMedicalCard() == true) {
-            subCatPart.add(new Paragraph("Medical card coverage: €" + (prescriptionCost + costOfAppointments), subFont));
+            subCatPart.add(new Paragraph("Patient has a medical card. Amount covered:" + (prescriptionCost + costOfAppointments), subFont));
         }
-        subCatPart.add(new Paragraph("Insurance Plan: ", subFont));
-        subCatPart.add(new Paragraph("Amount covered by insurance: €" , subFont));
-        subCatPart.add(new Paragraph("Net Bill: €" , subFont));
+        subCatPart.add(new Paragraph("Insurance Plan: N/A", subFont));
+        subCatPart.add(new Paragraph("Amount covered by insurance: €N/A" , subFont));
+        subCatPart.add(new Paragraph("Net Bill: €" + p.getB().getAmount(), subFont));
 
         // now add all this to the document
         document.add(subCatPart);
 
     }
 
-    public static void createTable(Section subCatPart, Patient p, int duration, double costOfAppointments, double costOfDays)
+    public static void createTable(Section subCatPart, Patient p, ArrayList<Chart> charts, double costOfAppointments, ArrayList<Integer> stay, ArrayList<Double> costOfStay)
             throws BadElementException {
         PdfPTable table = new PdfPTable(3);
         // t.setBorderColor(BaseColor.GRAY);
@@ -161,25 +158,23 @@ public class PDF {
         // t.setBorderWidth(1);
 
         PdfPCell c1;
-        if(p.getCurrentChart().getDateOfAdmittance() != null) {
+        if(p.getAppointments().size() != 0) {
             c1 = new PdfPCell(new Phrase("Appointments"));
             c1.setHorizontalAlignment(Element.ALIGN_CENTER);
             table.addCell(c1);
             table.addCell("€" + Double.toString(costOfAppointments));
             table.addCell(Integer.toString(p.getAppointments().size()) + " appointments");
         }
-        if(p.getAppointments().size() != 0 && appWritten == false) {
-            c1 = new PdfPCell(new Phrase("Admittance"));
-            c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(c1);
-            table.addCell(Integer.toString(duration) + " days");
-            table.addCell("€" + Double.toString(costOfDays));
-            appWritten = true;
+        if(p.getBillingChart().getDateOfAdmittance() != null) {
+            for(int i = 0; i < charts.size(); i++) {
+                c1 = new PdfPCell(new Phrase(charts.get(i).getCurrentWard()));
+                c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table.addCell(c1);
+                table.addCell(Integer.toString(stay.get(i)) + " days");
+                table.addCell("€" + Double.toString(costOfStay.get(i)));
+            }
         }
-
-        if(p.getAppointments().size() != 0 || p.getCurrentChart().getDateOfAdmittance() != null) {
             subCatPart.add(table);
-        }
 
     }
 

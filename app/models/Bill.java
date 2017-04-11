@@ -13,6 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -93,48 +97,48 @@ public class Bill extends Model implements MedBilling{
 
     public void calcBill(){
         PDF pdf = new PDF(p);
+        double appointments = 0;
+        double prescriptions = 0;
+        ArrayList<Chart> charts = new ArrayList<>();
+        ArrayList<Integer> stay = new ArrayList<>();
+        ArrayList<Double> costOfStay = new ArrayList<>();
+        if (p.getPrescriptionList().size() != 0) {
+            for (Prescription prescription : p.getPrescriptionList()) {
+                prescriptions += prescription.getDosage() * prescription.getMedicine().getPricePerUnit();
+            }
+        }
+        if (p.getAppointments().size() != 0) {
+            appointments += p.getAppointments().size() * APPOINTMENT_COST;
+        }
+        amount = prescriptions + appointments;
         for(Chart c : p.getAllBillingCharts()) {
             int days = calcNumberOfDays(c);
-            double appointments = 0;
-            double prescriptions = 0;
-            double stay = 0;
-            stay = days * COST_PER_DAY;
-            if (p.getPrescriptionList().size() != 0) {
-                for (Prescription prescription : p.getPrescriptionList()) {
-                    prescriptions += prescription.getDosage() * prescription.getMedicine().getPricePerUnit();
-                }
-            }
-            if (p.getAppointments().size() != 0) {
-                appointments += p.getAppointments().size() * APPOINTMENT_COST;
-            }
+            double stayCost = 0;
+            stayCost = days * COST_PER_DAY;
             if (p.getMedicalCard() == true) {
-                amount = stay;
+                amount = stayCost;
             } else {
-                amount = stay + prescriptions + appointments;
+                amount += stayCost;
             }
-
             if (amount == 0) {
                 isPaid = true;
             }
+            stay.add(days);
+            costOfStay.add(stayCost);
+            charts.add(c);
+        }
             try {
                 Document document = new Document();
                 PdfWriter.getInstance(document, new FileOutputStream(pdf.FILE));
-                if (!document.isOpen()) {
                     document.open();
-                }
-                PDF.addMetaData(document, c.getP());
-                PDF.addContent(document, c, c.getP(), days, stay, appointments, prescriptions);
-                if(c == p.getBillingChart()) {
-                    document.close();
-                }
+                PDF.addMetaData(document, p);
+                PDF.addContent(document, charts, p, stay , costOfStay, appointments, prescriptions);
+                document.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (DocumentException e) {
                 e.printStackTrace();
             }
-        }
-        PDF.presWritten = false;
-        PDF.appWritten = false;
     }
 
 
