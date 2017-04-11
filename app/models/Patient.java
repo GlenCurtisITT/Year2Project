@@ -57,6 +57,10 @@ public class Patient extends Model implements Serializable{
     @OneToMany (mappedBy = "patient")
     private List<Prescription> prescriptionList = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "billId")
+    private Bill b;
+
     public Patient() {
 
     }
@@ -268,6 +272,10 @@ public class Patient extends Model implements Serializable{
         }
     }
 
+    public List<Chart> getAllBillingCharts() {
+        return charts.stream().filter(c -> c.getDateOfAdmittance() != null).collect(Collectors.toList());
+    }
+
     public List<Chart> getCharts(){
         return charts;
     }
@@ -278,6 +286,14 @@ public class Patient extends Model implements Serializable{
 
     public void setChartList(List<Chart> charts){
         this.charts = charts;
+    }
+
+    public Bill getB() {
+        return b;
+    }
+
+    public void setB(Bill b) {
+        this.b = b;
     }
 
     public void setWard(Ward ward) {

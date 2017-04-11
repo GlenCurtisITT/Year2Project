@@ -42,17 +42,23 @@ public class ConsultantController extends Controller {
         Chart c = p.getCurrentChart();
         Ward w = p.getWard();
         w.dischargePatient(p);
+        Bill b = new Bill();
         c.setDischargeDate(new Date());
-        Bill b = new Bill(c);
-        c.setB(b);
+        if(p.getB() != null) {
+            b = new Bill(p);
+            p.setB(b);
+            b.save();
+        }else{
+            b = p.getB();
+        }
         Chart newChart = new Chart(p);
         newChart.save();
         p.setChart(newChart);
         p.update();
-        b.save();
         c.update();
         w.update();
         b.calcBill();
+        b.update();
         flash("success", "Patient has been discharged. Bill has been generated");
         return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
     }

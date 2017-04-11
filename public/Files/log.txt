@@ -56,3 +56,7 @@
 [10/04/2017 14:12:25] - Consultant Glen Connolly made an appointment for John Jacobs for the 11 May 2017 at 06:00 AM
 [10/04/2017 14:38:08] - Consultant Glen Connolly admitted patient tes test to ward Intensive Care Unit
 [10/04/2017 14:42:07] - Consultant Glen Connolly admitted patient Glen Connolly to ward Private Ward
+[10/04/2017 22:21:37] - Bill generated for patient(11111211) by User 'Glen Connolly'(72347406)
+[10/04/2017 22:24:16] - Bill generated for patient(11111211) by User 'Glen Connolly'(72347406)
+[10/04/2017 22:24:45] - Bill generated for patient(11111211) by User 'Glen Connolly'(72347406)
+[10/04/2017 22:28:22] - Bill generated for patient(11111211) by User 'Glen Connolly'(72347406)

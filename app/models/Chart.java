@@ -31,10 +31,6 @@ public class Chart extends Model {
     @JoinColumn(name = "mrn")
     private Patient p;
 
-    @OneToOne
-    @JoinColumn(name = "billId")
-    private Bill b;
-
     public Chart() {
     }
 
@@ -96,14 +92,6 @@ public class Chart extends Model {
 
     public void setMealPlan(String mealPlan) {
         this.mealPlan = mealPlan;
-    }
-
-    public Bill getB() {
-        return b;
-    }
-
-    public void setB(Bill b) {
-        this.b = b;
     }
 
     public void setCurrentWard(String currentWard) {
