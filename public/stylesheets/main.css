@@ -79,3 +79,18 @@ body{
 #page-content-wrapper{
     padding-right: 10px;
 }
+
+#borderBlue{
+    border-top: 2px solid #35475e;
+    border-right: 2px solid #35475e;
+    border-bottom: 2px solid #35475e;
+}
+
+#borderBlueAlt{
+    border-right: 2px solid #35475e;
+    border-bottom: 2px solid #35475e;
+}
+
+#paddTop{
+    padding-top:10px;
+}

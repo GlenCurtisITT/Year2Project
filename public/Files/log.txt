@@ -98,3 +98,10 @@
 [11/04/2017 16:00:13] - Consultant Glen Connolly made an appointment for Jean Janson for the 21 Apr 2017 at 06:00 AM
 [11/04/2017 16:00:21] - Patient Jean Janson(22222222) was discharged from Psychiatric Ward by Dr.ConnollyID (69762258)
 [11/04/2017 16:10:18] - Bill generated for patient(22222222) by User 'Glen Connolly'(26450965)
+[13/04/2017 11:17:53] - Dr. Connolly(69762258) assigned to patient(11111215)
+[13/04/2017 11:18:58] - Consultant Glen Connolly made an appointment for John Jacobs for the 13 Apr 2017 at 08:00 PM
+[13/04/2017 11:19:14] - Consultant Glen Connolly admitted patient John Jacobs to ward Maternity Ward
+[13/04/2017 11:36:38] - Prescription 1 removed for Patient(11111215) by Dr.Connolly(69762258)
+[13/04/2017 11:41:33] - Consultant Glen Connolly made an appointment for Jean Janson for the 14 Apr 2017 at 10:00 AM
+[13/04/2017 11:41:50] - Consultant Glen Connolly admitted patient Jean Janson to ward Burns Unit
+[13/04/2017 11:44:05] - Appointment for Patient JohnJacobs(11111215) was completed by Dr.Connolly
