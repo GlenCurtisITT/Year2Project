@@ -51,6 +51,9 @@ public class User extends Model{
             if(user.checkRole().equals("Consultant")){
                 Consultant c = Consultant.find.where().eq("email", email).findUnique();
                 return c;
+            } else if(user.checkRole().equals("ChiefAdmin")){
+                ChiefAdmin c = ChiefAdmin.find.where().eq("email", email).findUnique();
+                return c;
             } else {
                 return user;
             }
@@ -94,6 +97,8 @@ public class User extends Model{
     public String checkRole(){
         if(this instanceof Consultant){
             return "Consultant";
+        }else if(this instanceof ChiefAdmin) {
+            return "ChiefAdmin";
         }else{
             return "Admin";
         }

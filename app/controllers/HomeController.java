@@ -98,11 +98,6 @@ public class HomeController extends Controller {
         return ok(addPatient.render(addPatientForm, null, u));
     }
 
-    public Result createUser(){
-        Form<User> addUserForm = formFactory.form(User.class);
-        return ok(createUser.render(addUserForm, null));
-    }
-
     public Result viewPatient(){
         Patient p = getPatientFromSession();
         return ok(viewPatient.render(getUserFromSession(), p));
@@ -230,6 +225,45 @@ public class HomeController extends Controller {
             return ok(appointmentMain.render(getUserFromSession(), a));
         }
 
+    }
+
+    public Result addChiefAdmin(){
+        return ok(addChiefAdmin.render());
+    }
+
+    public Result addChiefAdminSubmit(){
+        DynamicForm df = formFactory.form().bindFromRequest();
+        String email = df.get("email");
+        String password = df.get("password");
+        String confPassword = df.get("confPassword");
+
+        if(email.equals("")){
+            flash("error", "Email must be entered.");
+            return badRequest(addChiefAdmin.render());
+        }
+
+        if(password.equals("") || confPassword.equals("")){
+            flash("error", "Password or Confirm Password was blank.");
+            return badRequest(addChiefAdmin.render());
+        }
+
+        if(!password.equals(confPassword)){
+            flash("error", "Passwords did not match.");
+            return badRequest(addChiefAdmin.render());
+        }
+
+        //Checking for duplicate emails.
+        List<User> users = User.findAll();
+        for(User u : users){
+            if(u.getEmail().equals(email)){
+                return badRequest(addChiefAdmin.render());
+            }
+        }
+
+        ChiefAdmin ca = new ChiefAdmin("Chief", "Admin", null, null, null, null, email, password);
+        ca.create(ca);
+        flash("success", "Chief admin created. Please log in");
+        return redirect(routes.HomeController.index());
     }
 
     public Result rescheduleAppointment(String id){
@@ -368,62 +402,6 @@ public class HomeController extends Controller {
                 + a.getFormattedAppTime(a.getAppDate());
         LogFile.writeToLog(logFileString);
         return redirect(controllers.routes.HomeController.viewPatient());
-    }
-
-    public Result addUserSubmit(){
-        DynamicForm newUserForm = formFactory.form().bindFromRequest();
-        Form errorForm = formFactory.form().bindFromRequest();
-        //Checking if Form has errors.
-        if(newUserForm.hasErrors()){
-            return badRequest(createUser.render(errorForm, "Error in form."));
-        }
-        //Checking that Email and Name are not blank.
-        if(newUserForm.get("email").equals("") || newUserForm.get("fname").equals("") || newUserForm.get("lname").equals("")){
-            return badRequest(createUser.render(errorForm, "Please enter an email and name."));
-        }
-        if(newUserForm.get("role").equals("select")){
-            return badRequest(createUser.render(errorForm, "Please enter a role."));
-        }
-        //Checking if password == confirmed password
-        if(!newUserForm.get("password").equals(newUserForm.get("passwordConfirm"))){
-            return badRequest(createUser.render(errorForm, "Passwords do not match."));
-        }
-        //Checking if password is longer than 6 characters
-        if(newUserForm.get("password").length() < 6){
-            return badRequest(createUser.render(errorForm, "Password must be at least six characters."));
-        }
-        //Checking if email exists already in database (Duplicate primary key)
-        List<User> allusers = User.findAll();
-        for(User a : allusers) {
-            if (a.getEmail().equals(newUserForm.get("email"))) {
-                return badRequest(createUser.render(errorForm, "Email already exists in system."));
-            }
-        }
-
-        String dateString = newUserForm.get("dateOfBirth");
-        DateFormat format = new SimpleDateFormat("yyyy-dd-MM");
-        Date date = new Date();
-        try{
-            date = format.parse(dateString);
-        } catch (ParseException e) {
-            return badRequest(createUser.render(errorForm, dateString));
-        }
-        //Adding user to database
-        if(newUserForm.get("role").equals("Admin")){
-            User u = new User(newUserForm.get("fname"), newUserForm.get("lname"), newUserForm.get("phoneNumber"), newUserForm.get("address")
-                    , newUserForm.get("ppsNumber"), date, newUserForm.get("email"), newUserForm.get("password"));
-            User.create(u);
-        }else if (newUserForm.get("role").equals("Consultant")){
-            Consultant c = new Consultant(newUserForm.get("fname"), newUserForm.get("lname"), newUserForm.get("phoneNumber"), newUserForm.get("address")
-                    , newUserForm.get("ppsNumber"), date, newUserForm.get("email"), newUserForm.get("password"));
-            Consultant.create(c);
-        } else {
-            return badRequest(createUser.render(errorForm, "Invalid role chosen."));
-        }
-        String s = newUserForm.get("role") + ": " + newUserForm.get("fname") + " " + newUserForm.get("lname") + " added successfully.";
-        //Flashing String s to memory to be used in index screen.
-        flash("success", s);
-        return redirect(controllers.routes.HomeController.index());
     }
 
     public Result viewSchedule(){

@@ -7,7 +7,7 @@ GET     /                           controllers.HomeController.index
 GET     /homepage                   controllers.HomeController.homepage
 GET     /consultantHomePage         controllers.ConsultantController.consultantHomePage
 GET     /adminHomePage              controllers.AdminController.adminHomePage
-GET     /createuser                 controllers.HomeController.createUser
+GET     /createuser                 controllers.ChiefAdminController.createUser
 GET     /addPatient                 controllers.HomeController.addPatient
 GET     /logout                     controllers.LoginController.logout
 GET     /searchPatient              controllers.SearchController.searchPatient
@@ -35,18 +35,21 @@ GET     /addMedicine                controllers.HomeController.addMedicine
 GET     /viewFullLog                controllers.AdminController.viewFullLog
 GET     /deleteLogFile              controllers.AdminController.deleteLogFile
 GET     /updatePatient/:mrn         controllers.AdminController.updatePatient(mrn: String)
+GET     /addChiefAdmin              controllers.HomeController.addChiefAdmin
+GET     /chiefAdminHomePage         controllers.ChiefAdminController.chiefAdminHomePage
 POST    /updatePatientSubmit        controllers.AdminController.updatePatientSubmit
 POST    /admitPatientSubmit         controllers.HomeController.admitPatientSubmit
 POST    /searchByMRN                controllers.SearchController.searchByMRN
 POST    /searchByLastName           controllers.SearchController.searchByLastName
 POST    /searchArchiveByMRN         controllers.SearchController.searchArchiveByMRN
 POST    /rescheduleAppointment/:id  controllers.HomeController.rescheduleAppointment(id:String)
-POST    /addUserSubmit              controllers.HomeController.addUserSubmit
+POST    /addUserSubmit              controllers.ChiefAdminController.addUserSubmit
 POST    /loginSubmit                controllers.LoginController.loginSubmit
 POST    /addPatientSubmit           controllers.HomeController.addPatientSubmit
 POST    /addAppointmentSubmit       controllers.HomeController.addAppointmentSubmit
 POST    /makePrescriptionSubmit     controllers.HomeController.makePrescriptionSubmit
 POST    /addMedicineSubmit          controllers.HomeController.addMedicineSubmit
+POST    /addChiefAdminSubmit        controllers.HomeController.addChiefAdminSubmit
 
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count

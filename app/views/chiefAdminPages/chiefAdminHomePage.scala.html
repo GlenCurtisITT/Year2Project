@@ -1,0 +1,16 @@
+@(user: models.users.User)
+@chiefAdminPages.mainChiefAdmin("Chief Admin Home Page", user) {
+    <div class="row">
+        <div class="col-lg-4">
+            <h2>Welcome Back Chief Admin.</h2>
+            <hr />
+
+            <div class="well centered">
+                <a href="@routes.ChiefAdminController.createUser"><button class="btn btn-primary">Add New User</button></a>
+                <a href="#"><button class="btn btn-primary">Add New Medication</button></a>
+                <a href="#"><button class="btn btn-primary">Add New Ward</button></a>
+            </div>
+        </div>
+    </div>
+
+}
