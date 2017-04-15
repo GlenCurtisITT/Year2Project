@@ -2,8 +2,10 @@ package controllers;
 
 import play.mvc.*;
 
+import views.html.chiefAdminPages.viewUsers;
 import views.html.loginPage.*;
 import views.html.mainTemplate.*;
+import views.html.chiefAdminPages.*;
 import play.data.*;
 
 import java.text.DateFormat;
@@ -18,11 +20,7 @@ import static controllers.HomeController.endPatientSession;
 import static controllers.HomeController.getUserFromSession;
 import static play.mvc.Results.ok;
 
-
-/**
- * Created by conno on 10/04/2017.
- */
-public class SearchController {
+public class SearchController extends Controller{
 
     private FormFactory formFactory;
 
@@ -73,8 +71,27 @@ public class SearchController {
     public Result searchByLastName(){
         DynamicForm searchForm = formFactory.form().bindFromRequest();
         String lName = searchForm.get("lName");
+        if(session("role").equals("ChiefAdmin")){
+            List<User> searchedUsers = User.find.where().like("lName", lName + "%").findList();
+            return ok(viewUsers.render(HomeController.getUserFromSession(), searchedUsers));
+
+        }
         List<Patient> searchedPatients = Patient.find.where().like("lName", lName + "%").findList();
         return ok(searchPatient.render(searchedPatients, getUserFromSession()));
+    }
+
+    public Result searchByEmail(){
+        DynamicForm df = formFactory.form().bindFromRequest();
+        String email = df.get("email");
+        List<User> searchedUsers = User.find.where().like("email", email + "%").findList();
+        return ok(viewUsers.render(HomeController.getUserFromSession(), searchedUsers));
+    }
+
+    public Result searchByMedicationName(){
+        DynamicForm df = formFactory.form().bindFromRequest();
+        String name = df.get("name");
+        List<Medicine> searchedMedicine = Medicine.find.where().like("name", name + "%").findList();
+        return ok(viewMedication.render(HomeController.getUserFromSession(), searchedMedicine));
     }
 
 }

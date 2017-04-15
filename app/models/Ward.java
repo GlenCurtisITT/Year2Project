@@ -9,11 +9,13 @@ import java.util.ArrayList;
  * Created by Glen on 2/20/2017.
  */
 @Entity
+@SequenceGenerator(name = "ward_gen", allocationSize=1, initialValue=1)
 public class Ward extends Model {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ward_gen")
     private String wardId;
     private String name;
-    private final int MAX_CAPACITY;
+    private int maxCapacity;
     private int currentOccupancy;
     private boolean status;
 
@@ -23,10 +25,9 @@ public class Ward extends Model {
     @OneToMany(mappedBy = "ward")
     private List<Patient> patients = new ArrayList<>();
 
-    public Ward(String wardId, String name, int capacity) {
-        this.wardId = wardId;
-        this.name = name;
-        this.MAX_CAPACITY = capacity;
+    public Ward(String name, int capacity) {
+        this.setName(name);
+        this.setMaxCapacity(capacity);
         this.currentOccupancy = 0;
         this.status = false;
     }
@@ -41,7 +42,7 @@ public class Ward extends Model {
         patients.add(p);
         p.setWard(this);
         currentOccupancy++;
-        if(currentOccupancy == MAX_CAPACITY){
+        if(currentOccupancy == maxCapacity){
             status = true;
         }
         p.save();
@@ -79,12 +80,19 @@ public class Ward extends Model {
         return name;
     }
 
-    public int getMaxCapacity() {
-        return MAX_CAPACITY;
-    }
-
     public int getCurrentOccupancy() {
         return currentOccupancy;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
 }

@@ -23,6 +23,19 @@ function unhide(clickedButton, divID) {
     }
 }
 
+function unhidePassword(clickedButton, divID){
+    var item = document.getElementById(divID);
+    if (item) {
+        if(item.className=='hidden'){
+            item.className = 'unhidden' ;
+            clickedButton.value = 'Cancel'
+        }else{
+            item.className = 'hidden';
+            clickedButton.value = 'Change Password'
+        }
+    }
+}
+
 function sortTable(n) {
     var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
     table = document.getElementById("sortableTable");

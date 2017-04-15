@@ -1,0 +1,39 @@
+@(user: models.users.User, medicine: models.Medicine)
+@chiefAdminPages.mainChiefAdmin("Add Medication", user) {
+  @if(flash().containsKey("error")) {
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="alert alert-warning">
+          <strong>@flash().get("error")</strong>
+        </div>
+      </div>
+    </div>
+  }
+  <div class="row">
+    <div class="col-lg-3">
+      <h2>Add New Medication</h2>
+      <hr />
+      <form method="post" action="@routes.ChiefAdminController.createMedicationSubmit()" class="form-horizontal">
+
+        <label>Name</label>
+        <input type="text" name="name" value="@medicine.getName" class="form-control" />
+
+        <label>Side Effects (Separate each with comma)</label>
+        <input type="text" name="sideEffects" value="@medicine.getSideAffects" class="form-control" />
+
+        <label>Ingredients</label>
+        <input type="text" name="ingredients" value="@medicine.getIngredients" class="form-control" />
+
+        <label>Price Per Unit (Only include numbers e.g. 0.50)</label>
+        <input type="text" name="price" value="@medicine.getPricePerUnit" class="form-control" />
+
+        <label>Unit of Measurement</label>
+        <select name="measurement" class="form-control" id="margBot">
+          <option value="mg">Milligram</option>
+          <option value="cg">Centigram</option>
+          <option value="kg">Kilogram</option>
+        </select>
+
+        <input type="submit" value="Add Medication" class="btn btn-primary" />
+      </form>
+}

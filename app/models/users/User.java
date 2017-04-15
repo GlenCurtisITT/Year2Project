@@ -1,5 +1,6 @@
 package models.users;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.persistence.*;
 import com.avaje.ebean.Model;
@@ -102,6 +103,14 @@ public class User extends Model{
         }else{
             return "Admin";
         }
+    }
+
+    public String getFormattedDOB(Date a){
+        return new SimpleDateFormat("dd MMM yyyy").format(a);
+    }
+
+    public String getFormattedAppDateForUpdate(Date a){
+        return new SimpleDateFormat("yyyy-MM-dd").format(a);
     }
 
     public String getIdNum() {

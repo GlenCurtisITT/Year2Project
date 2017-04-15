@@ -1,0 +1,68 @@
+@(user: models.users.User, updateUser: models.users.User)
+@chiefAdminPages.mainChiefAdmin("Update User", user) {
+  @if(flash().containsKey("error")) {
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="alert alert-warning">
+          <strong>@flash().get("error")</strong>
+        </div>
+      </div>
+    </div>
+  }
+  <div class="row">
+    <div class="col-lg-3">
+      <h2>Update User: @updateUser.getFname @updateUser.getLname</h2>
+      <hr />
+      <form method="post" action="@routes.ChiefAdminController.updateUserSubmit" class="form-horizontal">
+
+        <input type="hidden" name="idNum" value="@updateUser.getIdNum" class="form-control" />
+
+        <label>Email</label>
+        <input type="text" name="email" value="@updateUser.getEmail" class="form-control" />
+
+        <label>First Name</label>
+        <input type="text" name="fName" value="@updateUser.getFname" class="form-control" />
+
+        <label>Last Name</label>
+        <input type="text" name="lName" value="@updateUser.getLname" class="form-control" />
+
+        <label>PPS Number</label>
+        <input type="text" name="ppsNum" value="@updateUser.getPpsNumber" class="form-control" />
+
+        <label>Address</label>
+        <input type="text" name="address" value="@updateUser.getAddress" class="form-control" />
+
+        <label>Phone No.</label>
+        <input type="text" name="phoneNumber" value="@updateUser.getPhoneNumber" class="form-control" />
+
+        <label>Date Of Birth</label>
+        <input type="date" name="dob" value="@updateUser.getFormattedAppDateForUpdate(updateUser.getDateOfBirth)" class="form-control" id="margBot" />
+
+        <input type="submit" value="Update User" class="btn btn-primary" />
+      </form>
+
+      <hr />
+
+      <div class="row">
+        <div class="col-lg-6">
+          <input type="button" id="margBot" class="btn btn-primary" onclick="unhidePassword(this, 'form') " value="Change Password">
+        </div>
+      </div>
+
+      <div id="form" class="hidden">
+        <form method = "post" action="@routes.ChiefAdminController.updatePasswordSubmit" class="form-horizontal">
+
+          <input type="hidden" name="idNum" value="@updateUser.getIdNum" class="form-control" />
+
+          <label>New Password</label>
+          <input type="password" name="password" class="form-control" />
+
+          <label>Confirm Password</label>
+          <input type="password" name="confPassword" class="form-control" id="margBot" />
+
+          <input type="submit" value="Change Password" class="btn btn-primary" />
+        </form>
+
+    </div>
+  </div>
+}

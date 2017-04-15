@@ -119,6 +119,7 @@ create table ward (
   status                        boolean,
   constraint pk_ward primary key (ward_id)
 );
+create sequence ward_seq increment by 1;
 
 alter table appointment add constraint fk_appointment_mrn foreign key (mrn) references patient (mrn) on delete restrict on update restrict;
 create index ix_appointment_mrn on appointment (mrn);
@@ -210,4 +211,5 @@ drop sequence if exists standby_list_seq;
 drop table if exists user;
 
 drop table if exists ward;
+drop sequence if exists ward_seq;
 

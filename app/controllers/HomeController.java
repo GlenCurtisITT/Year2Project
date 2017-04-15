@@ -39,6 +39,7 @@ public class HomeController extends Controller {
             b.save();
             c.save();
         }
+        /*
         if(Ward.findAll().size() == 0) {
             Ward a = new Ward("1", "Maternity Ward", 20);
             Ward b = new Ward("2", "Intensive Care Unit", 15);
@@ -70,17 +71,8 @@ public class HomeController extends Controller {
             i.save();
             j.save();
 
-        }
+        }*/
 
-        if(Medicine.findAll().size() == 0) {
-            Medicine a = new Medicine("Zotepine","Anxiety, Flushing, dry skin, Arthralgia, Myalgia, Acne, Conjunctivitis, Thrombocythaemia", "metabolite, norzotepine", .4, "mg");
-            Medicine b = new Medicine("Corzide", "Dizziness, lightheadedness, slow heartbeat, tiredness, nausea, vomiting", "nadolol and bendroflumethiazide", .3, "mg");
-            Medicine c = new Medicine("Periactin", "Drowsiness, dizziness, blurred vision, constipation", "Cyproheptadine", .2, "mg");
-
-            a.save();
-            b.save();
-            c.save();
-        }
 
         return ok(index.render(loginForm));
     }

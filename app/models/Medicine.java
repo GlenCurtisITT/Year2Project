@@ -38,6 +38,9 @@ public class Medicine extends Model {
         return Medicine.find.all();
     }
 
+    public String formattedPrice(){
+        return String.format("€%.2f", pricePerUnit);
+    }
 
     public String getUnitOfMeasurement() {
         return unitOfMeasurement;
