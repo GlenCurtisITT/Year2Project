@@ -2,58 +2,73 @@
 @if(user.checkRole().equals("Admin")) {
   @adminPages.mainAdmin("Admit Patient", user) {
     @if(error != null){
-      <div class="alert alert-warning">
-        <strong>@error</strong>
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="alert alert-warning">
+            <strong>@error</strong>
+          </div>
+        </div>
       </div>
     }
-      <div class="row">
-        <div class="col-lg-12">
-          <h1>MRN: @patient.getMrn()</h1>
-          <h1>Name: @patient.getfName() @patient.getlName()</h1>
-          <label>Please include discharge date, ward and a meal plan</label>
-          <form method = "post" action="@routes.HomeController.admitPatientSubmit()" class="form-horizontal">
-            <select id="wardId" name="wardId">
-              <option value="select">--- Please Select Ward ---</option>
-              @for(w <- wardlist){
-                <option value="@w.getWardId">@w.getName</option>
-              }
-            </select>
-            <input class="form-control" placeholder="Meal Plan" name="mealPlan" id="srch-term" type="text">
-            <div class="actions">
-              <input type="submit" value="Admit Patient" class="btn btn-primary">
-              <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Cancel</button></a>
-            </div>
-          </form>
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="well">
+          <h1><span class="blueText">MRN:</span> @patient.getMrn()</h1>
+          <h1><span class="blueText">Name:</span> @patient.getfName() @patient.getlName()</h1>
+        </div>
 
-
+        <label>Please include ward and a meal plan</label>
+        <form method = "post" action="@routes.HomeController.admitPatientSubmit()" class="form-horizontal">
+          <select id="wardId" name="wardId" class="form-control">
+            <option value="select">--- Please Select Ward ---</option>
+            @for(w <- wardlist){
+              <option value="@w.getWardId">@w.getName</option>
+            }
+          </select>
+          <input class="form-control" placeholder="Meal Plan" name="mealPlan" id="margBot" type="text">
+          <div class="actions">
+            <input type="submit" value="Admit Patient" class="btn btn-primary">
+            <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Cancel</button></a>
+          </div>
+        </form>
+      </div>
+    </div>
   }
 }
 
 @if(user.checkRole().equals("Consultant")){
   @consultantPages.mainConsultant("Admit Patient", user) {
     @if(error != null){
-      <div class="alert alert-warning">
-        <strong>@error</strong>
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="alert alert-warning">
+            <strong>@error</strong>
+          </div>
+        </div>
       </div>
     }
     <div class="row">
-      <div class="col-lg-12">
-        <h1>MRN: @patient.getMrn()</h1>
-        <h1>Name: @patient.getfName() @patient.getlName()</h1>
-        <label>Please include discharge date, ward and a meal plan</label>
+      <div class="col-lg-4">
+        <div class="well">
+          <h1><span class="blueText">MRN:</span> @patient.getMrn()</h1>
+          <h1><span class="blueText">Name:</span> @patient.getfName() @patient.getlName()</h1>
+        </div>
+
+        <label>Please include ward and a meal plan</label>
         <form method = "post" action="@routes.HomeController.admitPatientSubmit()" class="form-horizontal">
-          <select id="wardId" name="wardId">
+          <select id="wardId" name="wardId" class="form-control">
             <option value="select">--- Please Select Ward ---</option>
             @for(w <- wardlist){
               <option value="@w.getWardId">@w.getName</option>
             }
           </select>
-          <input class="form-control" placeholder="Meal Plan" name="mealPlan" id="srch-term" type="text">
+          <input class="form-control" placeholder="Meal Plan" name="mealPlan" id="margBot" type="text">
           <div class="actions">
             <input type="submit" value="Admit Patient" class="btn btn-primary">
             <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Cancel</button></a>
           </div>
         </form>
-
+      </div>
+    </div>
   }
 }

@@ -23,7 +23,7 @@
           <div class="col-lg-5">
               <div class="well">
                   <h1><span class="blueText">Consultant:</span> Dr. @appointment.getC().getLname</h1>
-                  <h2><span class="blueText">Speciality:</span> </h2>
+                  <h2><span class="blueText">Speciality:</span> @appointment.getC().getSpecialization</h2>
                   <h2><span class="blueText">Email:</span> @user.getEmail</h2>
 
               </div>
@@ -114,14 +114,10 @@
           <div class="col-lg-5">
               <div class="well">
                   <h1><span class="blueText">Consultant:</span> Dr. @appointment.getC().getLname</h1>
-                  <h2><span class="blueText">Speciality:</span> </h2>
+                  <h2><span class="blueText">Speciality:</span> @appointment.getC().getSpecialization</h2>
                   <h2><span class="blueText">Email:</span> @user.getEmail</h2>
 
               </div>
-          </div>
-              <div class="col-lg-12" id="margBot">
-          <a href="@routes.ConsultantController.completeAppointment(appointment.getId)"><button type="button" class="btn btn-primary text-center">
-              Complete Appointment</button></a>
           </div>
           <div class="col-lg-4">
               <div class="well">
@@ -144,39 +140,50 @@
           </div>
       </div>
       <div class="row">
-          <div class="col-lg-6">
-              <a href="@routes.HomeController.cancelAppointment(appointment.getId)">
-                  <button id ="margBot" type="button" class="btn btn-danger text-center" onclick="return confirmDel()";>Cancel Appointment</button>
-              </a>
+          <div class="col-lg-9">
+              <div class="well centered">
+                  <a href="@routes.ConsultantController.completeAppointment(appointment.getId)"><button type="button" class="btn btn-primary text-center">
+                      Complete Appointment</button>
+                  </a>
+                  <input type="button" class="btn btn-primary" onclick="unhide(this, 'form') " value="Reschedule Appointment">
+                  <a href="@routes.HomeController.cancelAppointment(appointment.getId)">
+                      <button type="button" class="btn btn-danger text-center" onclick="return confirmDel()";>Cancel Appointment</button>
+                  </a>
+
+              </div>
           </div>
       </div>
 
       <div class="row">
-          <div class="col-lg-6">
-              <input type="button" id="margBot" class="btn btn-primary" onclick="unhide(this, 'form') " value="Reschedule Appointment">
+          <div class="col-lg-3">
+              <div id="form" class="hidden">
+                  <h2>Reschedule Appointment</h2>
+                  <hr />
+                  <form method = "post" action="@routes.HomeController.rescheduleAppointment(appointment.getId)" class="form-horizontal">
+                      <label>Date</label>
+                      <input type="date" id="margBot" name="appDate" dataformatas="yyyy-dd-MM" value="YYYY-MM-DD" class="form-control"/>
+                      <label>Time</label>
+                      <br />
+                      <select id="hours" name="hours">
+                          <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
+                          <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
+                          <option id="18">18</option><option id="19">19</option><option id="20">20</option>
+                      </select>
+                      <select name="minutes" id="margBot">
+                          <option id="00">00</option><option id="30">30</option>
+                      </select>
+                      <div class="row">
+                          <div class="col-xs-1">
+                              <div class="actions">
+                                  <input type="submit" value="Reschedule" class="btn btn-primary">
+                              </div>
+                          </div>
+                      </div>
+
+                  </form>
           </div>
       </div>
 
-      <div id="form" class="hidden">
-      <form method = "post" action="@routes.HomeController.rescheduleAppointment(appointment.getId)" class="form-horizontal">
-          <input type="date" id="appDate" name="appDate" dataformatas="yyyy-dd-MM" value="YYYY-MM-DD"/>
-          <select id="hours" name="hours">
-              <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
-              <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
-              <option id="18">18</option><option id="19">19</option><option id="20">20</option>
-          </select>
-          <select name="minutes" id="margBot">
-              <option id="00">00</option><option id="30">30</option>
-          </select>
-          <div class="row">
-              <div class="col-xs-1">
-                  <div class="actions">
-                      <input type="submit" value="Reschedule" class="btn btn-primary">
-                  </div>
-              </div>
-          </div>
-
-      </form>
           <script>
                   function confirmDel() {
                       return confirm('Are you sure?');

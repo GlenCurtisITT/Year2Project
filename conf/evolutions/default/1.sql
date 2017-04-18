@@ -39,6 +39,7 @@ create table equipment (
   status                        boolean,
   constraint pk_equipment primary key (equip_id)
 );
+create sequence equipment_seq start with 4 increment by 1;
 
 create table medicine (
   medicine_id                   varchar(255) not null,
@@ -196,6 +197,7 @@ drop table if exists chart;
 drop sequence if exists chart_seq;
 
 drop table if exists equipment;
+drop sequence if exists equipment_seq;
 
 drop table if exists medicine;
 drop sequence if exists medicine_seq;

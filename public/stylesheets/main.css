@@ -94,3 +94,11 @@ body{
 #paddTop{
     padding-top:10px;
 }
+
+#imageSmall{
+    width: 60px;
+    height:57px;
+    position: relative;
+    bottom: 10px;
+    left:55px;
+}

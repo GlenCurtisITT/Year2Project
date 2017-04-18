@@ -5,7 +5,7 @@
         @if(flash().containsKey("error")) {
             <div class="alert alert-warning">
                 <strong>@flash().get("error")</strong>
-                <a href="#"><button class="btn btn-primary">Declare</button></a>
+                <a href="@routes.ConsultantController.declareSpecialisation()"><button class="btn btn-primary">Declare</button></a>
             </div>
         }
         </div>

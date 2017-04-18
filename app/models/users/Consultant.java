@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @DiscriminatorValue("Consultant")
 @PrimaryKeyJoinColumn(referencedColumnName = "idNum")
 public class Consultant extends User{
-    private String specialization = null;
+    private String specialization;
 
     @OneToMany(mappedBy = "c")
     private List<Patient> patients = new ArrayList<>();
@@ -25,6 +25,7 @@ public class Consultant extends User{
 
     public Consultant(String fname, String lname, String phoneNumber, String address, String ppsNumber, Date dateOfBirth, String email, String password) {
         super(fname, lname, phoneNumber, address, ppsNumber, dateOfBirth, email, password);
+        specialization = null;
     }
 
     public static Finder<String, Consultant> find = new Finder<String, Consultant>(Consultant.class);

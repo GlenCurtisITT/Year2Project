@@ -5,7 +5,7 @@
           <h1>No patient selected</h1>
       } else {
           <div class="row">
-              <div class="col-lg-6">
+              <div class="col-lg-4">
               @if(flash().containsKey("success")) {
                   <div class="alert alert-success">
                       <strong>@flash().get("success")</strong>
@@ -133,7 +133,7 @@
             <h1>No patient selected</h1>
         } else {
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     @if(flash().containsKey("success")) {
                         <div class="alert alert-success">
                             <strong>@flash().get("success")</strong>
@@ -164,7 +164,7 @@
             }
             <div class="row">
             @if(patient.getCurrentChart() != null) {
-                    <div class="col-lg-6" id="borderBlue">
+                    <div class="col-lg-6">
                         <h2>Chart Information</h2>
                         <hr />
 
@@ -191,7 +191,7 @@
                         </table>
                     </div>
                 @if(patient.getPrescriptionList.size != 0){
-                    <div class="col-lg-6" id="borderBlue">
+                    <div class="col-lg-6">
                         <h2>Prescription Information</h2>
                         <hr />
                         <table class="table table-bordered table-hover table-condensed">
@@ -223,7 +223,7 @@
             </div>
             <div class="row">
             @if(patient.getAppointments.size() != 0) {
-                    <div class="col-lg-6" id="borderBlueAlt">
+                    <div class="col-lg-6">
                         <h2>Appointment Information</h2>
                         <hr />
 
@@ -253,7 +253,10 @@
                                 <a href="@routes.ConsultantController.addConsultant()"><button type="button" class="btn btn-primary text-center">
                                     Accept Patient</button></a>
                             }
-                            <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">Make Appointment</button></a>
+                            @if(patient.getC != null) {
+                                <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">
+                                    Make Appointment</button></a>
+                            }
                             <a href="@routes.HomeController.makePrescription()"><button type="button" class="btn btn-primary text-center">
                                 Add Prescription</button></a>
                             @if(patient.getCurrentChart().getDateOfAdmittance == null) {

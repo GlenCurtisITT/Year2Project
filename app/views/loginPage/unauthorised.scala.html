@@ -1,0 +1,34 @@
+@(loginForm: Form[models.users.Login])
+@import helper._
+
+@loginPage.mainLogin("Unauthorized") {
+
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="centered">
+        <img src="@routes.Assets.versioned("images/logo.png")" alt="Logo" />
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-3">
+
+    </div>
+    <div class="col-xs-6">
+      <div class="centered">
+        <div class="alert alert-danger">
+          <strong>YOU ARE NOT AUTHORISED TO VIEW THIS PAGE!</strong>
+        </div>
+        <button class="btn btn-primary" onclick="goBack()">Go Back</button>
+      </div>
+    </div>
+    <div class="col-xs-3">
+
+    </div>
+  </div>
+  <script>
+          function goBack() {
+            window.history.back();
+          }
+  </script>
+}

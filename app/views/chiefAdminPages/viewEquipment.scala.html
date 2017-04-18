@@ -1,0 +1,49 @@
+@(user: models.users.User, allEquipment: List[models.Equipment])
+@chiefAdminPages.mainChiefAdmin("View Equipment", user) {
+    @if(flash().containsKey("success")) {
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="alert alert-success">
+                    <strong>@flash().get("success")</strong>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-lg-12">
+            <h2>Equipment</h2>
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-bordered table-hover table-condensed" id="sortableTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">Name</th>
+                        <th onclick="sortTable(1)">Is Operational?</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                @for(e <-allEquipment) {
+                    <tr>
+                        <td>@e.getType</td>
+                        @if(e.isStatus){
+                            <td>Yes</td>
+                        }else{
+                            <td>No</td>
+                        }
+                        <td>
+                            <a href="@routes.ChiefAdminController.updateEquipment(e.getEquipId)" class="btn-xs btn-danger">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <a href="@routes.ChiefAdminController.createEquipment()"><button type="button" class="btn btn-primary text-center">Add New Equipment</button></a>
+        </div>
+    </div>
+}

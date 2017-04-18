@@ -5,15 +5,12 @@ import play.mvc.Action;
 import java.util.concurrent.*;
 import models.users.*;
 
-/**
- * Created by Glen on 16/03/2017.
- */
-public class AuthAdmin extends Action.Simple {
+public class AuthChiefAdmin extends Action.Simple {
     public CompletionStage<Result> call(Http.Context ctx){
         String id = ctx.session().get("numId");
         if(id != null){
             User u = User.getUserById(id);
-            if("Admin".equals(u.checkRole())){
+            if("ChiefAdmin".equals(u.checkRole())){
                 return delegate.call(ctx);
             }
         }

@@ -18,6 +18,8 @@ import models.users.*;
 import models.*;
 import org.mindrot.jbcrypt.BCrypt;
 
+@Security.Authenticated(Secured.class)
+@With(AuthChiefAdmin.class)
 public class ChiefAdminController extends Controller{
 
     private FormFactory formFactory;
@@ -30,6 +32,66 @@ public class ChiefAdminController extends Controller{
     public Result chiefAdminHomePage(){
         User u = HomeController.getUserFromSession();
         return ok(chiefAdminHomePage.render(u));
+    }
+
+    public Result viewEquipment(){
+        User u = HomeController.getUserFromSession();
+        List<Equipment> allEquipment = Equipment.findAll();
+        Collections.sort(allEquipment, new EquipmentComparator());
+
+        return ok(viewEquipment.render(u, allEquipment));
+    }
+
+    public Result createEquipment(){
+        User u = HomeController.getUserFromSession();
+        Equipment e = new Equipment("", true);
+
+        return ok(createEquipment.render(u, e));
+    }
+
+    public Result createEquipmentSubmit(){
+        User u = HomeController.getUserFromSession();
+        DynamicForm df = formFactory.form().bindFromRequest();
+        String name = df.get("name");
+        Equipment e = new Equipment(name, true);
+        if(name.equals("")){
+            flash("error", "Name cannot be blank.");
+            return badRequest(createEquipment.render(u, e));
+        }
+
+        flash("success", "Equipment Created.");
+        e.save();
+        return redirect(routes.ChiefAdminController.viewEquipment());
+    }
+
+    public Result updateEquipment(String id){
+        User u = HomeController.getUserFromSession();
+        Equipment e = Equipment.find.byId(id);
+
+        return ok(updateEquipment.render(u, e));
+    }
+
+    public Result updateEquipmentSubmit(){
+        DynamicForm df = formFactory.form().bindFromRequest();
+        User u = HomeController.getUserFromSession();
+        Equipment e = Equipment.find.byId(df.get("id"));
+        String name = df.get("name");
+        String operational = df.get("operational");
+        Boolean isOperational;
+        if(operational.equals("true")){
+            isOperational = true;
+        }else{
+            isOperational = false;
+        }
+        if(name.equals("")){
+            flash("error", "Name cannot be blank");
+            return badRequest(updateEquipment.render(u, e));
+        }
+        e.setType(name);
+        e.setStatus(isOperational);
+        e.update();
+        flash("success", "Equipment Updated");
+        return redirect(routes.ChiefAdminController.viewEquipment());
     }
 
     public Result viewUsers(){

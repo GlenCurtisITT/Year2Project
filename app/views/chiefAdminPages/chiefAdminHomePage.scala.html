@@ -1,7 +1,7 @@
 @(user: models.users.User)
 @chiefAdminPages.mainChiefAdmin("Chief Admin Home Page", user) {
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-6">
             <h2>Welcome Back Chief Admin.</h2>
             <hr />
 
@@ -9,6 +9,7 @@
                 <a href="@routes.ChiefAdminController.createUser"><button class="btn btn-primary">Add New User</button></a>
                 <a href="@routes.ChiefAdminController.createMedication"><button class="btn btn-primary">Add New Medication</button></a>
                 <a href="@routes.ChiefAdminController.createWard()"><button class="btn btn-primary">Add New Ward</button></a>
+                <a href="@routes.ChiefAdminController.createEquipment()"><button class="btn btn-primary">Add New Equipment</button></a>
             </div>
         </div>
     </div>

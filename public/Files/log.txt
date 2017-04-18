@@ -105,3 +105,17 @@
 [13/04/2017 11:41:33] - Consultant Glen Connolly made an appointment for Jean Janson for the 14 Apr 2017 at 10:00 AM
 [13/04/2017 11:41:50] - Consultant Glen Connolly admitted patient Jean Janson to ward Burns Unit
 [13/04/2017 11:44:05] - Appointment for Patient JohnJacobs(11111215) was completed by Dr.Connolly
+[16/04/2017 12:40:08] - Consultant Glen Connolly made an appointment for John Jacobs for the 16 Apr 2017 at 03:00 PM
+[16/04/2017 12:42:28] - Prescription 1 removed for Patient(11111215) by Dr.Connolly(99444185)
+[16/04/2017 12:42:39] - Consultant Glen Connolly admitted patient John Jacobs to ward Intensive Care Unit
+[16/04/2017 12:59:53] - Consultant Glen Connolly rescheduled appointment for John Jacobs for the 17 Apr 2017 at 06:00 AM
+[16/04/2017 13:04:01] - Dr. Connolly(99444185) assigned to patient(22222222)
+[16/04/2017 13:22:56] - Consultant Glen Connolly made an appointment for Jean Janson for the 07 May 2017 at 08:00 AM
+[16/04/2017 13:26:50] - Consultant Glen Con rescheduled appointment for John Jacobs for the 16 Apr 2017 at 06:00 PM
+[18/04/2017 00:28:06] - Dr. Connolly(99444185) assigned to patient(11111215)
+[18/04/2017 01:56:53] - Dr. Connolly(15636380) assigned to patient(11111215)
+[18/04/2017 01:57:23] - Consultant Glen Connolly made an appointment for John Jacobs for the 18 Apr 2017 at 06:00 AM
+[18/04/2017 02:02:06] - Consultant Glen Connolly admitted patient John Jacobs to ward Private Ward
+[18/04/2017 02:10:40] - Dr. Connolly(15636380) assigned to patient(22222222)
+[18/04/2017 02:11:05] - Consultant Glen Connolly made an appointment for Jean Janson for the 19 Apr 2017 at 10:30 AM
+[18/04/2017 02:11:27] - Consultant Glen Connolly rescheduled appointment for Jean Janson for the 18 Apr 2017 at 08:30 PM
