@@ -16,7 +16,7 @@ import java.util.zip.GZIPOutputStream;
  */
 @Entity
 @SequenceGenerator(name = "chart_gen", allocationSize=1, initialValue=1)
-public class Chart extends Model {
+public class Chart extends Model implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chart_gen")
     private int chartId;

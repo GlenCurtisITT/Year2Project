@@ -14,7 +14,7 @@ import java.util.zip.GZIPOutputStream;
  */
 @Entity
 @SequenceGenerator(name = "pre_gen", allocationSize=1, initialValue=1)
-public class Prescription extends Model {
+public class Prescription extends Model implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pre_gen")
     private String prescription_Id;
