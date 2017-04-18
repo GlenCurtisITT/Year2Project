@@ -24,8 +24,13 @@ public class Appointment extends Model {
     private boolean complete;
 
     @ManyToOne()
+    @JoinColumn(name = "recordId")
+    private PatientRecord patientRecord;
+
+    @ManyToOne()
     @JoinColumn(name = "mrn")
     private Patient p;
+
     @ManyToOne()
     @JoinColumn(name = "idNum")
     private Consultant c;
@@ -84,6 +89,14 @@ public class Appointment extends Model {
         this.complete = true;
         this.update();
         p.update();
+    }
+
+    public PatientRecord getPatientRecord() {
+        return patientRecord;
+    }
+
+    public void setPatientRecord(PatientRecord patientRecord) {
+        this.patientRecord = patientRecord;
     }
 
     public String getId() {

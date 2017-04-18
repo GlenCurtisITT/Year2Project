@@ -24,7 +24,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 
 
 public class PDF {
@@ -158,12 +157,12 @@ public class PDF {
         // t.setBorderWidth(1);
 
         PdfPCell c1;
-        if(p.getAppointments().size() != 0) {
+        if(p.getAppointmentsDue().size() != 0) {
             c1 = new PdfPCell(new Phrase("Appointments"));
             c1.setHorizontalAlignment(Element.ALIGN_CENTER);
             table.addCell(c1);
             table.addCell("€" + Double.toString(costOfAppointments));
-            table.addCell(Integer.toString(p.getAppointments().size()) + " appointments");
+            table.addCell(Integer.toString(p.getAppointmentsDue().size()) + " appointments");
         }
         if(p.getBillingChart().getDateOfAdmittance() != null) {
             for(int i = 0; i < charts.size(); i++) {

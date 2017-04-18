@@ -1,0 +1,30 @@
+@mainTemplate.main("Add Chief Admin", null) {
+    @if(flash().containsKey("error")) {
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="alert alert-warning">
+                <strong>@flash().get("error")</strong>
+            </div>
+        </div>
+    </div>
+    }
+    <div class="row">
+        <div class="col-lg-2">
+            <h2>Add Chief Admin</h2>
+            <hr />
+            <form method="post" action="@routes.HomeController.addChiefAdminSubmit()" class="form-horizontal">
+
+                <label>Email</label>
+                <input type="text" name="email" class="form-control" />
+
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" />
+
+                <label>Confirm Password</label>
+                <input type="password" name="confPassword" class="form-control" id="margBot"/>
+
+                <input type="submit" value="Submit" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+}

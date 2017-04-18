@@ -1,7 +1,12 @@
 package controllers;
 
+import play.data.DynamicForm;
+import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
+import play.mvc.With;
+import views.html.chiefAdminPages.chiefAdminHomePage;
 import views.html.mainTemplate.*;
 import views.html.consultantPages.*;
 
@@ -12,10 +17,21 @@ import java.util.stream.Collectors;
 
 import models.users.*;
 import models.*;
-/**
- * Created by Glen on 01/03/2017.
- */
+
+import javax.inject.Inject;
+
+@Security.Authenticated(Secured.class)
+@With(AuthAdminOrConsultant.class)
 public class ConsultantController extends Controller {
+
+    private FormFactory formFactory;
+
+    @Inject
+    public ConsultantController(FormFactory f){
+        this.formFactory = f;
+    }
+
+
     public Result consultantHomePage(){
         User u = HomeController.getUserFromSession();
         Consultant c = (Consultant) u;
@@ -96,13 +112,28 @@ public class ConsultantController extends Controller {
         List<Appointment> appointments = c.getAppointments();
         Appointment a = Appointment.find.byId(id);
         Patient p = a.getP();
-
+        p.getB().resetPaidStatus();
         a.complete();
         String log ="Appointment for Patient " + p.getfName() + p.getlName() + "(" + p.getMrn() + ") was completed by Dr." + c.getLname();
         LogFile.writeToLog(log);
         flash("success", log);
         return ok(viewAppointments.render(c, appointments));
 
+    }
+
+    public Result declareSpecialisation(){
+        Consultant c = (Consultant) HomeController.getUserFromSession();
+
+        return ok(declareSpecialisation.render(c));
+    }
+
+    public Result declareSecialisationSubmit(){
+        DynamicForm df = formFactory.form().bindFromRequest();
+        Consultant c = Consultant.find.byId(df.get("id"));
+        c.setSpecialization(df.get("specialisation"));
+        c.update();
+        flash("success", "Specialisation Added.");
+        return redirect(routes.ConsultantController.consultantHomePage());
     }
 
 }

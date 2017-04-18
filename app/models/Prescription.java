@@ -20,6 +20,7 @@ public class Prescription extends Model implements Serializable {
     private String prescription_Id;
     private String frequency;
     private int dosage;
+    private boolean paid;
 
     @ManyToOne
     @JoinColumn(name = "medicineId")
@@ -33,6 +34,7 @@ public class Prescription extends Model implements Serializable {
         this.frequency = frequency;
         this.dosage = dosage;
         this.medicine = medicine;
+        paid = false;
     }
 
     public void setPatient(Patient p) {
@@ -44,7 +46,7 @@ public class Prescription extends Model implements Serializable {
         return this.patient;
     }
 
-
+/*
     public void serialize() throws IOException {
         final String CHARTFILE = "public/Files/prescriptions.gz";
         try(FileOutputStream fo = new FileOutputStream(CHARTFILE);
@@ -76,6 +78,14 @@ public class Prescription extends Model implements Serializable {
             prescriptionResult = null;
         }
         return prescriptionResult;
+    }
+*/
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
     }
 
     public static Finder<String, Prescription> find = new Finder<String, Prescription>(Prescription.class);

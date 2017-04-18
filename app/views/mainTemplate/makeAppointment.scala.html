@@ -59,13 +59,16 @@
       <h1>No patient selected</h1>
     }else{
         <div class="row">
-            <div class="col-lg-12">
-                <h1>MRN: @patient.getMrn()</h1>
-                <h1>Name: @patient.getfName() @patient.getlName()</h1>
-                <label>Appointment Date, Time and Consultant</label>
+            <div class="col-lg-3">
+                <div class="well">
+                    <h1><span class="blueText">MRN:</span> @patient.getMrn()</h1>
+                    <h1><span class="blueText">Name:</span> @patient.getfName() @patient.getlName()</h1>
+                </div>
                     <!-- Be sure to change id to value. Value is what gets included in the POST request to the method -->
                 <form method = "post" action="@routes.HomeController.addAppointmentSubmit()" class="form-horizontal">
-                    <input type="date" id="appDate" name="appDate" value="YYYY-MM-DD" dataformatas="yyyy-dd-MM" />
+                    <label>Appointment Date</label>
+                    <input type="date" id="appDate" name="appDate" value="YYYY-MM-DD" dataformatas="yyyy-dd-MM" class="form-control"/>
+                    <label id="margTop">Time</label><br />
                     <select id="hours" name="hours">
                         <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
                         <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
@@ -74,7 +77,9 @@
                     <select id="minutes" name="minutes">
                         <option id="00">00</option><option id="30">30</option>
                     </select>
-                    <select id="consultant" name="consultant">
+                    <br />
+                    <label id="margTop">Consultant</label>
+                    <select name="consultant" class="form-control">
                         @if(patient.getC != null){
                             <option value="@patient.getC.getIdNum">@patient.getC().getFname @patient.getC().getLname
                             </option>
@@ -85,7 +90,9 @@
                             }
                         }
                     </select>
-                    <select id="equipment" name="equipment">
+
+                    <label id="margTop">Equipment</label>
+                    <select id="margBot" name="equipment" class="form-control">
                         <option value="select">--- Please Select ---</option>
                         @for(e <- equipmentlist){
                             <option value="@e.getEquipId">@e.getType</option>

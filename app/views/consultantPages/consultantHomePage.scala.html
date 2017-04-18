@@ -1,10 +1,11 @@
 @(consultant: models.users.Consultant, appointmentList: List[models.Appointment])
 @consultantPages.mainConsultant("Consultant Homepage", consultant) {
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-5">
         @if(flash().containsKey("error")) {
             <div class="alert alert-warning">
                 <strong>@flash().get("error")</strong>
+                <a href="@routes.ConsultantController.declareSpecialisation()"><button class="btn btn-primary">Declare</button></a>
             </div>
         }
         </div>

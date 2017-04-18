@@ -2,9 +2,9 @@ package controllers;
 
 import models.*;
 import play.mvc.*;
-import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
+import services.Serializer;
 import views.html.mainTemplate.*;
 import views.html.adminPages.*;
 import play.data.*;
@@ -18,6 +18,9 @@ import java.util.*;
 
 import javax.inject.Inject;
 import models.users.*;
+
+import static controllers.HomeController.getPatientFromSession;
+import static java.util.stream.Collectors.toList;
 
 @Security.Authenticated(Secured.class)
 @With(AuthAdmin.class)
@@ -45,7 +48,7 @@ public class AdminController extends Controller{
             flash("error", "Cannot archive Patient while bill is overdue");
             return redirect(routes.SearchController.searchPatient());
         }
-        if(p.getAppointments().size() != 0){
+        if(p.getAppointmentsDue().size() != 0){
             flash("error", "Cannot archive Patient while there are still appointments due");
             return redirect(routes.SearchController.searchPatient());
         }
@@ -58,14 +61,24 @@ public class AdminController extends Controller{
             return redirect(routes.SearchController.searchPatient());
         }
         try {
-            p.serialize();
+            Serializer.serialize(p);
+            PatientRecord pr;
+            if(p.getPatientRecord() != null){
+                pr = p.getPatientRecord();
+                Serializer.serialize(pr);
+                for(Chart chart: pr.getCharts()) {
+                    Serializer.serialize(chart);
+                    chart.delete();
+                }
+                pr.delete();
+            }
             for(Chart chart: p.getCharts()) {
-                chart.serialize();
+                Serializer.serialize(chart);
                 chart.delete();
             }
             if (p.getPrescriptionList().size() != 0) {
                 for(Prescription prescription : p.getPrescriptionList()){
-                    prescription.serialize();
+                    Serializer.serialize(prescription);
                     prescription.delete();
                 }
             }
@@ -163,7 +176,7 @@ public class AdminController extends Controller{
 
     public Result listConsultants(){
         List<Consultant> consultants = Consultant.findAllConsultants();
-        Patient p = HomeController.getPatientFromSession();
+        Patient p = getPatientFromSession();
         User u = HomeController.getUserFromSession();
 
         return ok(listConsultants.render(consultants, u, p));
@@ -171,7 +184,7 @@ public class AdminController extends Controller{
 
     public Result addConsultant(String idNum){
         Consultant c = Consultant.find.byId(idNum);
-        Patient p = HomeController.getPatientFromSession();
+        Patient p = getPatientFromSession();
         User u = HomeController.getUserFromSession();
         p.assignConsultant(c);
         String logFileString = "Dr. " + c.getLname() + "(" + c.getIdNum() + ") assigned to patient(" + p.getMrn() + ")";
@@ -181,7 +194,7 @@ public class AdminController extends Controller{
     }
 
     public Result genBill(){
-        Patient p = HomeController.getPatientFromSession();
+        Patient p = getPatientFromSession();
         User u = HomeController.getUserFromSession();
         Bill b = p.getB();
         b.calcBill();
@@ -190,6 +203,23 @@ public class AdminController extends Controller{
         String logFileString = "Bill generated for patient(" + p.getMrn() + ") by User '" + u.getFname() + " " + u.getLname() + "'(" + u.getIdNum() + ")";
         LogFile.writeToLog(logFileString);
         flash("success", "Bill generated ");
+        return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
+    }
+
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdmin.class)
+    public Result payBill(){
+        Patient p = getPatientFromSession();
+        if(p.getPatientRecord() == null) {
+            PatientRecord pr = PatientRecord.record(p);
+        } else{
+            p.getPatientRecord().addToRecord();
+        }
+        p.getB().payBill();
+        p.getPrescriptionList().stream().filter(pres -> !pres.isPaid()).forEach(pres -> pres.setPaid(true));
+        String s = "Bill has been paid for " + p.getfName() + p.getlName() + "(" + p.getMrn() + ")";
+        LogFile.writeToLog(s);
+        flash("success", s);
         return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
     }
 

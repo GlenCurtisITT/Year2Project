@@ -98,3 +98,36 @@
 [11/04/2017 16:00:13] - Consultant Glen Connolly made an appointment for Jean Janson for the 21 Apr 2017 at 06:00 AM
 [11/04/2017 16:00:21] - Patient Jean Janson(22222222) was discharged from Psychiatric Ward by Dr.ConnollyID (69762258)
 [11/04/2017 16:10:18] - Bill generated for patient(22222222) by User 'Glen Connolly'(26450965)
+[13/04/2017 11:17:53] - Dr. Connolly(69762258) assigned to patient(11111215)
+[13/04/2017 11:18:58] - Consultant Glen Connolly made an appointment for John Jacobs for the 13 Apr 2017 at 08:00 PM
+[13/04/2017 11:19:14] - Consultant Glen Connolly admitted patient John Jacobs to ward Maternity Ward
+[13/04/2017 11:36:38] - Prescription 1 removed for Patient(11111215) by Dr.Connolly(69762258)
+[13/04/2017 11:41:33] - Consultant Glen Connolly made an appointment for Jean Janson for the 14 Apr 2017 at 10:00 AM
+[13/04/2017 11:41:50] - Consultant Glen Connolly admitted patient Jean Janson to ward Burns Unit
+[13/04/2017 11:44:05] - Appointment for Patient JohnJacobs(11111215) was completed by Dr.Connolly
+[16/04/2017 12:40:08] - Consultant Glen Connolly made an appointment for John Jacobs for the 16 Apr 2017 at 03:00 PM
+[16/04/2017 12:42:28] - Prescription 1 removed for Patient(11111215) by Dr.Connolly(99444185)
+[16/04/2017 12:42:39] - Consultant Glen Connolly admitted patient John Jacobs to ward Intensive Care Unit
+[16/04/2017 12:59:53] - Consultant Glen Connolly rescheduled appointment for John Jacobs for the 17 Apr 2017 at 06:00 AM
+[16/04/2017 13:04:01] - Dr. Connolly(99444185) assigned to patient(22222222)
+[16/04/2017 13:22:56] - Consultant Glen Connolly made an appointment for Jean Janson for the 07 May 2017 at 08:00 AM
+[16/04/2017 13:26:50] - Consultant Glen Con rescheduled appointment for John Jacobs for the 16 Apr 2017 at 06:00 PM
+[18/04/2017 00:28:06] - Dr. Connolly(99444185) assigned to patient(11111215)
+[18/04/2017 01:56:53] - Dr. Connolly(15636380) assigned to patient(11111215)
+[18/04/2017 01:57:23] - Consultant Glen Connolly made an appointment for John Jacobs for the 18 Apr 2017 at 06:00 AM
+[18/04/2017 02:02:06] - Consultant Glen Connolly admitted patient John Jacobs to ward Private Ward
+[18/04/2017 02:10:40] - Dr. Connolly(15636380) assigned to patient(22222222)
+[18/04/2017 02:11:05] - Consultant Glen Connolly made an appointment for Jean Janson for the 19 Apr 2017 at 10:30 AM
+[18/04/2017 02:11:27] - Consultant Glen Connolly rescheduled appointment for Jean Janson for the 18 Apr 2017 at 08:30 PM
+[18/04/2017 14:10:45] - Dr. Connolly(51428290) assigned to patient(11111215)
+[18/04/2017 14:11:15] - Consultant Glen Connolly made an appointment for John Jacobs for the 10 Nov 2018 at 06:00 AM
+[18/04/2017 14:14:12] - Consultant Glen Connolly admitted patient John Jacobs to ward Maternity Ward
+[18/04/2017 14:14:31] - Patient John Jacobs(11111215) was discharged from Maternity Ward by Dr.ConnollyID (51428290)
+[18/04/2017 14:40:08] - Bill has been paid for JeanJanson(22222222)
+[18/04/2017 14:53:54] - Bill has been paid for JeanJanson(22222222)
+[18/04/2017 14:54:31] - Bill generated for patient(22222222) by User 'Glen Connolly'(77450450)
+[18/04/2017 14:57:19] - Bill has been paid for JeanJanson(22222222)
+[18/04/2017 14:59:56] - Bill has been paid for JeanJanson(22222222)
+[18/04/2017 15:01:50] - Bill has been paid for JeanJanson(22222222)
+[18/04/2017 15:06:58] - Bill has been paid for JeanJanson(22222222)
+[18/04/2017 15:07:45] - Bill has been paid for JeanJanson(22222222)

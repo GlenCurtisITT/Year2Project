@@ -1,5 +1,6 @@
 package models.users;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.persistence.*;
 import com.avaje.ebean.Model;
@@ -51,6 +52,9 @@ public class User extends Model{
             if(user.checkRole().equals("Consultant")){
                 Consultant c = Consultant.find.where().eq("email", email).findUnique();
                 return c;
+            } else if(user.checkRole().equals("ChiefAdmin")){
+                ChiefAdmin c = ChiefAdmin.find.where().eq("email", email).findUnique();
+                return c;
             } else {
                 return user;
             }
@@ -94,9 +98,19 @@ public class User extends Model{
     public String checkRole(){
         if(this instanceof Consultant){
             return "Consultant";
+        }else if(this instanceof ChiefAdmin) {
+            return "ChiefAdmin";
         }else{
             return "Admin";
         }
+    }
+
+    public String getFormattedDOB(Date a){
+        return new SimpleDateFormat("dd MMM yyyy").format(a);
+    }
+
+    public String getFormattedAppDateForUpdate(Date a){
+        return new SimpleDateFormat("yyyy-MM-dd").format(a);
     }
 
     public String getIdNum() {

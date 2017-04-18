@@ -31,6 +31,10 @@ public class Chart extends Model implements Serializable{
     @JoinColumn(name = "mrn")
     private Patient p;
 
+    @ManyToOne()
+    @JoinColumn(name = "recordId")
+    private PatientRecord patientRecord;
+
     public Chart() {
     }
 
@@ -50,7 +54,7 @@ public class Chart extends Model implements Serializable{
     public static List<Chart> findAll(){
         return Chart.find.all();
     }
-
+/*
     public void serialize() throws IOException{
         final String CHARTFILE = "public/Files/charts.gz";
         try(FileOutputStream fo = new FileOutputStream(CHARTFILE);
@@ -83,6 +87,14 @@ public class Chart extends Model implements Serializable{
         }
 
         return chartResult;
+    }
+*/
+    public PatientRecord getPatientRecord() {
+        return patientRecord;
+    }
+
+    public void setPatientRecord(PatientRecord patientRecord) {
+        this.patientRecord = patientRecord;
     }
 
     public void setDateOfAdmittance(Date dateOfAdmittance) {

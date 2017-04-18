@@ -9,8 +9,10 @@ import java.util.List;
  * Created by conno on 16/03/2017.
  */
 @Entity
+@SequenceGenerator(name = "equip_gen", allocationSize=1, initialValue=4)
 public class Equipment extends Model {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "equip_gen")
     private String equipId;
     private String type;
     private boolean status;
@@ -18,10 +20,9 @@ public class Equipment extends Model {
     @OneToMany(mappedBy = "e")
     private List<Appointment> appointments = new ArrayList<>();
 
-    public Equipment(String equipId, String type, boolean status) {
-        this.equipId = equipId;
-        this.type = type;
-        this.status = status;
+    public Equipment(String type, boolean status) {
+        this.setType(type);
+        this.setStatus(status);
     }
 
     public static Finder<String, Equipment> find = new Finder<String, Equipment>(Equipment.class);
@@ -54,4 +55,7 @@ public class Equipment extends Model {
         appointments.add(a);
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
 }

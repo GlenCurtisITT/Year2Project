@@ -8,7 +8,6 @@ import play.data.format.Formats;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -63,6 +62,9 @@ public class Patient extends Model implements Serializable{
     @JoinColumn(name = "billId")
     private Bill b;
 
+    @OneToOne(mappedBy = "p")
+    private PatientRecord patientRecord;
+
     public Patient() {
 
     }
@@ -93,6 +95,7 @@ public class Patient extends Model implements Serializable{
         Chart chart = new Chart(patient);
         Bill b = new Bill(patient);
         patient.setChart(chart);
+        patient.setB(b);
         patient.save();
         b.save();
         chart.save();
@@ -144,7 +147,7 @@ public class Patient extends Model implements Serializable{
     private static String genMrn(){
         Random rand = new Random();
         List<Patient> allpatients = findAll();
-        List<Patient> archivedPatients = Patient.readAllArchive();
+        List<Patient> archivedPatients = Patient.ReadAllPatientArchive();
         int randNum = 0;
         boolean check = true;
         do{
@@ -176,30 +179,7 @@ public class Patient extends Model implements Serializable{
         }
     }
 
-    public static Patient readArchive(String mrn){
-        final String FILENAME = "public/Files/patients.gz";
-        Patient p = new Patient();
-        Patient patientResult = null;
-        try (FileInputStream fin = new FileInputStream(FILENAME);
-             GZIPInputStream gis = new GZIPInputStream(fin);
-             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
-            while (true) {
-                p = (Patient) ois.readObject();
-                if(p.getMrn().equals(mrn)){
-                    patientResult = p;
-                    patientResult.insert();
-                    return patientResult;
-                }
-            }
-        }catch (ClassNotFoundException e) {
-            patientResult = null;
-        }catch (IOException e) {
-            patientResult = null;
-        }
-        return null;
-    }
-
-    public static List<Patient> readAllArchive(){
+    public static List<Patient> ReadAllPatientArchive(){
         final String FILENAME = "public/Files/patients.gz";
         List<Patient> patients = new ArrayList<>();
         try (FileInputStream fin = new FileInputStream(FILENAME);
@@ -255,22 +235,16 @@ public class Patient extends Model implements Serializable{
     }
 
     public Chart getCurrentChart() {
-        setChartList(Chart.findAll().stream().filter(c -> c.getP().getMrn().equals(this.mrn)).collect(toList()));
-        return charts.get(charts.size() - 1);
+        setChartList(Chart.findAll().stream().filter(c -> c.getP().getMrn().equals(this.mrn)).filter(c -> c.getPatientRecord() == null).collect(toList()));
+        List<Chart> chartList = charts.stream().filter(c -> c.getDateOfAdmittance() == null).collect(toList());
+        return chartList.get(0);
     }
 
     public Chart getBillingChart() {
         List<Chart> billingCharts = charts.stream().filter(c -> c.getDateOfAdmittance() != null).collect(toList());
 
         if(billingCharts.size() != 0) {
-            final Iterator<Chart> itr = billingCharts.iterator();
-            Chart lastElement = itr.next();
-
-            while (itr.hasNext()) {
-                lastElement = itr.next();
-            }
-
-            return lastElement;
+            return billingCharts.get(billingCharts.size() - 1);
         }
         else{
             return getCurrentChart();
@@ -278,8 +252,10 @@ public class Patient extends Model implements Serializable{
     }
 
     public List<Chart> getAllBillingCharts() {
-        return charts.stream().filter(c -> c.getDateOfAdmittance() != null).collect(toList());
+        return charts.stream().filter(c -> c.getDischargeDate() != null).collect(toList());
     }
+
+
 
     public List<Chart> getCharts(){
         return charts;
@@ -313,8 +289,20 @@ public class Patient extends Model implements Serializable{
         return mrn;
     }
 
-    public List<Appointment> getAppointments() {
+    public List<Appointment> getAppointmentsDue() {
         return appointments.stream().filter( a -> !a.isComplete()).collect(toList());
+    }
+
+    public List<Appointment> getAllAppointments(){
+        return appointments;
+    }
+
+    public List<Appointment> getCompletedAppointments() {
+        return appointments.stream().filter( a -> a.isComplete()).collect(toList());
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
     }
 
     public String getfName() {
@@ -427,5 +415,13 @@ public class Patient extends Model implements Serializable{
 
     public void setIllness(String illness) {
         this.illness = illness;
+    }
+
+    public PatientRecord getPatientRecord() {
+        return patientRecord;
+    }
+
+    public void setPatientRecord(PatientRecord patientRecord) {
+        this.patientRecord = patientRecord;
     }
 }

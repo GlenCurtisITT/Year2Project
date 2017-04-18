@@ -1,0 +1,30 @@
+@(user: models.users.User, ward: models.Ward)
+@chiefAdminPages.mainChiefAdmin("Update Ward", user) {
+  @if(flash().containsKey("error")) {
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="alert alert-warning">
+          <strong>@flash().get("error")</strong>
+        </div>
+      </div>
+    </div>
+  }
+  <div class="row">
+    <div class="col-lg-3">
+      <h2>Update Ward: @ward.getName</h2>
+      <hr />
+      <form method="post" action="@routes.ChiefAdminController.updateWardSubmit()" class="form-horizontal">
+
+        <input type="hidden" name="id" value="@ward.getWardId" />
+
+        <label>Ward Name</label>
+        <input type="text" name="name" value="@ward.getName" class="form-control" />
+
+        <label>Max Capacity (Only Whole Numbers)</label>
+        <input type="text" name="capacity" value="@ward.getMaxCapacity" class="form-control" id="margBot" />
+
+        <input type="submit" value="Update Ward" class="btn btn-primary" />
+      </form>
+    </div>
+  </div>
+}

@@ -1,0 +1,36 @@
+@(user: models.users.User, equipment: models.Equipment)
+@chiefAdminPages.mainChiefAdmin("Update Equipment", user) {
+  @if(flash().containsKey("error")) {
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="alert alert-warning">
+          <strong>@flash().get("error")</strong>
+        </div>
+      </div>
+    </div>
+  }
+  <div class="row">
+    <div class="col-lg-3">
+      <h2>Update Equipment: @equipment.getType</h2>
+      <hr />
+      <form method="post" action="@routes.ChiefAdminController.updateEquipmentSubmit()" class="form-horizontal">
+
+        <input type="hidden" name="id" value="@equipment.getEquipId" />
+
+        <label>Name</label>
+        <input type="text" name="name" value="@equipment.getType" class="form-control" id="margBot" />
+
+        <label>Is Operational?</label>
+        <select name="operational" class="form-control" id="margBot">
+          @if(equipment.isStatus) {
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          }else{
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          }
+        </select>
+
+        <input type="submit" value="Update Equipment" class="btn btn-primary" />
+      </form>
+}

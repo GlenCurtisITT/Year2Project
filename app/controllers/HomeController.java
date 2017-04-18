@@ -31,20 +31,21 @@ public class HomeController extends Controller {
     public Result index() {
         Form<Login> loginForm = formFactory.form(Login.class);
         if(Equipment.findAll().size() == 0) {
-            Equipment a = new Equipment("1", "Consultation Room", true);
-            Equipment b = new Equipment("2", "X-Ray", true);
-            Equipment c = new Equipment("3", "CT Scanner", true);
+            Equipment a = new Equipment("Consultation Room", true);
+            Equipment b = new Equipment("X-Ray", true);
+            Equipment c = new Equipment("CT Scanner", true);
 
             a.save();
             b.save();
             c.save();
         }
+
         if(Ward.findAll().size() == 0) {
-            Ward a = new Ward("1", "Maternity Ward", 20);
-            Ward b = new Ward("2", "Intensive Care Unit", 15);
-            Ward c = new Ward("3", "Psychiatric Ward", 20);
-            Ward d = new Ward("4", "Burns Unit", 5);
-            Ward e = new Ward("5", "Private Ward", 1);
+            Ward a = new Ward("Maternity Ward", 20);
+            Ward b = new Ward("Intensive Care Unit", 15);
+            Ward c = new Ward("Psychiatric Ward", 20);
+            Ward d = new Ward("Burns Unit", 5);
+            Ward e = new Ward("Private Ward", 1);
 
             StandbyList f = new StandbyList(a);
             StandbyList g = new StandbyList(b);
@@ -82,6 +83,7 @@ public class HomeController extends Controller {
             c.save();
         }
 
+
         return ok(index.render(loginForm));
     }
 
@@ -91,6 +93,8 @@ public class HomeController extends Controller {
         return ok(homepage.render(u));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result addPatient(){
         endPatientSession();
         Form<Patient> addPatientForm = formFactory.form(Patient.class);
@@ -98,16 +102,15 @@ public class HomeController extends Controller {
         return ok(addPatient.render(addPatientForm, null, u));
     }
 
-    public Result createUser(){
-        Form<User> addUserForm = formFactory.form(User.class);
-        return ok(createUser.render(addUserForm, null));
-    }
-
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result viewPatient(){
         Patient p = getPatientFromSession();
         return ok(viewPatient.render(getUserFromSession(), p));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result viewPatientByID(String mrn){
         endPatientSession();
         Patient p = Patient.find.byId(mrn);
@@ -124,6 +127,8 @@ public class HomeController extends Controller {
         return ok(viewPatient.render(getUserFromSession(), getPatientFromSession()));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result admitPatient(){
         Patient p = getPatientFromSession();
         Form<Chart> addChartForm = formFactory.form(Chart.class);
@@ -132,6 +137,8 @@ public class HomeController extends Controller {
         return ok(admitPatient.render(addChartForm, wardList, p, u, null));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result admitPatientSubmit(){
         DynamicForm newChartForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
@@ -191,18 +198,24 @@ public class HomeController extends Controller {
         return redirect(controllers.routes.HomeController.viewPatientByID(p.getMrn()));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result discharge() {
         Patient p = getPatientFromSession();
         Consultant c = (Consultant)getUserFromSession();
         return ok(discharge.render(c, p));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result appointmentMain(String id){
         Appointment a = Appointment.find.byId(id);
         User u = getUserFromSession();
         return ok(appointmentMain.render(u, a));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result cancelAppointment(String id){
         Appointment a = Appointment.find.byId(id);
         if(getUserFromSession() instanceof Consultant){
@@ -232,6 +245,47 @@ public class HomeController extends Controller {
 
     }
 
+    public Result addChiefAdmin(){
+        return ok(addChiefAdmin.render());
+    }
+
+    public Result addChiefAdminSubmit(){
+        DynamicForm df = formFactory.form().bindFromRequest();
+        String email = df.get("email");
+        String password = df.get("password");
+        String confPassword = df.get("confPassword");
+
+        if(email.equals("")){
+            flash("error", "Email must be entered.");
+            return badRequest(addChiefAdmin.render());
+        }
+
+        if(password.equals("") || confPassword.equals("")){
+            flash("error", "Password or Confirm Password was blank.");
+            return badRequest(addChiefAdmin.render());
+        }
+
+        if(!password.equals(confPassword)){
+            flash("error", "Passwords did not match.");
+            return badRequest(addChiefAdmin.render());
+        }
+
+        //Checking for duplicate emails.
+        List<User> users = User.findAll();
+        for(User u : users){
+            if(u.getEmail().equals(email)){
+                return badRequest(addChiefAdmin.render());
+            }
+        }
+
+        ChiefAdmin ca = new ChiefAdmin("Chief", "Admin", null, null, null, null, email, password);
+        ca.create(ca);
+        flash("success", "Chief admin created. Please log in");
+        return redirect(routes.HomeController.index());
+    }
+
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result rescheduleAppointment(String id){
         DynamicForm newAppointmentForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
@@ -289,6 +343,8 @@ public class HomeController extends Controller {
         return ok(appointmentMain.render(getUserFromSession(), a));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result makeAppointment(){
         Form<Appointment> addAppointmentForm = formFactory.form(Appointment.class);
         List<Consultant> consultants = Consultant.findAllConsultants();
@@ -297,6 +353,8 @@ public class HomeController extends Controller {
         return ok(makeAppointment.render(addAppointmentForm, consultants, getUserFromSession(), getPatientFromSession(), equipments, null));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result addAppointmentSubmit(){
         DynamicForm newAppointmentForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
@@ -370,62 +428,8 @@ public class HomeController extends Controller {
         return redirect(controllers.routes.HomeController.viewPatient());
     }
 
-    public Result addUserSubmit(){
-        DynamicForm newUserForm = formFactory.form().bindFromRequest();
-        Form errorForm = formFactory.form().bindFromRequest();
-        //Checking if Form has errors.
-        if(newUserForm.hasErrors()){
-            return badRequest(createUser.render(errorForm, "Error in form."));
-        }
-        //Checking that Email and Name are not blank.
-        if(newUserForm.get("email").equals("") || newUserForm.get("fname").equals("") || newUserForm.get("lname").equals("")){
-            return badRequest(createUser.render(errorForm, "Please enter an email and name."));
-        }
-        if(newUserForm.get("role").equals("select")){
-            return badRequest(createUser.render(errorForm, "Please enter a role."));
-        }
-        //Checking if password == confirmed password
-        if(!newUserForm.get("password").equals(newUserForm.get("passwordConfirm"))){
-            return badRequest(createUser.render(errorForm, "Passwords do not match."));
-        }
-        //Checking if password is longer than 6 characters
-        if(newUserForm.get("password").length() < 6){
-            return badRequest(createUser.render(errorForm, "Password must be at least six characters."));
-        }
-        //Checking if email exists already in database (Duplicate primary key)
-        List<User> allusers = User.findAll();
-        for(User a : allusers) {
-            if (a.getEmail().equals(newUserForm.get("email"))) {
-                return badRequest(createUser.render(errorForm, "Email already exists in system."));
-            }
-        }
-
-        String dateString = newUserForm.get("dateOfBirth");
-        DateFormat format = new SimpleDateFormat("yyyy-dd-MM");
-        Date date = new Date();
-        try{
-            date = format.parse(dateString);
-        } catch (ParseException e) {
-            return badRequest(createUser.render(errorForm, dateString));
-        }
-        //Adding user to database
-        if(newUserForm.get("role").equals("Admin")){
-            User u = new User(newUserForm.get("fname"), newUserForm.get("lname"), newUserForm.get("phoneNumber"), newUserForm.get("address")
-                    , newUserForm.get("ppsNumber"), date, newUserForm.get("email"), newUserForm.get("password"));
-            User.create(u);
-        }else if (newUserForm.get("role").equals("Consultant")){
-            Consultant c = new Consultant(newUserForm.get("fname"), newUserForm.get("lname"), newUserForm.get("phoneNumber"), newUserForm.get("address")
-                    , newUserForm.get("ppsNumber"), date, newUserForm.get("email"), newUserForm.get("password"));
-            Consultant.create(c);
-        } else {
-            return badRequest(createUser.render(errorForm, "Invalid role chosen."));
-        }
-        String s = newUserForm.get("role") + ": " + newUserForm.get("fname") + " " + newUserForm.get("lname") + " added successfully.";
-        //Flashing String s to memory to be used in index screen.
-        flash("success", s);
-        return redirect(controllers.routes.HomeController.index());
-    }
-
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result viewSchedule(){
         User u = getUserFromSession();
         List<Appointment> appointments = Appointment.findAll().stream().filter(a ->!a.isComplete()).collect(Collectors.toList());
@@ -439,6 +443,8 @@ public class HomeController extends Controller {
         return ok(viewSchedule.render(u, appointments, formattedDates));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result addPatientSubmit(){
         DynamicForm newPatientForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
@@ -507,6 +513,8 @@ public class HomeController extends Controller {
 
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result makePrescription(){
         Form<Prescription> addPrescriptionForm = formFactory.form(Prescription.class);
         List<Medicine> medicine = Medicine.findAll();
@@ -515,18 +523,24 @@ public class HomeController extends Controller {
         return ok(makePrescription.render(addPrescriptionForm, medicine, p, u, null));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result viewMedicine(){
         User u = getUserFromSession();
         List<Medicine> medicine = Medicine.findAll();
         return ok(viewMedicine.render(u, medicine));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result addMedicine(){
         User u = getUserFromSession();
         Form<Medicine> addMedicineForm = formFactory.form(Medicine.class);
         return ok(addMedicine.render(u, addMedicineForm, null));
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result makePrescriptionSubmit(){
         DynamicForm newPrescriptionForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
@@ -545,6 +559,11 @@ public class HomeController extends Controller {
         }
         //can enter checking against other medicine to prevent bad interactions later
         Medicine m = Medicine.find.byId(newPrescriptionForm.get("medicineId"));
+        try{
+            Integer.parseInt(newPrescriptionForm.get("dosage"));
+        }catch(NumberFormatException e){
+            return badRequest(makePrescription.render(errorForm, medicine, p, u, "Dosage must only contain numbers"));
+        }
         Prescription pres = new Prescription(newPrescriptionForm.get("frequency"), Integer.parseInt(newPrescriptionForm.get("dosage")), m);
         pres.setMedicine(m);
         pres.setPatient(p);
@@ -555,6 +574,8 @@ public class HomeController extends Controller {
         return redirect(controllers.routes.HomeController.viewPatient());
     }
 
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result addMedicineSubmit(){
         DynamicForm newMedicineForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
@@ -595,5 +616,9 @@ public class HomeController extends Controller {
         if(session().containsKey("mrn")){
             session().remove("mrn");
         }
+    }
+
+    public Result unauthorised(){
+        return ok(unauthorised.render(null));
     }
 }
