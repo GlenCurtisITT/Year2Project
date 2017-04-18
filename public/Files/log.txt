@@ -131,3 +131,8 @@
 [18/04/2017 15:01:50] - Bill has been paid for JeanJanson(22222222)
 [18/04/2017 15:06:58] - Bill has been paid for JeanJanson(22222222)
 [18/04/2017 15:07:45] - Bill has been paid for JeanJanson(22222222)
+[18/04/2017 15:49:43] - Bill has been paid for GlenConnolly(14653483)
+[18/04/2017 15:52:28] - Bill has been paid for GlenConnolly(16978125)
+[18/04/2017 15:57:13] - Bill generated for patient(11111215) by User 'Glen Connolly'(77450450)
+[18/04/2017 15:57:37] - Admin Glen Connolly made an appointment for John Jacobs for the 19 Apr 2017 at 06:00 AM
+[18/04/2017 15:57:49] - Bill generated for patient(11111215) by User 'Glen Connolly'(77450450)

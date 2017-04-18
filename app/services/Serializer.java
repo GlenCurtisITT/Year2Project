@@ -17,7 +17,7 @@ import java.util.zip.GZIPOutputStream;
 public class Serializer {
 
     public static void serialize(Object object) throws IOException{
-        final String FILE = "public/Files/" + object.getClass() + "s.gz";
+        final String FILE = "public/Files/" + object.getClass().getName().substring(7).toLowerCase() + "s.gz";
         try(FileOutputStream fo = new FileOutputStream(FILE);
             GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
             ObjectOutputStream oo = new ObjectOutputStream(gzipOut);){
@@ -49,7 +49,7 @@ public class Serializer {
         return prescriptionResult;
     }
 
-    public static List<Chart> readChartArchive(String mrn){
+    public static List<Chart> readChartArchive(String mrn, String recordId){
         final String CHARTFILE = "public/Files/charts.gz";
         List<Chart> chartResult = new ArrayList<>();
         Chart c = null;
@@ -59,6 +59,9 @@ public class Serializer {
             while (true) {
                 c = (Chart) ois.readObject();
                 if(c.getP().getMrn().equals(mrn)){
+                    chartResult.add(c);
+                    c.insert();
+                } else if (c.getPatientRecord().getRecordId().equals(recordId) && !c.getPatientRecord().getRecordId().equals(null)){
                     chartResult.add(c);
                     c.insert();
                 }
@@ -97,16 +100,16 @@ public class Serializer {
         return null;
     }
 
-    public static Patient readPatientRecordArchive(String recordId){
+    public static PatientRecord readPatientRecordArchive(String recordId){
         final String FILENAME = "public/Files/PatientRecords.gz";
         PatientRecord p = null;
-        Patient patientResult = null;
+        PatientRecord patientResult = null;
         try (FileInputStream fin = new FileInputStream(FILENAME);
              GZIPInputStream gis = new GZIPInputStream(fin);
              ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
             while (true) {
-                p = (Patient) ois.readObject();
-                if(p.getMrn().equals(mrn)){
+                p = (PatientRecord) ois.readObject();
+                if(p.getRecordId().equals(recordId)){
                     patientResult = p;
                     patientResult.insert();
                     return patientResult;
