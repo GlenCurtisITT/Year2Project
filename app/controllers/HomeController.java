@@ -533,14 +533,6 @@ public class HomeController extends Controller {
 
     @Security.Authenticated(Secured.class)
     @With(AuthAdminOrConsultant.class)
-    public Result addMedicine(){
-        User u = getUserFromSession();
-        Form<Medicine> addMedicineForm = formFactory.form(Medicine.class);
-        return ok(addMedicine.render(u, addMedicineForm, null));
-    }
-
-    @Security.Authenticated(Secured.class)
-    @With(AuthAdminOrConsultant.class)
     public Result makePrescriptionSubmit(){
         DynamicForm newPrescriptionForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
@@ -569,6 +561,7 @@ public class HomeController extends Controller {
         pres.setPatient(p);
         pres.save();
         p.update();
+        p.getB().noticeItem();
         String s = "Prescription for " + pres.getDosage() + pres.getMedicine().getUnitOfMeasurement() + " of " + pres.getMedicine().getName() + " written for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName();
         flash("success", s);
         return redirect(controllers.routes.HomeController.viewPatient());
@@ -576,26 +569,11 @@ public class HomeController extends Controller {
 
     @Security.Authenticated(Secured.class)
     @With(AuthAdminOrConsultant.class)
-    public Result addMedicineSubmit(){
-        DynamicForm newMedicineForm = formFactory.form().bindFromRequest();
-        Form errorForm = formFactory.form().bindFromRequest();
-        List<Medicine> medicine = Medicine.findAll();
+    public Result viewRecord(){
         Patient p = getPatientFromSession();
+        PatientRecord pr = p.getPatientRecord();
         User u = getUserFromSession();
-        //Checking if Form has errors.
-        if(newMedicineForm.hasErrors()){
-            return badRequest(addMedicine.render(u, errorForm, "Error in form."));
-        }
-        if(newMedicineForm.get("name") == null || newMedicineForm.get("ingredients") == null){
-            return badRequest(addMedicine.render(u, errorForm, "Must enter name and ingredients"));
-        }
-        try {
-            Medicine m = new Medicine(newMedicineForm.get("name"), newMedicineForm.get("sideAffects"), newMedicineForm.get("ingredients"), Double.parseDouble(newMedicineForm.get("pricePerUnit")), newMedicineForm.get("unitOfMeasurement"));
-            m.save();
-        }catch(NumberFormatException e){
-            return badRequest(addMedicine.render(u, errorForm, "Invalid number entered for Price"));
-        }
-        return redirect(controllers.routes.HomeController.makePrescription());
+        return ok(viewPatientRecord.render(u, p, pr));
     }
 
 

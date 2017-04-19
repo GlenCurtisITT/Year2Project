@@ -34,7 +34,7 @@
             </tr>
           </tbody>
         </table>
-      @if(patient.getAppointments.size() != 0) {
+      @if(patient.getAppointmentsDue.size() != 0) {
         <h2>Appointment Information</h2>
         <table class="table table-bordered table-hover table-condensed">
           <thead>
@@ -44,7 +44,7 @@
             </tr>
           </thead>
           <tbody>
-          @for(a <- patient.getAppointments) {
+          @for(a <- patient.getAppointmentsDue) {
             <tr>
               <td class="numeric">@a.getAppDate</td>
               <td>Dr. @a.getC.getLname</td>

@@ -16,7 +16,7 @@ import java.util.zip.GZIPOutputStream;
  */
 @Entity
 @SequenceGenerator(name = "chart_gen", allocationSize=1, initialValue=1)
-public class Chart extends Model {
+public class Chart extends Model implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chart_gen")
     private int chartId;
@@ -31,11 +31,16 @@ public class Chart extends Model {
     @JoinColumn(name = "mrn")
     private Patient p;
 
+    @ManyToOne()
+    @JoinColumn(name = "recordId")
+    private PatientRecord patientRecord;
+
     public Chart() {
     }
 
     public Chart(Patient p) {
         this.p = p;
+        this.dischargeDate = null;
     }
 
     public Chart(String currentWard, Date dateOfAdmittance, String mealPlan, Patient p) {
@@ -50,7 +55,7 @@ public class Chart extends Model {
     public static List<Chart> findAll(){
         return Chart.find.all();
     }
-
+/*
     public void serialize() throws IOException{
         final String CHARTFILE = "public/Files/charts.gz";
         try(FileOutputStream fo = new FileOutputStream(CHARTFILE);
@@ -83,6 +88,14 @@ public class Chart extends Model {
         }
 
         return chartResult;
+    }
+*/
+    public PatientRecord getPatientRecord() {
+        return patientRecord;
+    }
+
+    public void setPatientRecord(PatientRecord patientRecord) {
+        this.patientRecord = patientRecord;
     }
 
     public void setDateOfAdmittance(Date dateOfAdmittance) {

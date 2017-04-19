@@ -2,6 +2,7 @@ package controllers;
 
 import play.mvc.*;
 
+import services.Serializer;
 import views.html.chiefAdminPages.viewUsers;
 import views.html.loginPage.*;
 import views.html.mainTemplate.*;
@@ -19,6 +20,9 @@ import models.*;
 import static controllers.HomeController.endPatientSession;
 import static controllers.HomeController.getUserFromSession;
 import static play.mvc.Results.ok;
+
+import static java.util.stream.Collectors.toList;
+
 
 public class SearchController extends Controller{
 
@@ -47,21 +51,51 @@ public class SearchController extends Controller{
         DynamicForm searchForm = formFactory.form().bindFromRequest();
         String mrn = searchForm.get("archiveMrn");
         List<Patient> searchedPatients = new ArrayList<>();
-        Patient p = Patient.readArchive(mrn);
-        List<Chart> c = Chart.readArchive(mrn);
-        List<Prescription> pres = Prescription.readArchive(mrn);
-        if(p != null) {
-            searchedPatients.add(p);
+        Patient p = Serializer.readPatientArchive(mrn);
+        if(p.getPatientRecord() != null) {
+            PatientRecord pr = Serializer.readPatientRecordArchive(p.getPatientRecord().getRecordId());
+            pr.setP(p);
+            List<Chart> c = Serializer.readChartArchive(mrn, pr);
+            List<Appointment> a = Serializer.readAppointmentArchive(pr.getRecordId());
+            p.setChartList(c.stream().filter(chart -> chart.getP() != null).collect(toList()));
+            pr.setCharts(c.stream().filter(chart -> chart.getPatientRecord() != null).collect(toList()));
+
+            if (c != null) {
+                c.stream().forEach(chart-> {
+                    if (chart.getPatientRecord() != null) {
+                        chart.setPatientRecord(pr);
+                        pr.update();
+                        chart.update();
+                    } else {
+                        chart.setP(p);
+                        p.update();
+                        chart.update();
+                    }
+                });
+            }
+            pr.update();
+
+        }
+        else {
+            List<Chart> c = Serializer.readChartArchive(mrn, null);
             if(c != null) {
                 p.setChartList(c);
-                for(Chart chart: p.getCharts()) {
+                for(Chart chart : c){
                     chart.setP(p);
+                    chart.update();
                 }
+                p.update();
             }
+        }
+        List<Prescription> pres = Serializer.readPrescriptionArchive(mrn);
+        if(p != null) {
+            searchedPatients.add(p);
             if(pres != null){
                 p.setPrescriptionList(pres);
+                p.update();
                 for(Prescription x : pres){
-                    x.setPatient(p);
+                    x.setPatientOnly(p);
+                    x.update();
                 }
             }
         }

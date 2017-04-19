@@ -1,8 +1,6 @@
 package services;
 
-import models.Chart;
-import models.Prescription;
-import models.Patient;
+import models.*;
 
 import com.itextpdf.text.Anchor;
 import com.itextpdf.text.BadElementException;
@@ -24,7 +22,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 
 
 public class PDF {
@@ -86,7 +83,7 @@ public class PDF {
         document.newPage();
     }
 
-    public static void addContent(Document document, ArrayList<Chart> charts, Patient p, ArrayList<Integer> stay, ArrayList<Double> costOfStay, double costOfAppointments, double prescriptionCost) throws DocumentException {
+    public static void addContent(Document document, ArrayList<Chart> charts, Patient p, Bill b, ArrayList<Integer> stay, ArrayList<Double> costOfStay, double costOfAppointments, double prescriptionCost) throws DocumentException {
         Anchor anchor = new Anchor("Medical Bill", catFont);
         anchor.setName("Medical Bill");
         Paragraph preface = new Paragraph();
@@ -125,23 +122,21 @@ public class PDF {
         subCatPart.add(paragraph);
 
         // add a table
-        createTable(subCatPart, p, charts, costOfAppointments, stay, costOfStay);
+        createTable(subCatPart, p, charts, b, stay, costOfStay);
 
         addEmptyLine(paragraph, 2);
         subCatPart.add(paragraph);
         if(p.getPrescriptionList().size() != 0) {
             createPresList(subCatPart, p , prescriptionCost);
         }
-        subCatPart.add(new Paragraph("Total cost of Prescriptions: €" + prescriptionCost, subFont));
-        subCatPart.add(new Paragraph("Total cost of Appointments: €" + costOfAppointments, subFont));
-        subCatPart.add(new Paragraph("Total cost of Stay: €" + costOfStay.stream().mapToInt(Double::intValue).sum(), subFont));
-        subCatPart.add(new Paragraph("Gross Cost: €" + (costOfStay.stream().mapToInt(Double::intValue).sum() + prescriptionCost + costOfAppointments), subFont));
+        subCatPart.add(new Paragraph("Total cost of Prescriptions: €" + prescriptionCost));
+        subCatPart.add(new Paragraph("Total cost of Appointments: €" + costOfAppointments));
+        subCatPart.add(new Paragraph("Total cost of Stay: €" + costOfStay.stream().mapToInt(Double::intValue).sum()));
+        subCatPart.add(new Paragraph("Gross Cost: €" + (costOfStay.stream().mapToInt(Double::intValue).sum() + prescriptionCost + costOfAppointments)));
 
         if(p.getMedicalCard() == true) {
-            subCatPart.add(new Paragraph("Patient has a medical card. Amount covered:" + (prescriptionCost + costOfAppointments), subFont));
+            subCatPart.add(new Paragraph("Patient has a medical card. Amount covered:" + p.getB().getAmount(), subFont));
         }
-        subCatPart.add(new Paragraph("Insurance Plan: N/A", subFont));
-        subCatPart.add(new Paragraph("Amount covered by insurance: €N/A" , subFont));
         subCatPart.add(new Paragraph("Net Bill: €" + p.getB().getAmount(), subFont));
 
         // now add all this to the document
@@ -149,7 +144,7 @@ public class PDF {
 
     }
 
-    public static void createTable(Section subCatPart, Patient p, ArrayList<Chart> charts, double costOfAppointments, ArrayList<Integer> stay, ArrayList<Double> costOfStay)
+    public static void createTable(Section subCatPart, Patient p, ArrayList<Chart> charts, Bill b, ArrayList<Integer> stay, ArrayList<Double> costOfStay)
             throws BadElementException {
         PdfPTable table = new PdfPTable(3);
         // t.setBorderColor(BaseColor.GRAY);
@@ -158,12 +153,16 @@ public class PDF {
         // t.setBorderWidth(1);
 
         PdfPCell c1;
-        if(p.getAppointments().size() != 0) {
+        if(p.getCompletedAppointments().size() != 0) {
             c1 = new PdfPCell(new Phrase("Appointments"));
             c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(c1);
-            table.addCell("€" + Double.toString(costOfAppointments));
-            table.addCell(Integer.toString(p.getAppointments().size()) + " appointments");
+            for(int i = 1; i <= p.getCompletedAppointments().size() ; i++ ) {
+                table.addCell(c1);
+                table.addCell("€" + Double.toString(b.APPOINTMENT_COST));
+                table.addCell("Appointment " + Integer.toString(i));
+                table.addCell("Consultant: Dr." + p.getCompletedAppointments().get(i - 1).getC().getLname());
+                table.addCell(p.getCompletedAppointments().get(i-1).getE().getType());
+            }
         }
         if(p.getBillingChart().getDateOfAdmittance() != null) {
             for(int i = 0; i < charts.size(); i++) {

@@ -6,19 +6,18 @@ GET     /discharge                  controllers.HomeController.discharge
 GET     /viewPatient                controllers.HomeController.viewPatient
 GET     /viewSchedule               controllers.HomeController.viewSchedule
 GET     /viewPatientByID/:mrn       controllers.HomeController.viewPatientByID(mrn: String)
+GET     /viewPatientRecord          controllers.HomeController.viewRecord
 GET     /addPatient                 controllers.HomeController.addPatient
 GET     /makeAppointment            controllers.HomeController.makeAppointment
 GET     /appointmentMain/:id        controllers.HomeController.appointmentMain(id: String)
 GET     /cancelAppointment/:id      controllers.HomeController.cancelAppointment(id:String)
 GET     /makePrescription           controllers.HomeController.makePrescription
 GET     /viewMedicine               controllers.HomeController.viewMedicine
-GET     /addMedicine                controllers.HomeController.addMedicine
 GET     /unauthorised               controllers.HomeController.unauthorised
 GET     /addChiefAdmin              controllers.HomeController.addChiefAdmin
 POST    /addPatientSubmit           controllers.HomeController.addPatientSubmit
 POST    /addAppointmentSubmit       controllers.HomeController.addAppointmentSubmit
 POST    /makePrescriptionSubmit     controllers.HomeController.makePrescriptionSubmit
-POST    /addMedicineSubmit          controllers.HomeController.addMedicineSubmit
 POST    /addChiefAdminSubmit        controllers.HomeController.addChiefAdminSubmit
 POST    /admitPatientSubmit         controllers.HomeController.admitPatientSubmit
 POST    /rescheduleAppointment/:id  controllers.HomeController.rescheduleAppointment(id:String)
@@ -38,6 +37,7 @@ GET     /adminHomePage              controllers.AdminController.adminHomePage
 GET     /deletePatient/:mrn         controllers.AdminController.deletePatient(mrn: String)
 GET     /updatePatient/:mrn         controllers.AdminController.updatePatient(mrn: String)
 GET     /genBill                    controllers.AdminController.genBill
+GET     /payBill                    controllers.AdminController.payBill
 GET     /addConsultant/:idNum       controllers.AdminController.addConsultant(idNum: String)
 GET     /listConsultants            controllers.AdminController.listConsultants
 GET     /viewFullLog                controllers.AdminController.viewFullLog

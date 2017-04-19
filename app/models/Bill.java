@@ -3,7 +3,6 @@ package models;
 import com.avaje.ebean.Model;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import services.PDF;
 
@@ -15,6 +14,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collector;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by conno on 27/03/2017.
@@ -41,6 +43,15 @@ public class Bill extends Model implements MedBilling{
 
     public String getBillId() {
         return billId;
+    }
+
+    public void resetPaidStatus(){
+        isPaid = false;
+    }
+
+    public void noticeItem(){
+        this.isPaid = false;
+        this.update();
     }
 
     public void setBillId(String billId) {
@@ -85,7 +96,9 @@ public class Bill extends Model implements MedBilling{
     }
 
     public void payBill(){
+        amount = 0;
         isPaid = true;
+        this.update();
     }
 
     public boolean isPaid(){
@@ -93,6 +106,7 @@ public class Bill extends Model implements MedBilling{
     }
 
     public void calcBill(){
+        resetPaidStatus();
         PDF pdf = new PDF(p);
         double appointments = 0;
         double prescriptions = 0;
@@ -100,26 +114,28 @@ public class Bill extends Model implements MedBilling{
         ArrayList<Integer> stay = new ArrayList<>();
         ArrayList<Double> costOfStay = new ArrayList<>();
         if (p.getPrescriptionList().size() != 0) {
-            for (Prescription prescription : p.getPrescriptionList()) {
+            List<Prescription> prescriptionsChargeable = p.getPrescriptionList().stream().filter(p -> !p.isPaid()).collect(toList());
+            for (Prescription prescription : prescriptionsChargeable) {
                 prescriptions += prescription.getDosage() * prescription.getMedicine().getPricePerUnit();
             }
         }
-        if (p.getAppointments().size() != 0) {
-            appointments += p.getAppointments().stream().filter(a -> a.getAppDate().before(new Date())).count() * APPOINTMENT_COST; //only charge for appointments which have been completed
-            appointments += p.getAppointments().stream().filter(a -> a.isComplete()).count() * APPOINTMENT_COST; // add addition of appointments whose appDate was not before today but which have been confirmed to have been completed by Consultant
+        if (p.getAppointmentsDue().size() != 0) {
+            p.getAllAppointments().stream().forEach(a -> {
+                if(a.getAppDate().before(new Date())) {
+                    a.complete();
+                }
+            });
+            appointments += p.getCompletedAppointments().size() * APPOINTMENT_COST;//only charge for appointments which have been completed
         }
         amount = prescriptions + appointments;
         for(Chart c : p.getAllBillingCharts()) {
             int days = calcNumberOfDays(c);
-            double stayCost = 0;
-            stayCost = days * COST_PER_DAY;
+            double stayCost = COST_OF_ADMITTANCE;
+            stayCost += (days * COST_PER_DAY);
             if (p.getMedicalCard() == true) {
-                amount = stayCost;
+                amount = 0;
             } else {
                 amount += stayCost;
-            }
-            if (amount == 0) {
-                isPaid = true;
             }
             stay.add(days);
             costOfStay.add(stayCost);
@@ -130,15 +146,21 @@ public class Bill extends Model implements MedBilling{
                 PdfWriter.getInstance(document, new FileOutputStream(pdf.FILE));
                     document.open();
                 PDF.addMetaData(document, p);
-                PDF.addContent(document, charts, p, stay , costOfStay, appointments, prescriptions);
+                PDF.addContent(document, charts, p, this, stay , costOfStay, appointments, prescriptions);
                 document.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (DocumentException e) {
                 e.printStackTrace();
             }
+        if (amount == 0) {
+            isPaid = true;
+            if(p.getPatientRecord() != null){
+                PatientRecord pr = p.getPatientRecord();
+                pr.addToRecord();
+            } else{
+                PatientRecord.record(p);
+            }
+        }
     }
-
-
-
 }
