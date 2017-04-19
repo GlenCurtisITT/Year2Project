@@ -196,3 +196,5 @@
 [19/04/2017 14:12:22] - Consultant Glen Connolly made an appointment for test test for the 10 Oct 2018 at 06:00 AM
 [19/04/2017 14:13:01] - Appointment for Patient test test(10276081) was completed by Dr.Connolly
 [19/04/2017 14:15:11] - Bill has been paid for test test(10276081)
+[19/04/2017 14:37:20] - Consultant Glen Connolly admitted patient test test to ward Burns Unit
+[19/04/2017 14:37:26] - Patient test test(10276081) was discharged from Burns Unit by Dr.ConnollyID (51428290)

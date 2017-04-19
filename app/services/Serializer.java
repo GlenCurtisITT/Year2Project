@@ -70,7 +70,7 @@ public class Serializer {
         return prescriptionResult;
     }
 
-    public static List<Chart> readChartArchive(String mrn, String recordId){
+    public static List<Chart> readChartArchive(String mrn, PatientRecord pr){
         final String CHARTFILE = "public/Files/charts.gz";
         List<Chart> chartResult = new ArrayList<>();
         Chart c = null;
@@ -79,14 +79,12 @@ public class Serializer {
              ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
             while (true) {
                 c = (Chart) ois.readObject();
-                if(c.getP() != null){
-                    if(c.getP().getMrn().equals(mrn)) {
-                        chartResult.add(c);
-                        c.insert();
-                    }
+                if(c.getPatientRecord() != null && c.getPatientRecord() == pr) {
+                    chartResult.add(c);
+                    c.insert();
                 }
-                if(c.getPatientRecord() != null) {
-                    if (c.getPatientRecord().getRecordId().equals(recordId) && !c.getPatientRecord().getRecordId().equals(null)) {
+                else if(c.getP() != null){
+                    if(c.getP().getMrn().equals(mrn)) {
                         chartResult.add(c);
                         c.insert();
                     }
