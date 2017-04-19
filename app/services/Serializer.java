@@ -1,9 +1,6 @@
 package services;
 
-import models.Chart;
-import models.Patient;
-import models.PatientRecord;
-import models.Prescription;
+import models.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -23,6 +20,30 @@ public class Serializer {
             ObjectOutputStream oo = new ObjectOutputStream(gzipOut);){
             oo.writeObject(object);
         }
+    }
+
+    public static List<Appointment> readAppointmentArchive(String recordId){
+        final String FILE = "public/Files/appointments.gz";
+        List<Appointment> result = new ArrayList<>();
+        Appointment appointment = null;
+        try (FileInputStream fin = new FileInputStream(FILE);
+             GZIPInputStream gis = new GZIPInputStream(fin);
+             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
+            while (true) {
+                appointment = (Appointment) ois.readObject();
+                if(appointment.getPatientRecord().getRecordId().equals(recordId)){
+                    result.add(appointment);
+                    appointment.insert();
+                }
+            }
+        }catch (ClassNotFoundException e) {
+            result = null;
+        }catch (EOFException e) {
+            return result;
+        }catch (IOException e) {
+            result = null;
+        }
+        return result;
     }
 
     public static List<Prescription> readPrescriptionArchive(String mrn){
@@ -58,12 +79,17 @@ public class Serializer {
              ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
             while (true) {
                 c = (Chart) ois.readObject();
-                if(c.getP().getMrn().equals(mrn)){
-                    chartResult.add(c);
-                    c.insert();
-                } else if (c.getPatientRecord().getRecordId().equals(recordId) && !c.getPatientRecord().getRecordId().equals(null)){
-                    chartResult.add(c);
-                    c.insert();
+                if(c.getP() != null){
+                    if(c.getP().getMrn().equals(mrn)) {
+                        chartResult.add(c);
+                        c.insert();
+                    }
+                }
+                if(c.getPatientRecord() != null) {
+                    if (c.getPatientRecord().getRecordId().equals(recordId) && !c.getPatientRecord().getRecordId().equals(null)) {
+                        chartResult.add(c);
+                        c.insert();
+                    }
                 }
             }
         }catch (ClassNotFoundException e) {
@@ -79,6 +105,8 @@ public class Serializer {
 
     public static Patient readPatientArchive(String mrn){
         final String FILENAME = "public/Files/patients.gz";
+        final String BILLFILE = "public/Files/bills.gz";
+        Bill b = new Bill();
         Patient p = new Patient();
         Patient patientResult = null;
         try (FileInputStream fin = new FileInputStream(FILENAME);
@@ -88,7 +116,16 @@ public class Serializer {
                 p = (Patient) ois.readObject();
                 if(p.getMrn().equals(mrn)){
                     patientResult = p;
-                    patientResult.insert();
+                    try (FileInputStream in = new FileInputStream(BILLFILE);
+                         GZIPInputStream is = new GZIPInputStream(in);
+                         ObjectInputStream ins = new ObjectInputStream(new BufferedInputStream(is))){{
+                             b = (Bill) ins.readObject();
+                             if(b.getP().getMrn().equals(mrn)){
+                                 b.insert();
+                                 patientResult.insert();
+                             }
+                    }}catch (IOException e) {
+                    }
                     return patientResult;
                 }
             }

@@ -136,3 +136,63 @@
 [18/04/2017 15:57:13] - Bill generated for patient(11111215) by User 'Glen Connolly'(77450450)
 [18/04/2017 15:57:37] - Admin Glen Connolly made an appointment for John Jacobs for the 19 Apr 2017 at 06:00 AM
 [18/04/2017 15:57:49] - Bill generated for patient(11111215) by User 'Glen Connolly'(77450450)
+[19/04/2017 11:15:08] - Bill has been paid for testtest(10276081)
+[19/04/2017 11:20:28] - Admin Glen Connolly made an appointment for test test for the 10 Oct 2018 at 06:00 AM
+[19/04/2017 11:32:18] - Admin Glen Connolly made an appointment for test test for the 20 May 2017 at 06:00 AM
+[19/04/2017 11:39:49] - Bill has been paid for testtest(10276081)
+[19/04/2017 11:42:40] - Admin Glen Connolly made an appointment for test test for the 10 Oct 2018 at 06:00 AM
+[19/04/2017 11:55:48] - Prescription 41 removed for Patient(10276081) by Dr.Connolly(51428290)
+[19/04/2017 11:56:16] - Dr. Connolly(51428290) assigned to patient(10276081)
+[19/04/2017 11:56:32] - Consultant Glen Connolly made an appointment for test test for the 12 Dec 2018 at 06:00 AM
+[19/04/2017 11:56:43] - Consultant Glen Connolly admitted patient test test to ward Intensive Care Unit
+[19/04/2017 11:58:34] - Consultant Glen Connolly admitted patient test test to ward Intensive Care Unit
+[19/04/2017 12:13:55] - Consultant Glen Connolly admitted patient test test to ward Psychiatric Ward
+[19/04/2017 12:14:02] - Patient test test(10276081) was discharged from Psychiatric Ward by Dr.ConnollyID (51428290)
+[19/04/2017 12:16:30] - Consultant Glen Connolly admitted patient test test to ward Private Ward
+[19/04/2017 12:16:37] - Patient test test(10276081) was discharged from Private Ward by Dr.ConnollyID (51428290)
+[19/04/2017 12:23:00] - Consultant Glen Connolly admitted patient test test to ward Burns Unit
+[19/04/2017 12:23:08] - Patient test test(10276081) was discharged from Burns Unit by Dr.ConnollyID (51428290)
+[19/04/2017 12:33:42] - Consultant Glen Connolly admitted patient test test to ward Intensive Care Unit
+[19/04/2017 12:33:53] - Patient test test(10276081) was discharged from Intensive Care Unit by Dr.ConnollyID (51428290)
+[19/04/2017 12:38:56] - Consultant Glen Connolly admitted patient test test to ward Psychiatric Ward
+[19/04/2017 12:39:04] - Patient test test(10276081) was discharged from Psychiatric Ward by Dr.ConnollyID (51428290)
+[19/04/2017 12:42:55] - Consultant Glen Connolly admitted patient test test to ward Maternity Ward
+[19/04/2017 12:48:34] - Consultant Glen Connolly admitted patient test test to ward Psychiatric Ward
+[19/04/2017 12:53:17] - Consultant Glen Connolly admitted patient test test to ward Psychiatric Ward
+[19/04/2017 12:53:25] - Patient test test(10276081) was discharged from Psychiatric Ward by Dr.ConnollyID (51428290)
+[19/04/2017 12:55:11] - Consultant Glen Connolly admitted patient test test to ward Psychiatric Ward
+[19/04/2017 12:55:18] - Patient test test(10276081) was discharged from Psychiatric Ward by Dr.ConnollyID (51428290)
+[19/04/2017 12:58:06] - Consultant Glen Connolly admitted patient test test to ward Private Ward
+[19/04/2017 12:58:13] - Patient test test(10276081) was discharged from Private Ward by Dr.ConnollyID (51428290)
+[19/04/2017 12:58:58] - Appointment for Patient testtest(10276081) was completed by Dr.Connolly
+[19/04/2017 12:59:25] - Appointment for Patient testtest(10276081) was completed by Dr.Connolly
+[19/04/2017 13:00:00] - Bill has been paid for testtest(10276081)
+[19/04/2017 13:03:40] - Consultant Glen Connolly admitted patient test test to ward Burns Unit
+[19/04/2017 13:04:03] - Patient test test(10276081) was discharged from Burns Unit by Dr.ConnollyID (51428290)
+[19/04/2017 13:08:30] - Consultant Glen Connolly made an appointment for test test for the 20 May 2019 at 06:00 AM
+[19/04/2017 13:12:05] - Admin Glen Connolly made an appointment for test test for the 10 Oct 2018 at 06:00 AM
+[19/04/2017 13:12:37] - Appointment for Patient testtest(10276081) was completed by Dr.Connolly
+[19/04/2017 13:12:48] - Appointment for Patient testtest(10276081) was completed by Dr.Connolly
+[19/04/2017 13:14:06] - Consultant Glen Connolly made an appointment for test test for the 20 Apr 2018 at 06:00 AM
+[19/04/2017 13:14:16] - Appointment for Patient testtest(10276081) was completed by Dr.Connolly
+[19/04/2017 13:16:39] - Appointment for Patient testtest(10276081) was completed by Dr.Connolly
+[19/04/2017 13:19:16] - Consultant Glen Connolly made an appointment for test test for the 19 Apr 2018 at 06:00 AM
+[19/04/2017 13:19:23] - Appointment for Patient testtest(10276081) was completed by Dr.Connolly
+[19/04/2017 13:20:14] - Bill has been paid for testtest(10276081)
+[19/04/2017 13:30:00] - Consultant Glen Connolly admitted patient test test to ward Intensive Care Unit
+[19/04/2017 13:30:07] - Patient test test(10276081) was discharged from Intensive Care Unit by Dr.ConnollyID (51428290)
+[19/04/2017 13:30:15] - Consultant Glen Connolly admitted patient test test to ward Maternity Ward
+[19/04/2017 13:30:23] - Patient test test(10276081) was discharged from Maternity Ward by Dr.ConnollyID (51428290)
+[19/04/2017 13:32:26] - Consultant Glen Connolly made an appointment for test test for the 10 Feb 2018 at 06:00 AM
+[19/04/2017 13:32:35] - Appointment for Patient testtest(10276081) was completed by Dr.Connolly
+[19/04/2017 13:33:25] - Bill has been paid for testtest(10276081)
+[19/04/2017 14:05:50] - Consultant Glen Connolly admitted patient test test to ward Psychiatric Ward
+[19/04/2017 14:05:57] - Patient test test(10276081) was discharged from Psychiatric Ward by Dr.ConnollyID (51428290)
+[19/04/2017 14:06:11] - Consultant Glen Connolly made an appointment for test test for the 12 Feb 2018 at 06:00 AM
+[19/04/2017 14:06:18] - Appointment for Patient test test(10276081) was completed by Dr.Connolly
+[19/04/2017 14:07:32] - Bill has been paid for testtest(10276081)
+[19/04/2017 14:11:43] - Consultant Glen Connolly admitted patient test test to ward Private Ward
+[19/04/2017 14:11:54] - Patient test test(10276081) was discharged from Private Ward by Dr.ConnollyID (51428290)
+[19/04/2017 14:12:22] - Consultant Glen Connolly made an appointment for test test for the 10 Oct 2018 at 06:00 AM
+[19/04/2017 14:13:01] - Appointment for Patient test test(10276081) was completed by Dr.Connolly
+[19/04/2017 14:15:11] - Bill has been paid for test test(10276081)

@@ -114,10 +114,11 @@ public class ConsultantController extends Controller {
         Patient p = a.getP();
         p.getB().resetPaidStatus();
         a.complete();
-        String log ="Appointment for Patient " + p.getfName() + p.getlName() + "(" + p.getMrn() + ") was completed by Dr." + c.getLname();
+        p.getB().noticeItem();
+        String log ="Appointment for Patient " + p.getfName() + " " + p.getlName() + "(" + p.getMrn() + ") was completed by Dr." + c.getLname();
         LogFile.writeToLog(log);
         flash("success", log);
-        return ok(viewAppointments.render(c, appointments));
+        return redirect(routes.ConsultantController.viewAppointments());
 
     }
 

@@ -31,32 +31,37 @@ public class PatientRecord extends Model implements Serializable {
 
     private PatientRecord(Patient p) {
         this.p = p;
-        if(p.getAllBillingCharts().size() != 0){
-            this.charts = p.getAllBillingCharts();  //charts to be paid and added to record
-        }
-        if(p.getCompletedAppointments().size() != 0){
-            this.appointments = p.getCompletedAppointments(); //appointments which are completed are to be paid and added to record
-        }
     }
 
     public static PatientRecord record(Patient p){
         PatientRecord pr = new PatientRecord(p);
         p.setPatientRecord(pr);
-        p.getCompletedAppointments().stream().forEach(a -> {
-            a.setP(null);
-            a.setPatientRecord(pr);
-            p.getAllAppointments().remove(a);
-            a.update();
-        });
-        p.getCharts().stream().forEach(c -> {
-            if(c.getDischargeDate() != null) {
-                c.setP(null);
-                c.setPatientRecord(pr);
-                p.getCharts().remove(c);
-                c.update();
-            }
-        });
         pr.save();
+        if(p.getCompletedAppointments().size() != 0){
+            List<Appointment> tempApps = p.getCompletedAppointments();
+            for(Appointment a : tempApps){
+                a.setP(null);
+                a.setPatientRecord(pr);
+                pr.getAppointments().add(a);
+                p.getAllAppointments().remove(a);
+                a.update();
+                pr.update();
+            }
+        }
+        if(p.getAllBillingCharts().size() != 0){
+            List<Chart> tempCharts = p.getAllBillingCharts();
+            for(Chart c : tempCharts){
+                if (c.getDischargeDate() != null) {
+                    c.setPatientRecord(pr);
+                    pr.getCharts().add(c);
+                    p.getCharts().remove(c);
+                    c.setP(null);
+                    c.update();
+                    pr.update();
+                }
+            }
+        }
+        pr.update();
         p.update();
         return pr;
     }
@@ -66,6 +71,7 @@ public class PatientRecord extends Model implements Serializable {
             p.getAllBillingCharts().stream().forEach(c -> {
                 charts.add(c);
                 c.setP(null);
+                c.setPatientRecord(this);
                 p.getCharts().remove(c);
                 c.update();
             });  //charts to be paid and added to record
@@ -74,12 +80,17 @@ public class PatientRecord extends Model implements Serializable {
             p.getCompletedAppointments().stream().forEach(a -> {
                 appointments.add(a);
                 a.setP(null);
+                a.setPatientRecord(this);
                 p.getAllAppointments().remove(a);
                 a.update();
             }); //appointments which are completed are  paid and added to record
         }
         p.update();
         this.update();
+    }
+
+    public void setP(Patient p) {
+        this.p = p;
     }
 
     public List<Appointment> getAppointments() {

@@ -74,6 +74,7 @@ public class Consultant extends User{
                 appointments.add(a);
             }
         }
+        this.update();
     }
     public String getSpecialization() {
         return specialization;

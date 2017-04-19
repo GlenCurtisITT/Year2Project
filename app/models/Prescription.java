@@ -42,6 +42,10 @@ public class Prescription extends Model implements Serializable {
         p.setPrescription(this);
     }
 
+    public void setPatientOnly(Patient p){
+        this.patient = p;
+    }
+
     public Patient getPatient(){
         return this.patient;
     }

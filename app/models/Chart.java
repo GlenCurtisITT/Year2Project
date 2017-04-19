@@ -40,6 +40,7 @@ public class Chart extends Model implements Serializable{
 
     public Chart(Patient p) {
         this.p = p;
+        this.dischargeDate = null;
     }
 
     public Chart(String currentWard, Date dateOfAdmittance, String mealPlan, Patient p) {

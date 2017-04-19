@@ -118,10 +118,12 @@ public class Patient extends Model implements Serializable{
         appointments.clear();
         List<Appointment> appoints = Appointment.findAll();
         for(Appointment a: appoints){
-            if(a.getP().getMrn().equals(this.getMrn())){
+            if(a.getP() != null){
+                if(a.getP().getMrn().equals(this.mrn))
                 appointments.add(a);
             }
         }
+        this.update();
     }
 
     public String getFormattedDOB(Date a){
@@ -236,8 +238,13 @@ public class Patient extends Model implements Serializable{
     }
 
     public Chart getCurrentChart() {
-        setChartList(Chart.findAll().stream().filter(c -> c.getP().getMrn().equals(this.mrn)).filter(c -> c.getPatientRecord() == null).collect(toList()));
-        List<Chart> chartList = charts.stream().filter(c -> c.getDateOfAdmittance() == null).collect(toList());
+        for(Chart c : Chart.findAll()){
+            if(c.getP() != null){
+                charts.add(c);
+            }
+        }
+        this.update();
+        List<Chart> chartList = charts.stream().filter(c -> c.getDischargeDate() == null).collect(toList());
         return chartList.get(0);
     }
 

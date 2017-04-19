@@ -62,6 +62,7 @@ public class AdminController extends Controller{
         }
         try {
             Serializer.serialize(p);
+            Serializer.serialize(p.getB());
             PatientRecord pr;
             if(p.getPatientRecord() != null){
                 pr = p.getPatientRecord();
@@ -69,6 +70,10 @@ public class AdminController extends Controller{
                 for(Chart chart: pr.getCharts()) {
                     Serializer.serialize(chart);
                     chart.delete();
+                }
+                for(Appointment a: pr.getAppointments()) {
+                    Serializer.serialize(a);
+                    a.delete();
                 }
                 pr.delete();
             }
@@ -83,6 +88,7 @@ public class AdminController extends Controller{
                 }
             }
             p.delete();
+            b.delete();
         } catch(FileNotFoundException e) {
             flash("error", "Could not find file");
             return redirect(routes.SearchController.searchPatient());
@@ -210,14 +216,16 @@ public class AdminController extends Controller{
     @With(AuthAdmin.class)
     public Result payBill(){
         Patient p = getPatientFromSession();
-        if(p.getPatientRecord() == null) {
-            PatientRecord pr = PatientRecord.record(p);
-        } else{
-            p.getPatientRecord().addToRecord();
+        if(p.getAllAppointments().size() != 0 || p.getAllBillingCharts().size() != 0){
+            if(p.getPatientRecord() == null) {
+                PatientRecord pr = PatientRecord.record(p);
+            } else{
+                p.getPatientRecord().addToRecord();
+            }
         }
         p.getB().payBill();
         p.getPrescriptionList().stream().filter(pres -> !pres.isPaid()).forEach(pres -> pres.setPaid(true));
-        String s = "Bill has been paid for " + p.getfName() + p.getlName() + "(" + p.getMrn() + ")";
+        String s = "Bill has been paid for " + p.getfName() + " " + p.getlName() + "(" + p.getMrn() + ")";
         LogFile.writeToLog(s);
         flash("success", s);
         return redirect(routes.HomeController.viewPatientByID(p.getMrn()));

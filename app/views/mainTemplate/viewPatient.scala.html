@@ -45,6 +45,10 @@
                       <a href="@routes.AdminController.payBill()"><button type="button" class="btn btn-primary text-center">
                           Pay Bill</button></a>
                   }
+                  @if(patient.getPatientRecord() != null){
+                      <a href="@routes.HomeController.viewRecord()"><button type="button" class="btn btn-primary text-center">
+                          View Historical</button></a>
+                  }
               </div>
           </div>
           @if(patient.getSl() != null) {
@@ -276,6 +280,10 @@
                             @if(patient.getCurrentChart().getDateOfAdmittance != null && patient.getCurrentChart().getDischargeDate == null){
                                 <a href="@routes.HomeController.discharge"><button type="button" class="btn btn-warning text-center">
                                     Discharge Patient</button></a>
+                            }
+                            @if(patient.getPatientRecord() != null){
+                                <a href="@routes.HomeController.viewRecord()"><button type="button" class="btn btn-primary text-center">
+                                    View Historical</button></a>
                             }
                         </div>
                     </div>

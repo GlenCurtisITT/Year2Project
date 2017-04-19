@@ -21,6 +21,9 @@ import static controllers.HomeController.endPatientSession;
 import static controllers.HomeController.getUserFromSession;
 import static play.mvc.Results.ok;
 
+import static java.util.stream.Collectors.toList;
+
+
 public class SearchController extends Controller{
 
     private FormFactory formFactory;
@@ -51,25 +54,37 @@ public class SearchController extends Controller{
         Patient p = Serializer.readPatientArchive(mrn);
         if(p.getPatientRecord() != null) {
             PatientRecord pr = Serializer.readPatientRecordArchive(p.getPatientRecord().getRecordId());
+            pr.setP(p);
             List<Chart> c = Serializer.readChartArchive(mrn, pr.getRecordId());
+            List<Appointment> a = Serializer.readAppointmentArchive(pr.getRecordId());
+            p.setChartList(c.stream().filter(chart -> chart.getP() != null).collect(toList()));
+            pr.setCharts(c.stream().filter(chart -> chart.getPatientRecord() != null).collect(toList()));
+
             if (c != null) {
                 c.stream().forEach(chart-> {
-                    if (chart.getDischargeDate() != null) {
+                    if (chart.getPatientRecord() != null) {
                         chart.setPatientRecord(pr);
+                        pr.update();
                         chart.update();
                     } else {
                         chart.setP(p);
-                        p.setChart(chart);
                         p.update();
                         chart.update();
                     }
                 });
             }
+            pr.update();
+
         }
         else {
             List<Chart> c = Serializer.readChartArchive(mrn, null);
             if(c != null) {
                 p.setChartList(c);
+                for(Chart chart : c){
+                    chart.setP(p);
+                    chart.update();
+                }
+                p.update();
             }
         }
         List<Prescription> pres = Serializer.readPrescriptionArchive(mrn);
@@ -77,8 +92,10 @@ public class SearchController extends Controller{
             searchedPatients.add(p);
             if(pres != null){
                 p.setPrescriptionList(pres);
+                p.update();
                 for(Prescription x : pres){
-                    x.setPatient(p);
+                    x.setPatientOnly(p);
+                    x.update();
                 }
             }
         }
