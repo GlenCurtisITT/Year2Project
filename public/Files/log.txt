@@ -198,3 +198,4 @@
 [19/04/2017 14:15:11] - Bill has been paid for test test(10276081)
 [19/04/2017 14:37:20] - Consultant Glen Connolly admitted patient test test to ward Burns Unit
 [19/04/2017 14:37:26] - Patient test test(10276081) was discharged from Burns Unit by Dr.ConnollyID (51428290)
+[19/04/2017 15:20:42] - Bill has been paid for test test(10276081)
