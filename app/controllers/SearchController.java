@@ -55,7 +55,7 @@ public class SearchController extends Controller{
         if(p.getPatientRecord() != null) {
             PatientRecord pr = Serializer.readPatientRecordArchive(p.getPatientRecord().getRecordId());
             pr.setP(p);
-            List<Chart> c = Serializer.readChartArchive(mrn, pr);
+            List<Chart> c = Serializer.readChartArchive(mrn, pr.getRecordId());
             List<Appointment> a = Serializer.readAppointmentArchive(pr.getRecordId());
             p.setChartList(c.stream().filter(chart -> chart.getP() != null).collect(toList()));
             pr.setCharts(c.stream().filter(chart -> chart.getPatientRecord() != null).collect(toList()));
@@ -65,7 +65,7 @@ public class SearchController extends Controller{
                     if (chart.getPatientRecord() != null) {
                         chart.setPatientRecord(pr);
                         pr.update();
-                        chart.update();
+                        chart.insert();
                     } else {
                         chart.setP(p);
                         p.update();

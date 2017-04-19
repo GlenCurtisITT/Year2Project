@@ -70,7 +70,7 @@ public class Serializer {
         return prescriptionResult;
     }
 
-    public static List<Chart> readChartArchive(String mrn, PatientRecord pr){
+    public static List<Chart> readChartArchive(String mrn, String recordId){
         final String CHARTFILE = "public/Files/charts.gz";
         List<Chart> chartResult = new ArrayList<>();
         Chart c = null;
@@ -79,25 +79,26 @@ public class Serializer {
              ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
             while (true) {
                 c = (Chart) ois.readObject();
-                if(c.getPatientRecord() != null && c.getPatientRecord() == pr) {
-                    chartResult.add(c);
-                    c.insert();
-                }
-                else if(c.getP() != null){
-                    if(c.getP().getMrn().equals(mrn)) {
-                        chartResult.add(c);
-                        c.insert();
-                    }
-                }
+                chartResult.add(c);
             }
         }catch (ClassNotFoundException e) {
             chartResult = null;
         }catch (EOFException e) {
-            return chartResult;
+            for(Chart chart : chartResult){
+                if(chart.getP() != null){
+                    if(!chart.getP().getMrn().equals(mrn)){
+                        chartResult.remove(chart);
+                    }
+                }
+                else{
+                    if(!chart.getPatientRecord().getRecordId().equals(recordId)){
+                        chartResult.remove(chart);
+                    }
+                }
+            }
         }catch (IOException e) {
             chartResult = null;
         }
-
         return chartResult;
     }
 

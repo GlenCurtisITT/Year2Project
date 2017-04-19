@@ -90,6 +90,7 @@ public class Prescription extends Model implements Serializable {
 
     public void setPaid(boolean paid) {
         this.paid = paid;
+        this.update();
     }
 
     public static Finder<String, Prescription> find = new Finder<String, Prescription>(Prescription.class);
