@@ -375,7 +375,7 @@ public class HomeController extends Controller {
                 + a.getFormattedAppDate(a.getAppDate()) + " at "
                 + a.getFormattedAppTime(a.getAppDate());
         LogFile.writeToLog(logFileString);
-        return redirect(controllers.routes.HomeController.viewPatient());
+        return redirect(routes.HomeController.viewPatient());
     }
 
     @Security.Authenticated(Secured.class)
