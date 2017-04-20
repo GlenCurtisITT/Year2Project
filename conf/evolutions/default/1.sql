@@ -38,7 +38,7 @@ create sequence chart_seq increment by 1;
 create table equipment (
   equip_id                      varchar(255) not null,
   type                          varchar(255),
-  status                        boolean,
+  functional                    boolean,
   constraint pk_equipment primary key (equip_id)
 );
 create sequence equipment_seq start with 4 increment by 1;

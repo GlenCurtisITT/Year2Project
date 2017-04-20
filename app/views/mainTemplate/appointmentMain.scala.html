@@ -145,7 +145,7 @@
                   <a href="@routes.ConsultantController.completeAppointment(appointment.getId)"><button type="button" class="btn btn-primary text-center">
                       Complete Appointment</button>
                   </a>
-                  @if(appointment.getE.getStatus) {
+                  @if(appointment.getE.getFunctional) {
                       <a href="@routes.HomeController.reportBrokenEquipment(appointment.getId)"><button type = "button" class ="btn btn-primary">
                       Report Broken Equipment</button>
                       </a>

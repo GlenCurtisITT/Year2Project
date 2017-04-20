@@ -17,14 +17,14 @@ public class Equipment extends Model {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "equip_gen")
     private String equipId;
     private String type;
-    private boolean status;
+    private boolean functional;
 
     @OneToMany(mappedBy = "e")
     private List<Appointment> appointments = new ArrayList<>();
 
-    public Equipment(String type, boolean status) {
+    public Equipment(String type, boolean functional) {
         this.setType(type);
-        this.setStatus(status);
+        this.setFunctional(functional);
     }
 
     public static Finder<String, Equipment> find = new Finder<String, Equipment>(Equipment.class);
@@ -41,16 +41,16 @@ public class Equipment extends Model {
         return type;
     }
 
-    public boolean getStatus() {
-        return status;
+    public boolean getFunctional() {
+        return functional;
     }
 
     public List<Appointment> getAppointments() {
         return appointments.stream().filter(a -> !a.isComplete()).collect(Collectors.toList());
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setFunctional(boolean functional) {
+        this.functional = functional;
         this.update();
     }
 

@@ -1,11 +1,8 @@
 package controllers;
 
-import controllers.*;
 import play.mvc.*;
 
 import services.InvalidPPSNumberException;
-import views.html.loginPage.*;
-import views.html.mainTemplate.*;
 import views.html.chiefAdminPages.*;
 import play.data.*;
 
@@ -13,7 +10,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import models.users.*;
 import models.*;
@@ -97,7 +93,7 @@ public class ChiefAdminController extends Controller{
             return badRequest(updateEquipment.render(u, e));
         }
         e.setType(name);
-        e.setStatus(isOperational);
+        e.setFunctional(isOperational);
         e.update();
         flash("success", "Equipment Updated");
         return redirect(routes.ChiefAdminController.viewEquipment());

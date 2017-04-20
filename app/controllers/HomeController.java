@@ -216,7 +216,7 @@ public class HomeController extends Controller {
     public Result reportBrokenEquipment(String id){
         Patient p = getPatientFromSession();
         Appointment a = Appointment.find.byId(id);
-        a.getE().setStatus(false);
+        a.getE().setFunctional(false);
         String s = "Equipment recorded as broken";
         flash("success", s);
         endPatientSession();
@@ -296,7 +296,7 @@ public class HomeController extends Controller {
     public Result makeAppointment(){
         Form<Appointment> addAppointmentForm = formFactory.form(Appointment.class);
         List<Consultant> consultants = Consultant.findAllConsultants();
-        List<Equipment> equipments = Equipment.findAll().stream().filter(e -> e.getStatus()).collect(Collectors.toList());
+        List<Equipment> equipments = Equipment.findAll().stream().filter(e -> e.getFunctional()).collect(Collectors.toList());
 
         return ok(makeAppointment.render(addAppointmentForm, consultants, getUserFromSession(), getPatientFromSession(), equipments, null));
     }

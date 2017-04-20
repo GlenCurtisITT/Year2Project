@@ -29,7 +29,7 @@
                 @for(e <-allEquipment) {
                     <tr>
                         <td>@e.getType</td>
-                        @if(e.getStatus){
+                        @if(e.getFunctional){
                             <td>Yes</td>
                         }else{
                             <td>No</td>
