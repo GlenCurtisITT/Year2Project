@@ -25,11 +25,11 @@
               <option value="@m.getMedicineId">@m.getName</option>
             }
           </select>
-          <input class="form-control" placeholder="Dosage" name="dosage" id="srch-term" type="text">
+          <input class="form-control" placeholder="Dosage (Enter only whole numbers)" name="dosage" id="srch-term" type="text">
             <input class="form-control" placeholder="How often to be taken" name="frequency" id="margBot" type="text">
             <input type="submit" value="Assign Prescription" class="btn btn-primary">
                 <a href="@routes.HomeController.viewMedicine()"><button type="button" class="btn btn-primary text-center">View Medicine</button></a>
-                <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Cancel</button></a>
+                <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-warning text-center">Cancel</button></a>
         </form>
 
   }

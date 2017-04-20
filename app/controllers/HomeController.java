@@ -469,7 +469,7 @@ public class HomeController extends Controller {
         }
         //formatting date to work
         String dateString = newPatientForm.get("dob");
-        DateFormat format = new SimpleDateFormat("yyyy-dd-MM");
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         try{
             date = format.parse(dateString);

@@ -1,6 +1,6 @@
 @(user: models.users.User, appointment: models.Appointment)
 @if(user.checkRole().equals("Admin")) {
-  @adminPages.mainAdmin("View Patient", user) {
+  @adminPages.mainAdmin("View Appointment", user) {
       @if(flash().containsKey("success")) {
           <div class="row">
               <div class="col-xs-5">
@@ -49,39 +49,43 @@
           </div>
       </div>
       <div class="row">
-          <div class="col-lg-6">
-              <a href="@routes.HomeController.cancelAppointment(appointment.getId)">
-                  <button id ="margBot" type="button" class="btn btn-danger text-center" onclick="return confirmDel()";>Cancel Appointment</button>
-              </a>
+          <div class="col-lg-9">
+              <div class="well centered">
+                  <input type="button" class="btn btn-primary" onclick="unhide(this, 'form') " value="Reschedule Appointment">
+              </div>
           </div>
       </div>
 
       <div class="row">
-          <div class="col-lg-6">
-              <input type="button" id="margBot" class="btn btn-primary" onclick="unhide(this, 'form') " value="Reschedule Appointment">
-          </div>
-      </div>
-
-      <div id="form" class="hidden">
-          <form method = "post" action="@routes.HomeController.rescheduleAppointment(appointment.getId)" class="form-horizontal">
-              <input type="date" id="appDate" name="appDate" dataformatas="yyyy-dd-MM" value="YYYY-MM-DD"/>
-              <select id="hours" name="hours">
-                  <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
-                  <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
-                  <option id="18">18</option><option id="19">19</option><option id="20">20</option>
-              </select>
-              <select name="minutes" id="margBot">
-                  <option id="00">00</option><option id="30">30</option>
-              </select>
-              <div class="row">
-                  <div class="col-xs-1">
-                      <div class="actions">
-                          <input type="submit" value="Reschedule" class="btn btn-primary">
+          <div class="col-lg-3">
+              <div id="form" class="hidden">
+                  <h2>Reschedule Appointment</h2>
+                  <hr />
+                  <form method = "post" action="@routes.HomeController.rescheduleAppointment(appointment.getId)" class="form-horizontal">
+                      <label>Date</label>
+                      <input type="date" id="margBot" name="appDate" dataformatas="yyyy-dd-MM" value="YYYY-MM-DD" class="form-control"/>
+                      <label>Time</label>
+                      <br />
+                      <select id="hours" name="hours">
+                          <option id="06">06</option><option id="07">07</option><option id="08">08</option><option id="09">09</option><option id="10">10</option><option id="11">11</option>
+                          <option id="12">12</option><option id="13">13</option><option id="14">14</option><option id="15">15</option><option id="16">16</option><option id="17">17</option>
+                          <option id="18">18</option><option id="19">19</option><option id="20">20</option>
+                      </select>
+                      <select name="minutes" id="margBot">
+                          <option id="00">00</option><option id="30">30</option>
+                      </select>
+                      <div class="row">
+                          <div class="col-xs-1">
+                              <div class="actions">
+                                  <input type="submit" value="Reschedule" class="btn btn-primary">
+                              </div>
+                          </div>
                       </div>
-                  </div>
-              </div>
 
-          </form>
+                  </form>
+              </div>
+          </div>
+
           <script>
                   function confirmDel() {
                       return confirm('Are you sure?');
@@ -90,8 +94,9 @@
       </div>
     }
   }
+
 @if(user.checkRole().equals("Consultant")){
-  @consultantPages.mainConsultant("View Patient", user) {
+  @consultantPages.mainConsultant("View Appointment", user) {
       @if(flash().containsKey("success")) {
           <div class="row">
               <div class="col-xs-5">

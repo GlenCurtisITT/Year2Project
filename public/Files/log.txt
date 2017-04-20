@@ -247,3 +247,12 @@
 [20/04/2017 11:47:29] - Appointment for Patient Jean Janson(22222222) was completed by Dr.Connolly
 [20/04/2017 11:47:51] - Bill has been paid for Jean Janson(22222222)
 [20/04/2017 11:49:37] - Bill has been paid for Jean Janson(22222222)
+[20/04/2017 12:26:39] - Dr. Connolly(32795725) assigned to patient(19936100)
+[20/04/2017 12:27:01] - Consultant Glen Connolly made an appointment for Glen Curtis for the 20 Apr 275760 at 07:30 AM
+[20/04/2017 12:27:22] - Consultant Glen Connolly cancelled an appointment with Glen Curtis the appointment that was cancelled was on the 20 Apr 275760 at 07:30 AM
+[20/04/2017 12:34:02] - Consultant Glen Connolly made an appointment for Glen Curtis for the 21 Apr 2017 at 09:00 AM
+[20/04/2017 13:17:54] - Dr. Connolly(32795725) assigned to patient(25464097)
+[20/04/2017 13:19:47] - Admin Glen Connolly made an appointment for Test Test for the 20 Apr 2017 at 03:30 PM
+[20/04/2017 13:24:23] - Dr. Connolly(32795725) assigned to patient(65391876)
+[20/04/2017 13:25:14] - Consultant Glen Connolly made an appointment for Hello Test for the 21 Apr 2017 at 06:00 AM
+[20/04/2017 13:26:24] - Consultant Glen Connolly admitted patient Glen Curtis to ward Intensive Care Unit

@@ -3,7 +3,9 @@
   @consultantPages.mainConsultant("View Medicine", user) {
     <div class="row">
       <div class="col-sm-12">
-        <a href="@routes.HomeController.makePrescription()">Back</a>
+        <a href="@routes.HomeController.makePrescription()"><button class="btn btn-primary">Back</button></a>
+        <h2 id="margTop">Medication List</h2>
+        <hr />
         <table class="table table-bordered table-hover table-condensed">
           <thead>
             <tr>
@@ -21,7 +23,7 @@
               <td>@a.getSideAffects</td>
               <td>@a.getIngredients</td>
               <td>@a.getUnitOfMeasurement</td>
-              <td>€@a.getPricePerUnit</td>
+              <td>@a.formattedPrice()</td>
             </tr>
           }
           </tbody>
