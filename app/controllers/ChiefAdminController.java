@@ -3,6 +3,7 @@ package controllers;
 import controllers.*;
 import play.mvc.*;
 
+import services.InvalidPPSNumberException;
 import views.html.loginPage.*;
 import views.html.mainTemplate.*;
 import views.html.chiefAdminPages.*;
@@ -58,6 +59,10 @@ public class ChiefAdminController extends Controller{
             flash("error", "Name cannot be blank.");
             return badRequest(createEquipment.render(u, e));
         }
+        if(name.matches(".*\\d+.*")){
+            flash("error", "Name cannot contain numbers.");
+            return badRequest(updateEquipment.render(u, e));
+        }
 
         flash("success", "Equipment Created.");
         e.save();
@@ -85,6 +90,10 @@ public class ChiefAdminController extends Controller{
         }
         if(name.equals("")){
             flash("error", "Name cannot be blank");
+            return badRequest(updateEquipment.render(u, e));
+        }
+        if(name.matches(".*\\d+.*")){
+            flash("error", "Name cannot contain numbers.");
             return badRequest(updateEquipment.render(u, e));
         }
         e.setType(name);
@@ -130,6 +139,11 @@ public class ChiefAdminController extends Controller{
             flash("error", "Name must be entered.");
             return badRequest(createWard.render(HomeController.getUserFromSession(), w));
         }
+        if(name.matches(".*\\d+.*")){
+            flash("error", "Name cannot contain numbers.");
+            return badRequest(createWard.render(HomeController.getUserFromSession(), w));
+        }
+
         if(capacity <= 0){
             flash("error", "Max capacity must be greater than zero.");
             return badRequest(createWard.render(HomeController.getUserFromSession(), w));
@@ -159,6 +173,11 @@ public class ChiefAdminController extends Controller{
             flash("error", "Name cannot be blank.");
             return badRequest(updateWard.render(HomeController.getUserFromSession(), w));
         }
+        if(name.matches(".*\\d+.*")){
+            flash("error", "Name cannot contain numbers.");
+            return badRequest(updateWard.render(HomeController.getUserFromSession(), w));
+        }
+
         if(w.getCurrentOccupancy() > capacity){
             flash("error", "Max Capacity cannot be lower than current occupancy.");
             return badRequest(updateWard.render(HomeController.getUserFromSession(), w));
@@ -205,6 +224,16 @@ public class ChiefAdminController extends Controller{
             flash("error", "No fields can be blank.");
             return badRequest(createMedication.render(HomeController.getUserFromSession(), m));
         }
+
+        if(name.matches(".*\\d+.*")){
+            flash("error", "Name cannot contain numbers.");
+            return badRequest(createMedication.render(HomeController.getUserFromSession(), m));
+        }
+
+        if(ingredients.matches(".*\\d+.*")){
+            flash("error", "Ingredients cannot contain numbers.");
+            return badRequest(createMedication.render(HomeController.getUserFromSession(), m));
+        }
         if(price <= 0){
             flash("error", "Price cannot be negative or zero.");
             return badRequest(createMedication.render(HomeController.getUserFromSession(), m));
@@ -249,6 +278,17 @@ public class ChiefAdminController extends Controller{
             flash("error", "No fields can be blank.");
             return badRequest(createMedication.render(HomeController.getUserFromSession(), m));
         }
+
+        if(name.matches(".*\\d+.*")){
+            flash("error", "Name cannot contain numbers.");
+            return badRequest(createMedication.render(HomeController.getUserFromSession(), m));
+        }
+
+        if(ingredients.matches(".*\\d+.*")){
+            flash("error", "Ingredients cannot contain numbers.");
+            return badRequest(createMedication.render(HomeController.getUserFromSession(), m));
+        }
+
         if(price <= 0){
             flash("error", "Price cannot be negative or zero.");
             return badRequest(createMedication.render(HomeController.getUserFromSession(), m));
@@ -302,17 +342,27 @@ public class ChiefAdminController extends Controller{
         String phoneNum = df.get("phoneNumber");
         String dob = df.get("dob");
         String email = df.get("email");
+        User u = User.find.byId(idNum);
+
+        if(phoneNum.equals("") || fName.equals("") || lName.equals("") || address.equals("") || email.equals("")){
+            flash("error", "Please fill all fields in the form");
+            return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
+        }
+
         DateFormat format = new SimpleDateFormat("yyyy-dd-MM");
         Date date = new Date();
         try{
             date = format.parse(dob);
         } catch (ParseException e) {
-            User u = User.find.byId(idNum);
             flash("error", "Invalid Date Entered. Please try again.");
             return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
         }
 
-        User u = User.find.byId(idNum);
+        if(date.after(new Date())){
+            flash("error", "Invalid Date of Birth entered");
+            return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
+        }
+
         //Checking if email already exist in the system.
         List<User> allUsers = User.findAll();
         allUsers.remove(u);
@@ -321,6 +371,30 @@ public class ChiefAdminController extends Controller{
                 flash("error", "Email already exists in system.");
                 return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
             }
+        }
+
+        try{
+            Integer.parseInt(df.get("phoneNumber"));
+        }catch(NumberFormatException e){
+            flash("error", "Phone number must contain numbers only");
+            return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
+        }
+
+        if(!email.contains("@")){
+            flash("error", "Invalid email entered");
+            return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
+        }
+
+        if(fName.matches(".*\\d+.*") || lName.matches(".*\\d+.*")){
+            flash("error", "Name must not contain numbers");
+            return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
+        }
+
+        try {
+            HomeController.ppsChecker(pps);
+        } catch (InvalidPPSNumberException e) {
+            flash("error", e.getMessage());
+            return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
         }
 
         u.setEmail(email);
@@ -344,12 +418,35 @@ public class ChiefAdminController extends Controller{
             return badRequest(createUser.render(errorForm, "Error in form."));
         }
         //Checking that Email and Name are not blank.
-        if(newUserForm.get("email").equals("") || newUserForm.get("fname").equals("") || newUserForm.get("lname").equals("")){
-            return badRequest(createUser.render(errorForm, "Please enter an email and name."));
+        if(newUserForm.get("email").equals("") || newUserForm.get("fname").equals("") || newUserForm.get("lname").equals("") || newUserForm.get("phoneNumber").equals("") || newUserForm.get("address").equals("")){
+            return badRequest(createUser.render(errorForm, "Please fill all forms in the field"));
         }
+
+        if(newUserForm.get("fname").matches(".*\\d+.*") || newUserForm.get("lname").matches(".*\\d+.*")){
+            return badRequest(createUser.render(errorForm, "Name must not contain numbers"));
+        }
+
+        if(!newUserForm.get("email").contains("@")){
+            return badRequest(createUser.render(errorForm, "Invalid email entered"));
+        }
+
         if(newUserForm.get("role").equals("select")){
             return badRequest(createUser.render(errorForm, "Please enter a role."));
         }
+
+        int test = 0;
+        try{
+            test = Integer.parseInt(newUserForm.get("phoneNumber"));
+        } catch(NumberFormatException e){
+            return badRequest(createUser.render(errorForm, "PhoneNumber must contain numbers only"));
+        }
+
+        try {
+            HomeController.ppsChecker(newUserForm.get("ppsNumber"));
+        } catch (InvalidPPSNumberException e) {
+            return badRequest(createUser.render(errorForm, e.getMessage()));
+        }
+
         //Checking if password == confirmed password
         if(!newUserForm.get("password").equals(newUserForm.get("passwordConfirm"))){
             return badRequest(createUser.render(errorForm, "Passwords do not match."));
@@ -373,6 +470,9 @@ public class ChiefAdminController extends Controller{
             date = format.parse(dateString);
         } catch (ParseException e) {
             return badRequest(createUser.render(errorForm, dateString));
+        }
+        if(date.after(new Date())){
+            return badRequest(createUser.render(errorForm, "Invalid Date of Birth entered"));
         }
         //Adding user to database
         if(newUserForm.get("role").equals("Admin")){

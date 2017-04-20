@@ -247,3 +247,14 @@
 [20/04/2017 11:47:29] - Appointment for Patient Jean Janson(22222222) was completed by Dr.Connolly
 [20/04/2017 11:47:51] - Bill has been paid for Jean Janson(22222222)
 [20/04/2017 11:49:37] - Bill has been paid for Jean Janson(22222222)
+[20/04/2017 12:26:13] - Admin Glen Connolly updated patient 444 Connolly's information.
+[20/04/2017 12:32:32] - Admin Glen Connolly updated patient 444 222's information.
+[20/04/2017 12:56:55] - Admin Glen Connolly updated patient Glen Connolly's information.
+[20/04/2017 13:08:44] - Admin Glen Connolly updated patient Glen Connolly's information.
+[20/04/2017 13:35:38] - Admin Glen Connolly updated patient Glen Connolly's information.
+[20/04/2017 15:04:42] - Consultant Glen Connolly admitted patient Glen Connolly to ward Burns Unit
+[20/04/2017 15:24:16] - Prescription 73 removed for Patient(58250763) by Dr.Connolly(32795725)
+[20/04/2017 15:26:14] - Dr. Connolly(32795725) assigned to patient(14907213)
+[20/04/2017 15:26:31] - Consultant Glen Connolly made an appointment for Glen Connolly for the 21 May 2018 at 06:00 AM
+[20/04/2017 15:32:46] - Consultant Glen Connolly rescheduled appointment for Glen Connolly for the 21 May 2017 at 06:00 AM
+[20/04/2017 15:35:22] - Consultant Glen Connolly cancelled an appointment with Glen Connolly the appointment that was cancelled was on the 21 May 2017 at 06:00 AM

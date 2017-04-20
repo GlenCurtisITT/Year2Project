@@ -18,7 +18,7 @@
         </div>
 
         <label>Please enter prescription details</label>
-        <form method = "post" action="@routes.HomeController.makePrescriptionSubmit()" class="form-horizontal">
+        <form method = "post" action="@routes.ConsultantController.makePrescriptionSubmit()" class="form-horizontal">
           <select id="medicineId" name="medicineId" class="form-control">
             <option value="select">--- Please Select Medicine ---</option>
             @for(m <- medicinelist){
@@ -28,7 +28,7 @@
           <input class="form-control" placeholder="Dosage" name="dosage" id="srch-term" type="text">
             <input class="form-control" placeholder="How often to be taken" name="frequency" id="margBot" type="text">
             <input type="submit" value="Assign Prescription" class="btn btn-primary">
-                <a href="@routes.HomeController.viewMedicine()"><button type="button" class="btn btn-primary text-center">View Medicine</button></a>
+                <a href="@routes.ConsultantController.viewMedicine()"><button type="button" class="btn btn-primary text-center">View Medicine</button></a>
                 <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Cancel</button></a>
         </form>
 

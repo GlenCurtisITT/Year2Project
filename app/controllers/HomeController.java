@@ -2,6 +2,7 @@ package controllers;
 
 import play.mvc.*;
 
+import services.InvalidPPSNumberException;
 import views.html.loginPage.*;
 import views.html.mainTemplate.*;
 import play.data.*;
@@ -129,85 +130,6 @@ public class HomeController extends Controller {
 
     @Security.Authenticated(Secured.class)
     @With(AuthAdminOrConsultant.class)
-    public Result admitPatient(){
-        Patient p = getPatientFromSession();
-        Form<Chart> addChartForm = formFactory.form(Chart.class);
-        User u = getUserFromSession();
-        List<Ward> wardList = Ward.findAll();
-        return ok(admitPatient.render(addChartForm, wardList, p, u, null));
-    }
-
-    @Security.Authenticated(Secured.class)
-    @With(AuthAdminOrConsultant.class)
-    public Result admitPatientSubmit(){
-        DynamicForm newChartForm = formFactory.form().bindFromRequest();
-        Form errorForm = formFactory.form().bindFromRequest();
-        List<Ward> wards = Ward.findAll();
-        Form<Chart> addChartForm = formFactory.form(Chart.class);
-        Ward w = Ward.find.byId(newChartForm.get("wardId"));
-        Patient p = getPatientFromSession();
-        User u = getUserFromSession();
-        //Checking if Form has errors.
-        if(newChartForm.hasErrors()){
-            return badRequest(admitPatient.render(errorForm, wards, p, u, "Error in form."));
-        }
-        //Checking that Ward and Date are not blank.
-        if(newChartForm.get("wardId") == null){
-            return badRequest(admitPatient.render(errorForm, wards, p, u, "Please enter a ward."));
-        }
-
-        //Checking if ward is full
-        if(!w.capacityStatus()){
-            w.admitPatient(p);
-        } else{
-            if(p.getSl() != null){
-                if(p.getSl().getW().getWardId().equals(w.getWardId())){
-                    return ok(admitPatient.render(addChartForm, wards, p, u, "Patient is already on the standby list for this ward."));
-                }
-            }
-            w.getSl().addPatient(p);
-            //Writing to log file
-            String logFileString = p.getfName() + " "
-                    + p.getlName() + " was put on standby-list for ward " + w.getName();
-            LogFile.writeToLog(logFileString);
-            flash("success", "Ward is full. Patient added to Standby List");
-            return redirect(controllers.routes.HomeController.viewPatientByID(p.getMrn()));
-        }
-
-        //Adding Appointment to database
-        Chart c = p.getCurrentChart();
-        c.setCurrentWard(w.getName());
-        c.setMealPlan(newChartForm.get("mealPlan"));
-        c.setDateOfAdmittance(new Date());
-        c.update();
-        //Flashing String s to memory to be used in view patient screen.
-        String s = "";
-        if(p.getSl() != null){
-            s = p.getfName() + " " + p.getlName() + " was removed from the " + p.getSl().getW().getName() + " waiting list.\n";
-            p.getSl().removePatient(p);
-        }
-        s += p.getfName() + " " + p.getlName() + " admitted to " + w.getName();
-        flash("success", s);
-        //Writing to log file.
-        String logFileString = getUserFromSession().checkRole() + " "
-                + getUserFromSession().getFname() + " "
-                + getUserFromSession().getLname() + " admitted patient "
-                + p.getfName() + " "
-                + p.getlName() + " to ward " + w.getName();
-        LogFile.writeToLog(logFileString);
-        return redirect(controllers.routes.HomeController.viewPatientByID(p.getMrn()));
-    }
-
-    @Security.Authenticated(Secured.class)
-    @With(AuthAdminOrConsultant.class)
-    public Result discharge() {
-        Patient p = getPatientFromSession();
-        Consultant c = (Consultant)getUserFromSession();
-        return ok(discharge.render(c, p));
-    }
-
-    @Security.Authenticated(Secured.class)
-    @With(AuthAdminOrConsultant.class)
     public Result appointmentMain(String id){
         Appointment a = Appointment.find.byId(id);
         User u = getUserFromSession();
@@ -260,6 +182,11 @@ public class HomeController extends Controller {
             return badRequest(addChiefAdmin.render());
         }
 
+        if(!email.contains("@")){
+            flash("error", "Invalid email entered.");
+            return badRequest(addChiefAdmin.render());
+        }
+
         if(password.equals("") || confPassword.equals("")){
             flash("error", "Password or Confirm Password was blank.");
             return badRequest(addChiefAdmin.render());
@@ -296,6 +223,10 @@ public class HomeController extends Controller {
         }
         Patient p = getPatientFromSession();
         //handles processing of date
+        if(newAppointmentForm.get("appDate").equals("")){
+            flash("error", "Date was not chosen. Appointment has not been rescheduled");
+            return badRequest(appointmentMain.render(getUserFromSession(), a));
+        }
         String dateString = newAppointmentForm.get("appDate") + "T" + newAppointmentForm.get("hours") + ":" + newAppointmentForm.get("minutes") + ":00";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -362,6 +293,9 @@ public class HomeController extends Controller {
         List<Consultant> consultants = Consultant.findAllConsultants();
         Equipment e = Equipment.find.byId(newAppointmentForm.get("equipment"));
         Patient p = getPatientFromSession();
+        if(Equipment.find.byId(newAppointmentForm.get("equipment")) == null) {
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Please select an equipment type"));
+        }
         if(Consultant.find.byId(newAppointmentForm.get("consultant")) == null){
             return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Please enter a consultant."));
         }
@@ -370,11 +304,10 @@ public class HomeController extends Controller {
         if(newAppointmentForm.hasErrors()){
             return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Error in form."));
         }
-        //Checking that Consultant and Date are not blank.
-        if(newAppointmentForm.get("consultant") == null || newAppointmentForm.get("appDate") == null){
-            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Please enter a date and a consultant."));
-        }
         //handles processing of date
+        if(newAppointmentForm.get("appDate").equals("")){
+            return badRequest(makeAppointment.render(errorForm, consultants, getUserFromSession(), p, equipments, "Please enter an appointment date"));
+        }
         String dateString = newAppointmentForm.get("appDate") + "T" + newAppointmentForm.get("hours") + ":" + newAppointmentForm.get("minutes") + ":00";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -446,29 +379,56 @@ public class HomeController extends Controller {
     @Security.Authenticated(Secured.class)
     @With(AuthAdminOrConsultant.class)
     public Result addPatientSubmit(){
-        DynamicForm newPatientForm = formFactory.form().bindFromRequest();
+        DynamicForm df = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
         //Checking if Form has errors.
-        if(newPatientForm.hasErrors()){
+        if(df.hasErrors()){
             return badRequest(addPatient.render(errorForm, "Error in form", getUserFromSession()));
         }
-        //Checking that Email and Name are not blank.
-        if(newPatientForm.get("email").equals("") || newPatientForm.get("fname").equals("") || newPatientForm.get("lname").equals("")){
-            return badRequest(addPatient.render(errorForm, "Error name and email must be valid", getUserFromSession()));
+
+        String[] strings = {df.get("fname"), df.get("lname"), df.get("nokFName"), df.get("nokLName"), df.get("prevIllness"), df.get("nokAddress"), df.get("address"), df.get("email")};
+        String[] nums = {df.get("homePhone"), df.get("mobilePhone"), df.get("nokNumber")};
+
+        for(int i = 0; i < strings.length; i++) {
+            if (strings[i].equals("")) {
+                return badRequest(addPatient.render(errorForm, "Email, Address, Illness, First Name and Last Name cannot be blank.", getUserFromSession()));
+            }
         }
-        if(newPatientForm.get("medicalCard").equals("select")){
+        for(int i = 0; i < strings.length - 3; i++){
+            if(strings[i].matches(".*\\d+.*")){ //checks to see if contains number
+                return badRequest(addPatient.render(errorForm, "Illness, First Name and Last Name cannot contain numbers.", getUserFromSession()));
+            }
+        }
+        for(int i = 0; i < nums.length; i++){
+            if(nums[i].equals("")){
+                return badRequest(addPatient.render(errorForm, "Must enter Home Phone, Mobile Phone, and Contact number", getUserFromSession()));
+            }
+            if(nums[i].length() < 5){
+                return badRequest(addPatient.render(errorForm, "Phone number entered is too short", getUserFromSession()));
+            }
+            try {
+                Integer.parseInt(nums[i]);
+            }catch (NumberFormatException e){
+                return badRequest(addPatient.render(errorForm, "Phone numbers cannot contain letters.", getUserFromSession()));
+            }
+        }
+        if(!df.get("email").contains("@")){
+            return badRequest(addPatient.render(errorForm, "Invalid email address entered", getUserFromSession()));
+        }
+
+        if(df.get("medicalCard").equals("select")){
             return badRequest(addPatient.render(errorForm, "Please select medical card status", getUserFromSession()));
         }
 
-        //Checking if ppsNumber exists already in database (additional functionality)
-        List<Patient> allpatients = Patient.findAll();
-        for(Patient a : allpatients) {
-            if (a.getPpsNumber().equals(newPatientForm.get("ppsNumber"))) {
-                return badRequest(addPatient.render(errorForm, "A patient with that PPS number already exits on the system", getUserFromSession()));
-            }
+        //PPS Number validation
+        try{
+            ppsChecker(df.get("ppsNumber"));
+        }catch(InvalidPPSNumberException e){
+            return badRequest(addPatient.render(errorForm, e.getMessage(), getUserFromSession()));
         }
+
         //formatting date to work
-        String dateString = newPatientForm.get("dob");
+        String dateString = df.get("dob");
         DateFormat format = new SimpleDateFormat("yyyy-dd-MM");
         Date date = new Date();
         try{
@@ -476,11 +436,13 @@ public class HomeController extends Controller {
         } catch (ParseException e) {
             return badRequest(addPatient.render(errorForm, "Error with date", getUserFromSession()));
         }
-
+        if(date.after(new Date())){
+            return badRequest(addPatient.render(errorForm, "Invalid date of birth entered", getUserFromSession()));
+        }
         //converting medicalCard from form from string to boolean
-        String medicalCard = newPatientForm.get("medicalCard");
+        String medicalCard = df.get("medicalCard");
         boolean medCard;
-        String genderInput = newPatientForm.get("gender");
+        String genderInput = df.get("gender");
         boolean gender;
         if(medicalCard.equals("true")){
             medCard = true;
@@ -495,11 +457,11 @@ public class HomeController extends Controller {
         }
 
         //Adding user to database
-        Patient p = Patient.create(newPatientForm.get("fname"), newPatientForm.get("lname"), gender, newPatientForm.get("ppsNumber"), date,
-                newPatientForm.get("address"),newPatientForm.get("email"), newPatientForm.get("homePhone"),
-                newPatientForm.get("mobilePhone"), newPatientForm.get("nokFName"), newPatientForm.get("nokLName")
-                , newPatientForm.get("nokAddress"), newPatientForm.get("nokNumber"), medCard, newPatientForm.get("prevIllness"));
-        String s = "Patient: " + newPatientForm.get("fname") + " " + newPatientForm.get("lname") + " was added successfully.\nMRN: " + p.getMrn();
+        Patient p = Patient.create(df.get("fname"), df.get("lname"), gender, df.get("ppsNumber"), date,
+                df.get("address"),df.get("email"), df.get("homePhone"),
+                df.get("mobilePhone"), df.get("nokFName"), df.get("nokLName")
+                , df.get("nokAddress"), df.get("nokNumber"), medCard, df.get("prevIllness"));
+        String s = "Patient: " + df.get("fname") + " " + df.get("lname") + " was added successfully.\nMRN: " + p.getMrn();
         //Flashing String s to memory to be used in index screen.
         flash("success", s);
         User u = getUserFromSession();
@@ -511,60 +473,6 @@ public class HomeController extends Controller {
             return redirect(routes.AdminController.adminHomePage());
         }
 
-    }
-
-    @Security.Authenticated(Secured.class)
-    @With(AuthAdminOrConsultant.class)
-    public Result makePrescription(){
-        Form<Prescription> addPrescriptionForm = formFactory.form(Prescription.class);
-        List<Medicine> medicine = Medicine.findAll();
-        Patient p = getPatientFromSession();
-        User u = getUserFromSession();
-        return ok(makePrescription.render(addPrescriptionForm, medicine, p, u, null));
-    }
-
-    @Security.Authenticated(Secured.class)
-    @With(AuthAdminOrConsultant.class)
-    public Result viewMedicine(){
-        User u = getUserFromSession();
-        List<Medicine> medicine = Medicine.findAll();
-        return ok(viewMedicine.render(u, medicine));
-    }
-
-    @Security.Authenticated(Secured.class)
-    @With(AuthAdminOrConsultant.class)
-    public Result makePrescriptionSubmit(){
-        DynamicForm newPrescriptionForm = formFactory.form().bindFromRequest();
-        Form errorForm = formFactory.form().bindFromRequest();
-        List<Medicine> medicine = Medicine.findAll();
-        Patient p = getPatientFromSession();
-        User u = getUserFromSession();
-        //Checking if Form has errors.
-        if(newPrescriptionForm.hasErrors()){
-            return badRequest(makePrescription.render(errorForm, medicine, p, u, "Error in form."));
-        }
-        if(newPrescriptionForm.get("frequency") == null || newPrescriptionForm.get("dosage") == null){
-            return badRequest(makePrescription.render(errorForm, medicine, p, u, "Must enter the dosage and how often patient is to take it"));
-        }
-        if(Medicine.find.byId(newPrescriptionForm.get("medicineId")) == null){
-            return badRequest(makePrescription.render(errorForm, medicine, p, u, "Must choose Medicine"));
-        }
-        //can enter checking against other medicine to prevent bad interactions later
-        Medicine m = Medicine.find.byId(newPrescriptionForm.get("medicineId"));
-        try{
-            Integer.parseInt(newPrescriptionForm.get("dosage"));
-        }catch(NumberFormatException e){
-            return badRequest(makePrescription.render(errorForm, medicine, p, u, "Dosage must only contain numbers"));
-        }
-        Prescription pres = new Prescription(newPrescriptionForm.get("frequency"), Integer.parseInt(newPrescriptionForm.get("dosage")), m);
-        pres.setMedicine(m);
-        pres.setPatient(p);
-        pres.save();
-        p.update();
-        p.getB().noticeItem();
-        String s = "Prescription for " + pres.getDosage() + pres.getMedicine().getUnitOfMeasurement() + " of " + pres.getMedicine().getName() + " written for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName();
-        flash("success", s);
-        return redirect(controllers.routes.HomeController.viewPatient());
     }
 
     @Security.Authenticated(Secured.class)
@@ -599,4 +507,38 @@ public class HomeController extends Controller {
     public Result unauthorised(){
         return ok(unauthorised.render(null));
     }
+
+    public static void ppsChecker(String pps) throws InvalidPPSNumberException{
+        if(pps.equals("")){
+            throw new InvalidPPSNumberException("Please enter a PPS Number");
+        }
+        if(pps.length() < 8 || pps.length() > 9){
+            throw new InvalidPPSNumberException("PPS number must be 8 or 9 digits long");
+        }
+        String testPPS = String.valueOf(pps.charAt(pps.length() - 1));
+        if(testPPS.matches(".*\\d+.*")){   //make sure last digit is letter
+            throw new InvalidPPSNumberException("Last digit in PPS Number must be a letter");
+        }
+        testPPS = pps.substring(0, 6);
+        try{
+            Integer.parseInt(testPPS);
+        }catch(NumberFormatException e){
+            throw new InvalidPPSNumberException("Invalid PPS number entered");
+        }
+        for(User u : User.findAll()){
+            if(!(u instanceof ChiefAdmin)){
+                if (u.getPpsNumber().equals(pps)) {
+                    throw new InvalidPPSNumberException("There is a User already on the system with that PPS Number");
+                }
+            }
+        }
+        for(Patient p : Patient.findAll()){
+            if(p.getPpsNumber().equals(pps)){
+                throw new InvalidPPSNumberException(("There is a Patient already on the system with that PPS Number"));
+            }
+        }
+
+    }
+
+
 }

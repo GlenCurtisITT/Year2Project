@@ -271,14 +271,14 @@
                                 <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">
                                     Make Appointment</button></a>
                             }
-                            <a href="@routes.HomeController.makePrescription()"><button type="button" class="btn btn-primary text-center">
+                            <a href="@routes.ConsultantController.makePrescription()"><button type="button" class="btn btn-primary text-center">
                                 Add Prescription</button></a>
                             @if(patient.getCurrentChart().getDateOfAdmittance == null) {
-                                <a href="@routes.HomeController.admitPatient"><button type="button" class="btn btn-primary text-center">
+                                <a href="@routes.ConsultantController.admitPatient"><button type="button" class="btn btn-primary text-center">
                                     Admit Patient</button></a>
                             }
                             @if(patient.getCurrentChart().getDateOfAdmittance != null && patient.getCurrentChart().getDischargeDate == null){
-                                <a href="@routes.HomeController.discharge"><button type="button" class="btn btn-warning text-center">
+                                <a href="@routes.ConsultantController.discharge"><button type="button" class="btn btn-warning text-center">
                                     Discharge Patient</button></a>
                             }
                             @if(patient.getPatientRecord() != null){

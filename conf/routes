@@ -1,8 +1,6 @@
 #HOME CONTROLLER
 GET     /                           controllers.HomeController.index
 GET     /homepage                   controllers.HomeController.homepage
-GET     /admitPatient               controllers.HomeController.admitPatient
-GET     /discharge                  controllers.HomeController.discharge
 GET     /viewPatient                controllers.HomeController.viewPatient
 GET     /viewSchedule               controllers.HomeController.viewSchedule
 GET     /viewPatientByID/:mrn       controllers.HomeController.viewPatientByID(mrn: String)
@@ -11,25 +9,27 @@ GET     /addPatient                 controllers.HomeController.addPatient
 GET     /makeAppointment            controllers.HomeController.makeAppointment
 GET     /appointmentMain/:id        controllers.HomeController.appointmentMain(id: String)
 GET     /cancelAppointment/:id      controllers.HomeController.cancelAppointment(id:String)
-GET     /makePrescription           controllers.HomeController.makePrescription
-GET     /viewMedicine               controllers.HomeController.viewMedicine
 GET     /unauthorised               controllers.HomeController.unauthorised
 GET     /addChiefAdmin              controllers.HomeController.addChiefAdmin
 POST    /addPatientSubmit           controllers.HomeController.addPatientSubmit
 POST    /addAppointmentSubmit       controllers.HomeController.addAppointmentSubmit
-POST    /makePrescriptionSubmit     controllers.HomeController.makePrescriptionSubmit
 POST    /addChiefAdminSubmit        controllers.HomeController.addChiefAdminSubmit
-POST    /admitPatientSubmit         controllers.HomeController.admitPatientSubmit
 POST    /rescheduleAppointment/:id  controllers.HomeController.rescheduleAppointment(id:String)
 
 #CONSULTANT CONTROLLER
 GET     /consultantHomePage         controllers.ConsultantController.consultantHomePage
+GET     /makePrescription           controllers.ConsultantController.makePrescription
+GET     /viewMedicine               controllers.ConsultantController.viewMedicine
+GET     /discharge                  controllers.ConsultantController.discharge
 GET     /viewAppointments           controllers.ConsultantController.viewAppointments
+GET     /admitPatient               controllers.ConsultantController.admitPatient
 GET     /dischargePatient           controllers.ConsultantController.dischargePatient
 GET     /removePrescription/:id     controllers.ConsultantController.removePrescription(id: String)
 GET     /addConsultant              controllers.ConsultantController.addConsultant
 GET     /completeAppointment/:id    controllers.ConsultantController.completeAppointment(id:String)
 GET     /declareSpecialisation      controllers.ConsultantController.declareSpecialisation
+POST    /makePrescriptionSubmit     controllers.ConsultantController.makePrescriptionSubmit
+POST    /admitPatientSubmit         controllers.ConsultantController.admitPatientSubmit
 POST    /declareSecialisationSubmit controllers.ConsultantController.declareSecialisationSubmit
 
 #ADMIN CONTROLLER

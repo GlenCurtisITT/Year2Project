@@ -4,6 +4,8 @@ import models.*;
 import play.mvc.*;
 import play.mvc.Controller;
 import play.mvc.Result;
+import scala.Char;
+import services.InvalidPPSNumberException;
 import services.Serializer;
 import views.html.mainTemplate.*;
 import views.html.adminPages.*;
@@ -120,8 +122,38 @@ public class AdminController extends Controller{
         DynamicForm df = formFactory.form().bindFromRequest();
         Patient p = Patient.find.byId(df.get("mrn"));
         User u = HomeController.getUserFromSession();
-        if(df.get("email").equals("") || df.get("fname").equals("") || df.get("lname").equals("")){
-            flash("error", "Email, First Name and Last Name cannot be blank.");
+        String[] strings = {df.get("fname"), df.get("lname"), df.get("nokFname"), df.get("nokLname"), df.get("illness"), df.get("nokAdd"), df.get("address"), df.get("email")};
+        String[] nums = {df.get("homePhone"), df.get("mobileNum"), df.get("nokPhone")};
+        for(int i = 0; i < strings.length; i++) {
+            if (strings[i].equals("")) {
+                flash("error", "Email, Address, Illness, First Name and Last Name cannot be blank.");
+                return badRequest(updatePatient.render(u, p));
+            }
+        }
+        for(int i = 0; i < strings.length - 3; i++){
+            if(strings[i].matches(".*\\d+.*")){ //checks to see if contains number
+                flash("error", "Illness, First Name and Last Name cannot contain numbers.");
+                return badRequest(updatePatient.render(u, p));
+            }
+        }
+        for(int i = 0; i < nums.length; i++){
+            if(nums[i].equals("")){
+                flash("error", "Must enter Home Phone, Mobile Phone, and Contact number");
+                return badRequest(updatePatient.render(u, p));
+            }
+            if(nums[i].length() < 5){
+                flash("error", "Phone number entered is too short");
+                return badRequest(updatePatient.render(u, p));
+            }
+            try {
+                Integer.parseInt(nums[i]);
+            }catch (NumberFormatException e){
+                flash("error", "Phone numbers cannot contain letters.");
+                return badRequest(updatePatient.render(u, p));
+            }
+        }
+        if(!df.get("email").contains("@")){
+            flash("error", "Invalid email address entered");
             return badRequest(updatePatient.render(u, p));
         }
         p.setfName(df.get("fname"));
@@ -132,15 +164,11 @@ public class AdminController extends Controller{
             p.setGender(false);
         }
 
-        //Find all patients in system. Check PPS number against all but self.
-        List<Patient> allPatients = Patient.findAll();
-        allPatients.remove(p);
-        for(Patient patient : allPatients){
-            if(patient.getPpsNumber().equals(df.get("ppsNumber"))){
-                //Return bad request if PPS number is the same as another patient.
-                flash("error", "Another patient with same PPS.");
-                return badRequest(updatePatient.render(u, p));
-            }
+        try{
+            HomeController.ppsChecker(df.get("ppsNumber"));
+        } catch (InvalidPPSNumberException e) {
+            flash("error", e.getMessage());
+            return badRequest(updatePatient.render(u, p));
         }
 
         p.setPpsNumber(df.get("ppsNumber"));
@@ -165,6 +193,10 @@ public class AdminController extends Controller{
             date = format.parse(dateString);
         } catch (ParseException e) {
             flash("error", "Error with date. Must be yyyy-dd-MM");
+            return ok(updatePatient.render(u, p));
+        }
+        if(date.after(new Date())){
+            flash("error", "Invalid Date of Birth entered");
             return ok(updatePatient.render(u, p));
         }
         p.setDob(date);

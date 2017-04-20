@@ -50,6 +50,9 @@ public class SearchController extends Controller{
     public Result searchArchiveByMRN(){
         DynamicForm searchForm = formFactory.form().bindFromRequest();
         String mrn = searchForm.get("archiveMrn");
+        if(mrn.equals("")){
+            return ok(searchPatient.render(new ArrayList<Patient>(), getUserFromSession()));
+        }
         List<Patient> searchedPatients = new ArrayList<>();
         Patient p = Serializer.readPatientArchive(mrn);
         if(p.getPatientRecord() != null) {

@@ -38,7 +38,7 @@ public class Bill extends Model implements MedBilling{
 
     public Bill(Patient p) {
         this.p = p;
-        isPaid = false;
+        isPaid = true;
     }
 
     public String getBillId() {
