@@ -50,40 +50,6 @@ public class Prescription extends Model implements Serializable {
         return this.patient;
     }
 
-/*
-    public void serialize() throws IOException {
-        final String CHARTFILE = "public/Files/prescriptions.gz";
-        try(FileOutputStream fo = new FileOutputStream(CHARTFILE);
-            GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
-            ObjectOutputStream oo = new ObjectOutputStream(gzipOut);){
-            oo.writeObject(this);
-        }
-    }
-
-    public static List<Prescription> readArchive(String mrn){
-        final String PRESCRIPTIONFILE = "public/Files/prescriptions.gz";
-        List<Prescription> prescriptionResult = new ArrayList<>();
-        Prescription pres = null;
-        try (FileInputStream fin = new FileInputStream(PRESCRIPTIONFILE);
-             GZIPInputStream gis = new GZIPInputStream(fin);
-             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
-            while (true) {
-                pres = (Prescription) ois.readObject();
-                if(pres.getPatient().getMrn().equals(mrn)){
-                    prescriptionResult.add(pres);
-                    pres.insert();
-                }
-            }
-        }catch (ClassNotFoundException e) {
-            prescriptionResult = null;
-        }catch (EOFException e) {
-            return prescriptionResult;
-        }catch (IOException e) {
-            prescriptionResult = null;
-        }
-        return prescriptionResult;
-    }
-*/
     public boolean isPaid() {
         return paid;
     }

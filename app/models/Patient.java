@@ -173,15 +173,6 @@ public class Patient extends Model implements Serializable{
         return numberAsString;
     }
 
-    public void serialize() throws IOException {
-        final String FILENAME = "public/Files/patients.gz";
-        try(FileOutputStream fo = new FileOutputStream(FILENAME);
-            GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
-            ObjectOutputStream oo = new ObjectOutputStream(gzipOut);) {
-            oo.writeObject(this);
-        }
-    }
-
     public static List<Patient> ReadAllPatientArchive(){
         final String FILENAME = "public/Files/patients.gz";
         List<Patient> patients = new ArrayList<>();

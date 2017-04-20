@@ -4,6 +4,8 @@ import com.avaje.ebean.Model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 /**
  * Created by conno on 16/03/2017.
@@ -44,7 +46,7 @@ public class Equipment extends Model {
     }
 
     public List<Appointment> getAppointments() {
-        return appointments;
+        return appointments.stream().filter(a -> !a.isComplete()).collect(Collectors.toList());
     }
 
     public void setStatus(boolean status) {

@@ -55,37 +55,12 @@ public class SearchController extends Controller{
         if(p.getPatientRecord() != null) {
             PatientRecord pr = Serializer.readPatientRecordArchive(p.getPatientRecord().getRecordId());
             pr.setP(p);
-            List<Chart> c = Serializer.readChartArchive(mrn, pr.getRecordId());
-            List<Appointment> a = Serializer.readAppointmentArchive(pr.getRecordId());
-            p.setChartList(c.stream().filter(chart -> chart.getP() != null).collect(toList()));
-            pr.setCharts(c.stream().filter(chart -> chart.getPatientRecord() != null).collect(toList()));
+            List<Chart> charts = Serializer.readChartArchive(pr.getRecordId());
+            charts.stream().filter(c -> c.getPatientRecord().getRecordId().equals(pr.getRecordId())).forEach(c -> { c.insert(); pr.addChart(c); c.setPatientRecord(pr); c.update();});
+            List<Appointment> appointments = Serializer.readAppointmentArchive(pr.getRecordId());
+            appointments.stream().filter(a -> a.getPatientRecord().getRecordId().equals(pr.getRecordId())).forEach(a -> { a.insert(); pr.addAppointment(a); a.setPatientRecord(pr); a.update();});
 
-            if (c != null) {
-                c.stream().forEach(chart-> {
-                    if (chart.getPatientRecord() != null) {
-                        chart.setPatientRecord(pr);
-                        pr.update();
-                        chart.insert();
-                    } else {
-                        chart.setP(p);
-                        p.update();
-                        chart.update();
-                    }
-                });
-            }
             pr.update();
-
-        }
-        else {
-            List<Chart> c = Serializer.readChartArchive(mrn, null);
-            if(c != null) {
-                p.setChartList(c);
-                for(Chart chart : c){
-                    chart.setP(p);
-                    chart.update();
-                }
-                p.update();
-            }
         }
         List<Prescription> pres = Serializer.readPrescriptionArchive(mrn);
         if(p != null) {
