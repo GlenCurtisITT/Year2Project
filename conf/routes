@@ -5,6 +5,7 @@ GET     /viewPatient                controllers.HomeController.viewPatient
 GET     /viewSchedule               controllers.HomeController.viewSchedule
 GET     /viewPatientByID/:mrn       controllers.HomeController.viewPatientByID(mrn: String)
 GET     /viewPatientRecord          controllers.HomeController.viewRecord
+GET     /recordBrokenEquipment/:id  controllers.HomeController.reportBrokenEquipment(id: String)
 GET     /addPatient                 controllers.HomeController.addPatient
 GET     /makeAppointment            controllers.HomeController.makeAppointment
 GET     /appointmentMain/:id        controllers.HomeController.appointmentMain(id: String)

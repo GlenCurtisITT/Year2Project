@@ -213,6 +213,23 @@ public class HomeController extends Controller {
 
     @Security.Authenticated(Secured.class)
     @With(AuthAdminOrConsultant.class)
+    public Result reportBrokenEquipment(String id){
+        Patient p = getPatientFromSession();
+        Appointment a = Appointment.find.byId(id);
+        a.getE().setStatus(false);
+        String s = "Equipment recorded as broken";
+        flash("success", s);
+        endPatientSession();
+        String logFileString = getUserFromSession().checkRole() + " "
+                + getUserFromSession().getFname() + " "
+                + getUserFromSession().getLname() + " recorded "
+                + a.getE().getType() + " as broken.";
+        LogFile.writeToLog(logFileString);
+        return ok(appointmentMain.render(getUserFromSession(), a));
+    }
+
+    @Security.Authenticated(Secured.class)
+    @With(AuthAdminOrConsultant.class)
     public Result rescheduleAppointment(String id){
         DynamicForm newAppointmentForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
@@ -279,7 +296,7 @@ public class HomeController extends Controller {
     public Result makeAppointment(){
         Form<Appointment> addAppointmentForm = formFactory.form(Appointment.class);
         List<Consultant> consultants = Consultant.findAllConsultants();
-        List<Equipment> equipments = Equipment.findAll();
+        List<Equipment> equipments = Equipment.findAll().stream().filter(e -> e.getStatus()).collect(Collectors.toList());
 
         return ok(makeAppointment.render(addAppointmentForm, consultants, getUserFromSession(), getPatientFromSession(), equipments, null));
     }

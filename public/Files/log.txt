@@ -258,3 +258,7 @@
 [20/04/2017 15:26:31] - Consultant Glen Connolly made an appointment for Glen Connolly for the 21 May 2018 at 06:00 AM
 [20/04/2017 15:32:46] - Consultant Glen Connolly rescheduled appointment for Glen Connolly for the 21 May 2017 at 06:00 AM
 [20/04/2017 15:35:22] - Consultant Glen Connolly cancelled an appointment with Glen Connolly the appointment that was cancelled was on the 21 May 2017 at 06:00 AM
+[20/04/2017 19:02:57] - Dr. Connolly(32795725) assigned to patient(58250763)
+[20/04/2017 19:03:11] - Consultant Glen Connolly made an appointment for Glen Connolly for the 21 Apr 2018 at 06:00 AM
+[20/04/2017 19:03:26] - Consultant Glen Connolly recorded Consultation Room as broken.
+[20/04/2017 19:06:15] - Consultant Glen Connolly recorded Consultation Room as broken.

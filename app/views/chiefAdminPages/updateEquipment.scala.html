@@ -22,7 +22,7 @@
 
         <label>Is Operational?</label>
         <select name="operational" class="form-control" id="margBot">
-          @if(equipment.isStatus) {
+          @if(equipment.getStatus) {
             <option value="true">Yes</option>
             <option value="false">No</option>
           }else{

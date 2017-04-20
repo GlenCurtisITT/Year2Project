@@ -145,6 +145,11 @@
                   <a href="@routes.ConsultantController.completeAppointment(appointment.getId)"><button type="button" class="btn btn-primary text-center">
                       Complete Appointment</button>
                   </a>
+                  @if(appointment.getE.getStatus) {
+                      <a href="@routes.HomeController.reportBrokenEquipment(appointment.getId)"><button type = "button" class ="btn btn-primary">
+                      Report Broken Equipment</button>
+                      </a>
+                  }
                   <input type="button" class="btn btn-primary" onclick="unhide(this, 'form') " value="Reschedule Appointment">
                   <a href="@routes.HomeController.cancelAppointment(appointment.getId)">
                       <button type="button" class="btn btn-danger text-center" onclick="return confirmDel()";>Cancel Appointment</button>

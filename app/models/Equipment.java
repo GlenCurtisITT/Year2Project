@@ -41,7 +41,7 @@ public class Equipment extends Model {
         return type;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
@@ -51,6 +51,7 @@ public class Equipment extends Model {
 
     public void setStatus(boolean status) {
         this.status = status;
+        this.update();
     }
 
     public void addAppointment(Appointment a){
