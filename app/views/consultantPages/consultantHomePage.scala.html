@@ -1,8 +1,18 @@
-@(user: models.users.User, appointmentList: List[models.Appointment])
-@consultantPages.mainConsultant("Consultant Homepage", user) {
+@(consultant: models.users.Consultant, appointmentList: List[models.Appointment])
+@consultantPages.mainConsultant("Consultant Homepage", consultant) {
+    <div class="row">
+        <div class="col-lg-5">
+        @if(flash().containsKey("error")) {
+            <div class="alert alert-warning">
+                <strong>@flash().get("error")</strong>
+                <a href="@routes.ConsultantController.declareSpecialisation()"><button class="btn btn-primary">Declare</button></a>
+            </div>
+        }
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-12">
-            <h1>Welcome back Dr @user.getLname. </h1>
+            <h1>Welcome back Dr @consultant.getLname. </h1>
         </div>
     </div>
 

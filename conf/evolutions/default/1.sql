@@ -6,6 +6,8 @@
 create table appointment (
   id                            varchar(255) not null,
   app_date                      timestamp,
+  complete                      boolean,
+  recordid                      varchar(255),
   mrn                           varchar(255),
   idnum                         varchar(255),
   equipid                       varchar(255),
@@ -19,6 +21,7 @@ create table bill (
   is_paid                       boolean,
   constraint pk_bill primary key (bill_id)
 );
+create sequence bill_seq increment by 1;
 
 create table chart (
   chart_id                      integer not null,
@@ -27,25 +30,18 @@ create table chart (
   discharge_date                timestamp,
   meal_plan                     varchar(255),
   mrn                           varchar(255),
-  billid                        varchar(255),
-  constraint uq_chart_mrn unique (mrn),
-  constraint uq_chart_billid unique (billid),
+  recordid                      varchar(255),
   constraint pk_chart primary key (chart_id)
 );
 create sequence chart_seq increment by 1;
 
-create table chartprescription (
-  chart_chart_id                integer not null,
-  prescription_prescription_id  varchar(255) not null,
-  constraint pk_chartprescription primary key (chart_chart_id,prescription_prescription_id)
-);
-
 create table equipment (
   equip_id                      varchar(255) not null,
   type                          varchar(255),
-  status                        boolean,
+  functional                    boolean,
   constraint pk_equipment primary key (equip_id)
 );
+create sequence equipment_seq start with 4 increment by 1;
 
 create table medicine (
   medicine_id                   varchar(255) not null,
@@ -74,19 +70,30 @@ create table patient (
   nok_address                   varchar(255),
   nok_number                    varchar(255),
   medical_card                  boolean,
-  prev_illnesses                varchar(255),
+  illness                       varchar(255),
   idnum                         varchar(255),
   wardid                        varchar(255),
   standbyid                     varchar(255),
+  billid                        varchar(255),
+  constraint uq_patient_billid unique (billid),
   constraint pk_patient primary key (mrn)
 );
+
+create table patient_record (
+  record_id                     varchar(255) not null,
+  mrn                           varchar(255),
+  constraint uq_patient_record_mrn unique (mrn),
+  constraint pk_patient_record primary key (record_id)
+);
+create sequence patient_record_seq increment by 1;
 
 create table prescription (
   prescription_id               varchar(255) not null,
   frequency                     varchar(255),
   dosage                        integer,
+  paid                          boolean,
   medicineid                    varchar(255),
-  constraint uq_prescription_medicineid unique (medicineid),
+  mrn                           varchar(255),
   constraint pk_prescription primary key (prescription_id)
 );
 create sequence prescription_seq increment by 1;
@@ -124,6 +131,10 @@ create table ward (
   status                        boolean,
   constraint pk_ward primary key (ward_id)
 );
+create sequence ward_seq increment by 1;
+
+alter table appointment add constraint fk_appointment_recordid foreign key (recordid) references patient_record (record_id) on delete restrict on update restrict;
+create index ix_appointment_recordid on appointment (recordid);
 
 alter table appointment add constraint fk_appointment_mrn foreign key (mrn) references patient (mrn) on delete restrict on update restrict;
 create index ix_appointment_mrn on appointment (mrn);
@@ -135,14 +146,10 @@ alter table appointment add constraint fk_appointment_equipid foreign key (equip
 create index ix_appointment_equipid on appointment (equipid);
 
 alter table chart add constraint fk_chart_mrn foreign key (mrn) references patient (mrn) on delete restrict on update restrict;
+create index ix_chart_mrn on chart (mrn);
 
-alter table chart add constraint fk_chart_billid foreign key (billid) references bill (bill_id) on delete restrict on update restrict;
-
-alter table chartprescription add constraint fk_chartprescription_chart foreign key (chart_chart_id) references chart (chart_id) on delete restrict on update restrict;
-create index ix_chartprescription_chart on chartprescription (chart_chart_id);
-
-alter table chartprescription add constraint fk_chartprescription_prescription foreign key (prescription_prescription_id) references prescription (prescription_id) on delete restrict on update restrict;
-create index ix_chartprescription_prescription on chartprescription (prescription_prescription_id);
+alter table chart add constraint fk_chart_recordid foreign key (recordid) references patient_record (record_id) on delete restrict on update restrict;
+create index ix_chart_recordid on chart (recordid);
 
 alter table patient add constraint fk_patient_idnum foreign key (idnum) references user (id_num) on delete restrict on update restrict;
 create index ix_patient_idnum on patient (idnum);
@@ -153,12 +160,23 @@ create index ix_patient_wardid on patient (wardid);
 alter table patient add constraint fk_patient_standbyid foreign key (standbyid) references standby_list (standby_id) on delete restrict on update restrict;
 create index ix_patient_standbyid on patient (standbyid);
 
+alter table patient add constraint fk_patient_billid foreign key (billid) references bill (bill_id) on delete restrict on update restrict;
+
+alter table patient_record add constraint fk_patient_record_mrn foreign key (mrn) references patient (mrn) on delete restrict on update restrict;
+
 alter table prescription add constraint fk_prescription_medicineid foreign key (medicineid) references medicine (medicine_id) on delete restrict on update restrict;
+create index ix_prescription_medicineid on prescription (medicineid);
+
+alter table prescription add constraint fk_prescription_mrn foreign key (mrn) references patient (mrn) on delete restrict on update restrict;
+create index ix_prescription_mrn on prescription (mrn);
 
 alter table standby_list add constraint fk_standby_list_wardid foreign key (wardid) references ward (ward_id) on delete restrict on update restrict;
 
 
 # --- !Downs
+
+alter table appointment drop constraint if exists fk_appointment_recordid;
+drop index if exists ix_appointment_recordid;
 
 alter table appointment drop constraint if exists fk_appointment_mrn;
 drop index if exists ix_appointment_mrn;
@@ -170,14 +188,10 @@ alter table appointment drop constraint if exists fk_appointment_equipid;
 drop index if exists ix_appointment_equipid;
 
 alter table chart drop constraint if exists fk_chart_mrn;
+drop index if exists ix_chart_mrn;
 
-alter table chart drop constraint if exists fk_chart_billid;
-
-alter table chartprescription drop constraint if exists fk_chartprescription_chart;
-drop index if exists ix_chartprescription_chart;
-
-alter table chartprescription drop constraint if exists fk_chartprescription_prescription;
-drop index if exists ix_chartprescription_prescription;
+alter table chart drop constraint if exists fk_chart_recordid;
+drop index if exists ix_chart_recordid;
 
 alter table patient drop constraint if exists fk_patient_idnum;
 drop index if exists ix_patient_idnum;
@@ -188,7 +202,15 @@ drop index if exists ix_patient_wardid;
 alter table patient drop constraint if exists fk_patient_standbyid;
 drop index if exists ix_patient_standbyid;
 
+alter table patient drop constraint if exists fk_patient_billid;
+
+alter table patient_record drop constraint if exists fk_patient_record_mrn;
+
 alter table prescription drop constraint if exists fk_prescription_medicineid;
+drop index if exists ix_prescription_medicineid;
+
+alter table prescription drop constraint if exists fk_prescription_mrn;
+drop index if exists ix_prescription_mrn;
 
 alter table standby_list drop constraint if exists fk_standby_list_wardid;
 
@@ -196,18 +218,21 @@ drop table if exists appointment;
 drop sequence if exists appointment_seq;
 
 drop table if exists bill;
+drop sequence if exists bill_seq;
 
 drop table if exists chart;
 drop sequence if exists chart_seq;
 
-drop table if exists chartprescription;
-
 drop table if exists equipment;
+drop sequence if exists equipment_seq;
 
 drop table if exists medicine;
 drop sequence if exists medicine_seq;
 
 drop table if exists patient;
+
+drop table if exists patient_record;
+drop sequence if exists patient_record_seq;
 
 drop table if exists prescription;
 drop sequence if exists prescription_seq;
@@ -218,4 +243,5 @@ drop sequence if exists standby_list_seq;
 drop table if exists user;
 
 drop table if exists ward;
+drop sequence if exists ward_seq;
 

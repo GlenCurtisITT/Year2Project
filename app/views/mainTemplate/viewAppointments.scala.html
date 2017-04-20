@@ -1,6 +1,15 @@
 @(user: models.users.User, appointmentList: List[models.Appointment])
 @if(user.checkRole().equals("Consultant")){
   @consultantPages.mainConsultant("View Appointments", user) {
+    <div class="row">
+      <div class="col-lg-6">
+        @if(flash().containsKey("success")) {
+          <div class="alert alert-success">
+            <strong>@flash().get("success")</strong>
+          </div>
+        }
+      </div>
+    </div>
     @if(appointmentList.size() == 0){
       <h1>No Appointments</h1>
     }else{

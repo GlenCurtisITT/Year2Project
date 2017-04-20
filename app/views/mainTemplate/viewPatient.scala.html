@@ -5,10 +5,15 @@
           <h1>No patient selected</h1>
       } else {
           <div class="row">
-              <div class="col-lg-6">
+              <div class="col-lg-4">
               @if(flash().containsKey("success")) {
                   <div class="alert alert-success">
                       <strong>@flash().get("success")</strong>
+                  </div>
+              }
+              @if(flash().containsKey("error")){
+                  <div class="alert alert-warning">
+                      <strong>@flash().get("error")</strong>
                   </div>
               }
               </div>
@@ -16,6 +21,9 @@
           <div class="row">
               <div class="col-lg-4">
                   <div class="well">
+                      @if(patient.getB().isPaid) {
+                          <h1><span class="blueText">Balance is currently paid</span> @patient.getMrn()</h1>
+                      }
                       <h1><span class="blueText">MRN:</span> @patient.getMrn()</h1>
                       <h1><span class="blueText">Name:</span>  @patient.getfName() @patient.getlName()</h1>
                   </div>
@@ -23,12 +31,34 @@
           </div>
           <div class="row">
               <div class="col-lg-12">
-                  <a href="#"><button type="button" class="btn btn-primary text-center">Add Consultant</button></a>
+                  @if(patient.getC == null) {
+                      <a href="@routes.AdminController.listConsultants()"><button type="button" class="btn btn-primary text-center">
+                          Add Consultant</button></a>
+                  }
                   <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">
                       Make Appointment</button></a>
+                  @if(patient.getAppointmentsDue.size() != 0 || patient.getPrescriptionList.size() != 0 || patient.getBillingChart.getDateOfAdmittance != null || patient.getBillingChart.getDischargeDate != null) {
+                      <a href="@routes.AdminController.genBill()"><button type="button" class="btn btn-primary text-center">
+                          Generate Bill</button></a>
+                  }
+                  @if(!patient.getB.isPaid) {
+                      <a href="@routes.AdminController.payBill()"><button type="button" class="btn btn-primary text-center">
+                          Pay Bill</button></a>
+                  }
+                  @if(patient.getPatientRecord() != null){
+                      <a href="@routes.HomeController.viewRecord()"><button type="button" class="btn btn-primary text-center">
+                          View Historical</button></a>
+                  }
               </div>
           </div>
-          @if(patient.getChart() != null) {
+          @if(patient.getSl() != null) {
+              <div class = "row">
+                  <div class ="col-lg-12">
+                      <h3>Patient is currently on waiting list for @patient.getSl.getW.getName</h3>
+                  </div>
+              </div>
+          }
+          @if(patient.getCurrentChart() != null) {
               <div class="row">
                   <div class="col-lg-12">
                       <h2>Chart Information</h2>
@@ -47,15 +77,15 @@
                   </thead>
                   <tbody>
                       <tr>
-                          <td class="numeric">@patient.getChart.getChartId</td>
-                          <td>@patient.getChart.getCurrentWard</td>
-                          <td>@patient.getChart.getDateOfAdmittance</td>
-                          <td>@patient.getChart.getDischargeDate</td>
-                          <td>@patient.getChart.getMealPlan</td>
+                          <td class="numeric">@patient.getBillingChart.getChartId</td>
+                          <td>@patient.getBillingChart.getCurrentWard</td>
+                          <td>@patient.getBillingChart.getDateOfAdmittance</td>
+                          <td>@patient.getBillingChart.getDischargeDate</td>
+                          <td>@patient.getBillingChart.getMealPlan</td>
                       </tr>
                   </tbody>
               </table>
-              @if(patient.getChart.getPrescriptionList.size != 0){
+              @if(patient.getPrescriptionList.size != 0){
                   <table class="table table-bordered table-hover table-condensed">
                       <thead>
                           <tr>
@@ -65,11 +95,11 @@
                           </tr>
                       </thead>
                       <tbody>
-                      @for(pr <- patient.getChart.getPrescriptionList) {
+                      @for(pr <- patient.getPrescriptionList) {
                           <tr>
                               <td>@pr.getMedicine.getName</td>
                               <td>@pr.getDosage@pr.getMedicine.getUnitOfMeasurement</td>
-                              <td>@pr.getDosage</td>
+                              <td>@pr.getFrequency</td>
                           </tr>
                       }
                       </tbody>
@@ -77,7 +107,7 @@
               }
           }
 
-          @if(patient.getAppointments.size() != 0) {
+          @if(patient.getAppointmentsDue.size() != 0) {
               <div class="row">
                   <div class="col-lg-12">
                       <h2>Appointment Information</h2>
@@ -92,7 +122,7 @@
                       </tr>
                   </thead>
                   <tbody>
-                  @for(a <- patient.getAppointments) {
+                  @for(a <- patient.getAppointmentsDue) {
                       <tr>
                           <td class="numeric">@a.getAppDate</td>
                           <td>Dr. @a.getC.getLname</td>
@@ -114,113 +144,151 @@
             <h1>No patient selected</h1>
         } else {
             <div class="row">
-                <div class="col-lg-6">
-                @if(flash().containsKey("success")) {
-                    <div class="alert alert-success">
-                        <strong>@flash().get("success")</strong>
-                    </div>
-                }
+                <div class="col-lg-4">
+                    @if(flash().containsKey("success")) {
+                        <div class="alert alert-success">
+                            <strong>@flash().get("success")</strong>
+                        </div>
+                    }
+                    @if(flash().containsKey("error")){
+                        <div class="alert alert-warning">
+                            <strong>@flash().get("error")</strong>
+                        </div>
+                    }
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-4">
                     <div class="well">
+                        @if(patient.getB().isPaid) {
+                            <h1><span class="blueText">Balance is currently paid</span> @patient.getMrn()</h1>
+                        }
                         <h1><span class="blueText">MRN:</span> @patient.getMrn()</h1>
                         <h1><span class="blueText">Name:</span>  @patient.getfName() @patient.getlName()</h1>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div id="margBotSmall">
-                        <a href="#"><button type="button" class="btn btn-primary text-center">Add Consultant</button></a>
-                        <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">
-                            Make Appointment</button></a>
-                    </div>
-                    <br />
-                    <a href="@routes.HomeController.makePrescription()"><button type="button" class="btn btn-primary text-center">
-                        Add Prescription</button></a>
-                    @if(patient.getChart() == null) {
-                        <a href="@routes.HomeController.admitPatient"><button type="button" class="btn btn-primary text-center">
-                            Admit Patient</button></a>
-                    } else {
-                        <a href="@routes.HomeController.discharge"><button type="button" class="btn btn-warning text-center">
-                            Discharge Patient</button></a>
-                    }
-                </div>
 
             </div>
-            @if(patient.getChart() != null) {
-                <div class="row">
-                    <div class="col-lg-12">
+            @if(patient.getSl() != null) {
+                <div class = "row">
+                    <div class ="col-lg-12">
+                        <h3>Patient is currently on waiting list for @patient.getSl.getW.getName</h3>
+                    </div>
+                </div>
+            }
+            <div class="row">
+            @if(patient.getCurrentChart() != null) {
+                    <div class="col-lg-6">
                         <h2>Chart Information</h2>
                         <hr />
+
+
+                        <table class="table table-bordered table-hover table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Chart Id</th>
+                                    <th>Ward</th>
+                                    <th>Date Of Admittance</th>
+                                    <th>Date Of Discharge</th>
+                                    <th>Meal Plan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="numeric">@patient.getBillingChart.getChartId</td>
+                                    <td>@patient.getBillingChart.getCurrentWard</td>
+                                    <td>@patient.getBillingChart.getDateOfAdmittance</td>
+                                    <td>@patient.getBillingChart.getDischargeDate</td>
+                                    <td>@patient.getBillingChart.getMealPlan</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-                <table class="table table-bordered table-hover table-condensed">
-                    <thead>
-                        <tr>
-                            <th>Chart Id</th>
-                            <th>Ward</th>
-                            <th>Date Of Admittance</th>
-                            <th>Date Of Discharge</th>
-                            <th>Meal Plan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="numeric">@patient.getChart.getChartId</td>
-                            <td>@patient.getChart.getCurrentWard</td>
-                            <td>@patient.getChart.getDateOfAdmittance</td>
-                            <td>@patient.getChart.getDischargeDate</td>
-                            <td>@patient.getChart.getMealPlan</td>
-                        </tr>
-                    </tbody>
-                </table>
-                @if(patient.getChart.getPrescriptionList.size != 0){
-                    <table class="table table-bordered table-hover table-condensed">
-                        <thead>
-                            <tr>
-                                <th>Medicine</th>
-                                <th>Dosage</th>
-                                <th>To Be Taken</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @for(pr <- patient.getChart.getPrescriptionList) {
-                            <tr>
-                                <td>@pr.getMedicine.getName</td>
-                                <td>@pr.getDosage@pr.getMedicine.getUnitOfMeasurement</td>
-                                <td>@pr.getDosage</td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
+                @if(patient.getPrescriptionList.size != 0){
+                    <div class="col-lg-6">
+                        <h2>Prescription Information</h2>
+                        <hr />
+                        <table class="table table-bordered table-hover table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Dosage</th>
+                                    <th>To Be Taken</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @for(pr <- patient.getPrescriptionList) {
+                                <tr>
+                                    <td>@pr.getMedicine.getName</td>
+                                    <td>@pr.getDosage@pr.getMedicine.getUnitOfMeasurement</td>
+                                    <td>@pr.getFrequency</td>
+                                    <td>
+                                        <a href="@routes.ConsultantController.removePrescription(pr.getPrescriptionId)" class="btn-xs btn-danger" onclick="return confirmDel();">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
                 }
             }
-            @if(patient.getAppointments.size() != 0) {
-                <div class="row">
-                    <div class="col-lg-12">
+            </div>
+            <div class="row">
+            @if(patient.getAppointmentsDue.size() != 0) {
+                    <div class="col-lg-6">
                         <h2>Appointment Information</h2>
                         <hr />
+
+
+                        <table class="table table-bordered table-hover table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Consultant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @for(a <- patient.getAppointmentsDue) {
+                                <tr>
+                                    <td class="numeric">@a.getAppDate</td>
+                                    <td>Dr. @a.getC.getLname</td>
+                                    <td><a href="@routes.HomeController.appointmentMain(a.getId)">View Appointment</a></td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-                <table class="table table-bordered table-hover table-condensed">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Consultant</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @for(a <- patient.getAppointments) {
-                        <tr>
-                            <td class="numeric">@a.getAppDate</td>
-                            <td>Dr. @a.getC.getLname</td>
-                            <td><a href="@routes.HomeController.appointmentMain(a.getId)">View Appointment</a></td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
             }
+                    <div class="col-lg-6" id="paddTop">
+                        <div class="well centered">
+                            @if(patient.getC == null) {
+                                <a href="@routes.ConsultantController.addConsultant()"><button type="button" class="btn btn-primary text-center">
+                                    Accept Patient</button></a>
+                            }
+                            @if(patient.getC != null) {
+                                <a href="@routes.HomeController.makeAppointment()"><button type="button" class="btn btn-primary text-center">
+                                    Make Appointment</button></a>
+                            }
+                            <a href="@routes.ConsultantController.makePrescription()"><button type="button" class="btn btn-primary text-center">
+                                Add Prescription</button></a>
+                            @if(patient.getCurrentChart().getDateOfAdmittance == null) {
+                                <a href="@routes.ConsultantController.admitPatient"><button type="button" class="btn btn-primary text-center">
+                                    Admit Patient</button></a>
+                            }
+                            @if(patient.getCurrentChart().getDateOfAdmittance != null && patient.getCurrentChart().getDischargeDate == null){
+                                <a href="@routes.ConsultantController.discharge"><button type="button" class="btn btn-warning text-center">
+                                    Discharge Patient</button></a>
+                            }
+                            @if(patient.getPatientRecord() != null){
+                                <a href="@routes.HomeController.viewRecord()"><button type="button" class="btn btn-primary text-center">
+                                    View Historical</button></a>
+                            }
+                        </div>
+                    </div>
+
+            </div>
 
         }
     }

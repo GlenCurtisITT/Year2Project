@@ -46,6 +46,9 @@ public class LoginController extends Controller {
         if(session("role").equals("Consultant")){
             return redirect(routes.ConsultantController.consultantHomePage());
         }
+        if(session("role").equals("ChiefAdmin")){
+            return redirect(routes.ChiefAdminController.chiefAdminHomePage());
+        }
         return redirect(controllers.routes.HomeController.homepage());
     }
 

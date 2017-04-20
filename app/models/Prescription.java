@@ -1,36 +1,65 @@
 package models;
 
 import com.avaje.ebean.Model;
-import play.db.ebean.*;
 
 import javax.persistence.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Created by conno on 27/03/2017.
  */
 @Entity
 @SequenceGenerator(name = "pre_gen", allocationSize=1, initialValue=1)
-public class Prescription extends Model {
+public class Prescription extends Model implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pre_gen")
     private String prescription_Id;
     private String frequency;
     private int dosage;
+    private boolean paid;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "medicineId")
     private Medicine medicine;
 
-    @ManyToMany(mappedBy = "prescriptionList")
-    private List<Chart> charts = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "mrn")
+    private Patient patient;
 
     public Prescription(String frequency, int dosage, Medicine medicine) {
         this.frequency = frequency;
         this.dosage = dosage;
         this.medicine = medicine;
+        paid = false;
     }
+
+    public void setPatient(Patient p) {
+        this.patient = p;
+        p.setPrescription(this);
+    }
+
+    public void setPatientOnly(Patient p){
+        this.patient = p;
+    }
+
+    public Patient getPatient(){
+        return this.patient;
+    }
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+        this.update();
+    }
+
+    public static Finder<String, Prescription> find = new Finder<String, Prescription>(Prescription.class);
 
     public String getPrescriptionId() {
         return prescription_Id;
@@ -65,7 +94,5 @@ public class Prescription extends Model {
         medicine.setP(this);
     }
 
-    public void setChart(Chart c) {
-        this.charts.add(c);
-    }
+
 }

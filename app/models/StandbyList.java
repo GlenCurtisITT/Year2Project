@@ -16,7 +16,7 @@ public class StandbyList extends Model{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "standby_gen")
     private String standbyId;
 
-    private int currentOccupancy = 0;
+    private int currentOccupancy;
 
     @OneToOne
     @JoinColumn(name = "wardId")
@@ -27,6 +27,7 @@ public class StandbyList extends Model{
 
     public StandbyList(Ward w) {
         this.w = w;
+        currentOccupancy = 0;
     }
 
     public Ward getW() {
@@ -43,14 +44,22 @@ public class StandbyList extends Model{
 
     public void addPatient(Patient p) {
         patients.add(p);
+        p.setSl(this);
         currentOccupancy++;
+        p.save();
+        this.update();
+    }
+
+    public void removePatient(Patient p){
+        patients.remove(p);
+        currentOccupancy--;
+        p.setSl(null);
+        p.update();
+        this.update();
     }
 
     public int getCurrentOccupancy() {
         return currentOccupancy;
     }
 
-    public void decrementOccupancy() {
-        this.currentOccupancy--;
-    }
 }

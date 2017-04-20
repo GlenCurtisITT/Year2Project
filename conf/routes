@@ -1,49 +1,89 @@
-# Routes
-# This file defines all application routes (Higher priority routes first)
-# ~~~~
-
-# An example controller showing a sample home page
+#HOME CONTROLLER
 GET     /                           controllers.HomeController.index
 GET     /homepage                   controllers.HomeController.homepage
-GET     /consultantHomePage         controllers.ConsultantController.consultantHomePage
-GET     /adminHomePage              controllers.AdminController.adminHomePage
-GET     /createuser                 controllers.HomeController.createUser
-GET     /addPatient                 controllers.HomeController.addPatient
-GET     /logout                     controllers.LoginController.logout
-GET     /searchPatient              controllers.HomeController.searchPatient
-GET     /admitPatient               controllers.HomeController.admitPatient
-GET     /discharge                  controllers.HomeController.discharge
 GET     /viewPatient                controllers.HomeController.viewPatient
 GET     /viewSchedule               controllers.HomeController.viewSchedule
 GET     /viewPatientByID/:mrn       controllers.HomeController.viewPatientByID(mrn: String)
-GET     /deletePatient/:mrn         controllers.AdminController.deletePatient(mrn: String)
-GET     /updatePatient/:mrn         controllers.AdminController.updatePatient(mrn: String)
-GET     /viewAppointments           controllers.ConsultantController.viewAppointments
-GET     /dischargePatient           controllers.ConsultantController.dischargePatient
+GET     /viewPatientRecord          controllers.HomeController.viewRecord
+GET     /recordBrokenEquipment/:id  controllers.HomeController.reportBrokenEquipment(id: String)
+GET     /addPatient                 controllers.HomeController.addPatient
 GET     /makeAppointment            controllers.HomeController.makeAppointment
 GET     /appointmentMain/:id        controllers.HomeController.appointmentMain(id: String)
 GET     /cancelAppointment/:id      controllers.HomeController.cancelAppointment(id:String)
-GET     /makePrescription           controllers.HomeController.makePrescription
-GET     /viewMedicine               controllers.HomeController.viewMedicine
-GET     /addMedicine                controllers.HomeController.addMedicine
-GET     /viewFullLog                controllers.AdminController.viewFullLog
-GET     /deleteLogFile              controllers.AdminController.deleteLogFile
-POST    /admitPatientSubmit         controllers.HomeController.admitPatientSubmit
-POST    /searchByMRN                controllers.HomeController.searchByMRN
-POST    /searchByLastName           controllers.HomeController.searchByLastName
-POST    /searchArchiveByMRN         controllers.HomeController.searchArchiveByMRN
-POST    /rescheduleAppointment/:id  controllers.HomeController.rescheduleAppointment(id:String)
-POST    /addUserSubmit              controllers.HomeController.addUserSubmit
-POST    /loginSubmit                controllers.LoginController.loginSubmit
+GET     /unauthorised               controllers.HomeController.unauthorised
+GET     /addChiefAdmin              controllers.HomeController.addChiefAdmin
 POST    /addPatientSubmit           controllers.HomeController.addPatientSubmit
 POST    /addAppointmentSubmit       controllers.HomeController.addAppointmentSubmit
-POST    /makePrescriptionSubmit     controllers.HomeController.makePrescriptionSubmit
-POST    /addMedicineSubmit          controllers.HomeController.addMedicineSubmit
+POST    /addChiefAdminSubmit        controllers.HomeController.addChiefAdminSubmit
+POST    /rescheduleAppointment/:id  controllers.HomeController.rescheduleAppointment(id:String)
 
-# An example controller showing how to use dependency injection
+#CONSULTANT CONTROLLER
+GET     /consultantHomePage         controllers.ConsultantController.consultantHomePage
+GET     /makePrescription           controllers.ConsultantController.makePrescription
+GET     /viewMedicine               controllers.ConsultantController.viewMedicine
+GET     /discharge                  controllers.ConsultantController.discharge
+GET     /viewAppointments           controllers.ConsultantController.viewAppointments
+GET     /admitPatient               controllers.ConsultantController.admitPatient
+GET     /dischargePatient           controllers.ConsultantController.dischargePatient
+GET     /removePrescription/:id     controllers.ConsultantController.removePrescription(id: String)
+GET     /addConsultant              controllers.ConsultantController.addConsultant
+GET     /completeAppointment/:id    controllers.ConsultantController.completeAppointment(id:String)
+GET     /declareSpecialisation      controllers.ConsultantController.declareSpecialisation
+POST    /makePrescriptionSubmit     controllers.ConsultantController.makePrescriptionSubmit
+POST    /admitPatientSubmit         controllers.ConsultantController.admitPatientSubmit
+POST    /declareSecialisationSubmit controllers.ConsultantController.declareSecialisationSubmit
+
+#ADMIN CONTROLLER
+GET     /adminHomePage              controllers.AdminController.adminHomePage
+GET     /deletePatient/:mrn         controllers.AdminController.deletePatient(mrn: String)
+GET     /updatePatient/:mrn         controllers.AdminController.updatePatient(mrn: String)
+GET     /genBill                    controllers.AdminController.genBill
+GET     /payBill                    controllers.AdminController.payBill
+GET     /addConsultant/:idNum       controllers.AdminController.addConsultant(idNum: String)
+GET     /listConsultants            controllers.AdminController.listConsultants
+GET     /viewFullLog                controllers.AdminController.viewFullLog
+GET     /deleteLogFile              controllers.AdminController.deleteLogFile
+GET     /updatePatient/:mrn         controllers.AdminController.updatePatient(mrn: String)
+POST    /updatePatientSubmit        controllers.AdminController.updatePatientSubmit
+
+#SEARCH CONTROLLER
+GET     /searchPatient              controllers.SearchController.searchPatient
+POST    /searchByMRN                controllers.SearchController.searchByMRN
+POST    /searchByLastName           controllers.SearchController.searchByLastName
+POST    /searchArchiveByMRN         controllers.SearchController.searchArchiveByMRN
+POST    /searchByEmail              controllers.SearchController.searchByEmail
+POST    /searchByMedicationName     controllers.SearchController.searchByMedicationName
+
+#CHIEF ADMIN CONTROLLER
+GET     /createuser                 controllers.ChiefAdminController.createUser
+GET     /chiefAdminHomePage         controllers.ChiefAdminController.chiefAdminHomePage
+GET     /viewUsers                  controllers.ChiefAdminController.viewUsers
+GET     /updateuser/:id             controllers.ChiefAdminController.updateUser(id: String)
+GET     /viewMedication             controllers.ChiefAdminController.viewMedication
+GET     /createMedication           controllers.ChiefAdminController.createMedication
+GET     /deleteMedication/:id       controllers.ChiefAdminController.deleteMedication(id: String)
+GET     /updateMedication/:id       controllers.ChiefAdminController.updateMedication(id: String)
+GET     /viewWards                  controllers.ChiefAdminController.viewWards
+GET     /createWard                 controllers.ChiefAdminController.createWard
+GET     /updateWard/:id             controllers.ChiefAdminController.updateWard(id: String)
+GET     /viewEquipment              controllers.ChiefAdminController.viewEquipment
+GET     /createEquipment            controllers.ChiefAdminController.createEquipment
+GET     /updateEquipment/:id        controllers.ChiefAdminController.updateEquipment(id: String)
+POST    /updateUserSubmit           controllers.ChiefAdminController.updateUserSubmit
+POST    /updatePasswordSubmit       controllers.ChiefAdminController.updatePasswordSubmit
+POST    /createMedicationSubmit     controllers.ChiefAdminController.createMedicationSubmit
+POST    /updateMedicationSubmit     controllers.ChiefAdminController.updateMedicationSubmit
+POST    /createWardSubmit           controllers.ChiefAdminController.createWardSubmit
+POST    /updateWardSubmit           controllers.ChiefAdminController.updateWardSubmit
+POST    /addUserSubmit              controllers.ChiefAdminController.addUserSubmit
+POST    /createEquipmentSubmit      controllers.ChiefAdminController.createEquipmentSubmit
+POST    /updateEquipmentSubmit      controllers.ChiefAdminController.updateEquipmentSubmit
+
+#LOGIN CONTROLLER
+GET     /logout                     controllers.LoginController.logout
+POST    /loginSubmit                controllers.LoginController.loginSubmit
+
+#JAVA PLAY ROUTES
 GET     /count                      controllers.CountController.count
-# An example controller showing how to write asynchronous code
 GET     /message                    controllers.AsyncController.message
-
-# Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

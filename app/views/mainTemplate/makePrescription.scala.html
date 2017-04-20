@@ -2,29 +2,34 @@
 @if(user.checkRole().equals("Consultant")){
   @consultantPages.mainConsultant("Write Prescription", user) {
     @if(error != null){
-      <div class="alert alert-warning">
-        <strong>@error</strong>
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="alert alert-warning">
+            <strong>@error</strong>
+          </div>
+        </div>
       </div>
     }
     <div class="row">
-      <div class="col-lg-12">
-        <h1>MRN: @patient.getMrn()</h1>
-        <h1>Name: @patient.getfName() @patient.getlName()</h1>
+      <div class="col-lg-4">
+        <div class="well">
+          <h1><span class="blueText">MRN:</span> @patient.getMrn()</h1>
+          <h1><span class="blueText">Name:</span> @patient.getfName() @patient.getlName()</h1>
+        </div>
+
         <label>Please enter prescription details</label>
-        <form method = "post" action="@routes.HomeController.makePrescriptionSubmit()" class="form-horizontal">
-          <select id="medicineId" name="medicineId">
+        <form method = "post" action="@routes.ConsultantController.makePrescriptionSubmit()" class="form-horizontal">
+          <select id="medicineId" name="medicineId" class="form-control">
             <option value="select">--- Please Select Medicine ---</option>
             @for(m <- medicinelist){
               <option value="@m.getMedicineId">@m.getName</option>
             }
           </select>
           <input class="form-control" placeholder="Dosage" name="dosage" id="srch-term" type="text">
-            <input class="form-control" placeholder="How often to be taken" name="frequency" id="srch-term" type="text">
-            <div class="actions">
+            <input class="form-control" placeholder="How often to be taken" name="frequency" id="margBot" type="text">
             <input type="submit" value="Assign Prescription" class="btn btn-primary">
-                <a href="@routes.HomeController.viewMedicine()"><button type="button" class="btn btn-primary text-center">View Medicine</button></a>
+                <a href="@routes.ConsultantController.viewMedicine()"><button type="button" class="btn btn-primary text-center">View Medicine</button></a>
                 <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Cancel</button></a>
-          </div>
         </form>
 
   }

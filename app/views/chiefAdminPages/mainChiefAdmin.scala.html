@@ -1,0 +1,101 @@
+@(title: String, user: models.users.User)(content: Html)
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        @* Here's where we render the page title `String`. *@
+        <title>@title</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        <link rel='stylesheet' href='http://fullcalendar.io/js/fullcalendar-2.2.3/fullcalendar.css' />
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/bootstrap.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/navbar.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script><!--Make Jscript + bootstrap js work -->
+        <script src="@routes.Assets.versioned("javascripts/bootstrap.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("javascripts/main.js")" type="text/javascript"></script>
+        <script src='http://fullcalendar.io/js/fullcalendar-2.2.3/lib/moment.min.js'></script>
+        <script src='http://fullcalendar.io/js/fullcalendar-2.2.3/fullcalendar.min.js'></script>
+
+    </head>
+    <body>
+        <div id="navbar-wrapper">
+            <header>
+                <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href="@routes.ChiefAdminController.chiefAdminHomePage()">Hospital Patient Management System</a>
+                        </div>
+                        <div id="navbar-collapse" class="collapse navbar-collapse">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="dropdown">
+                                    <a id="user-profile" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-right"></i>
+                                        @if(user != null){
+                                            @user.getFname @user.getLname
+                                        }else{
+                                            Blank
+                                        }
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-block" role="menu">
+                                        <li><a href="@routes.LoginController.logout()"><i class="fa fa-caret-right"></i> Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+        </div>
+        <div id="wrapper">
+            <div id="sidebar-wrapper">
+                <aside id="sidebar">
+                    <ul id="sidemenu" class="sidebar-nav">
+                        <li>
+                            <a href="@routes.ChiefAdminController.chiefAdminHomePage()">
+                                <span class="sidebar-icon"><i class="fa fa-home"></i></span>
+                                <span class="sidebar-title">Home</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@routes.ChiefAdminController.viewUsers()">
+                                <span class="sidebar-icon"><i class="fa fa-users"></i></span>
+                                <span class="sidebar-title">Users</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@routes.ChiefAdminController.viewMedication()">
+                                <span class="sidebar-icon"><i class="fa fa-medkit"></i></span>
+                                <span class="sidebar-title">Medications</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@routes.ChiefAdminController.viewWards">
+                                <span class="sidebar-icon"><i class="fa fa-building"></i></span>
+                                <span class="sidebar-title">Wards</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@routes.ChiefAdminController.viewEquipment()">
+                                <span class="sidebar-icon"><i class="fa fa-cube"></i></span>
+                                <span class="sidebar-title">Equipment</span>
+                            </a>
+                        </li>
+                    </ul>
+                </aside>
+            </div>
+            <main id="page-content-wrapper" role="main">
+            @content
+            </main>
+        </div>
+
+
+    </body>
+</html>

@@ -18,6 +18,6 @@ public class AuthAdmin extends Action.Simple {
             }
         }
         ctx.flash().put("error", "Admin Login Required");
-        return CompletableFuture.completedFuture(redirect(routes.HomeController.index()));
+        return CompletableFuture.completedFuture(redirect(routes.HomeController.unauthorised()));
     }
 }

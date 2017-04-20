@@ -4,16 +4,14 @@ import javax.persistence.*;
 import com.avaje.ebean.Model;
 import models.users.Consultant;
 import play.data.format.Formats;
-import scala.App;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by wdd on 03/03/17.
@@ -37,7 +35,7 @@ public class Patient extends Model implements Serializable{
     private String nokAddress;
     private String nokNumber;
     private Boolean medicalCard;
-    private String prevIllnesses;
+    private String illness;
 
     @ManyToOne()    //signifies relationship with Consultant table
     @JoinColumn(name = "idNum")    //name of column which links tables
@@ -54,8 +52,18 @@ public class Patient extends Model implements Serializable{
     @OneToMany(mappedBy = "p")
     private List<Appointment> appointments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "p")
+    private List<Chart> charts = new ArrayList<>();
+
+    @OneToMany (mappedBy = "patient")
+    private List<Prescription> prescriptionList = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "billId")
+    private Bill b;
+
     @OneToOne(mappedBy = "p")
-    private Chart chart;
+    private PatientRecord patientRecord;
 
     public Patient() {
 
@@ -77,28 +85,53 @@ public class Patient extends Model implements Serializable{
         this.nokAddress = nokAddress;
         this.nokNumber = nokNumber;
         this.medicalCard = medicalCard;
-        this.prevIllnesses = prevIllness;
+        this.illness = prevIllness;
         this.c = null;
+
     }
 
     public static Patient create(String fname, String lname, Boolean gender, String ppsNumber, Date dob, String address, String email, String homePhone, String mobilePhone, String nokFName, String nokLName, String nokAddress, String nokNumber, boolean medicalCard, String prevIllness){
         Patient patient = new Patient(fname, lname, gender, ppsNumber, dob, address, email, homePhone, mobilePhone, nokFName, nokLName, nokAddress, nokNumber, medicalCard, prevIllness);
         patient.save();
+        Chart chart = new Chart(patient);
+        Bill b = new Bill(patient);
+        patient.setChart(chart);
+        patient.setB(b);
+        b.save();
+        chart.save();
+        patient.update();
         return patient;
+    }
+
+    public void assignConsultant(Consultant c){
+        this.c = c;
+        c.addPatient(this);
+        this.save();
+        c.save();
+    }
+
+    public Consultant getC() {
+        return c;
     }
 
     public void popAppointments(){
         appointments.clear();
         List<Appointment> appoints = Appointment.findAll();
         for(Appointment a: appoints){
-            if(a.getP().getMrn().equals(this.getMrn())){
+            if(a.getP() != null){
+                if(a.getP().getMrn().equals(this.mrn))
                 appointments.add(a);
             }
         }
+        this.update();
     }
 
     public String getFormattedDOB(Date a){
         return new SimpleDateFormat("dd MMM yyyy").format(a);
+    }
+
+    public String getFormattedDOBForUpdate(Date a){
+        return new SimpleDateFormat("yyyy-dd-MM").format(a);
     }
 
     public static Finder<String, Patient> find = new Finder<String, Patient>(Patient.class);
@@ -117,7 +150,7 @@ public class Patient extends Model implements Serializable{
     private static String genMrn(){
         Random rand = new Random();
         List<Patient> allpatients = findAll();
-        List<Patient> archivedPatients = Patient.readAllArchive();
+        List<Patient> archivedPatients = Patient.ReadAllPatientArchive();
         int randNum = 0;
         boolean check = true;
         do{
@@ -140,39 +173,7 @@ public class Patient extends Model implements Serializable{
         return numberAsString;
     }
 
-    public void serialize() throws IOException {
-        final String FILENAME = "public/Files/patients.gz";
-        try(FileOutputStream fo = new FileOutputStream(FILENAME);
-            GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
-            ObjectOutputStream oo = new ObjectOutputStream(gzipOut);) {
-            oo.writeObject(this);
-        }
-    }
-
-    public static Patient readArchive(String mrn){
-        final String FILENAME = "public/Files/patients.gz";
-        Patient p = new Patient();
-        Patient patientResult = null;
-        try (FileInputStream fin = new FileInputStream(FILENAME);
-             GZIPInputStream gis = new GZIPInputStream(fin);
-             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
-            while (true) {
-                p = (Patient) ois.readObject();
-                if(p.getMrn().equals(mrn)){
-                    patientResult = p;
-                    patientResult.insert();
-                    return patientResult;
-                }
-            }
-        }catch (ClassNotFoundException e) {
-            patientResult = null;
-        }catch (IOException e) {
-            patientResult = null;
-        }
-        return null;
-    }
-
-    public static List<Patient> readAllArchive(){
+    public static List<Patient> ReadAllPatientArchive(){
         final String FILENAME = "public/Files/patients.gz";
         List<Patient> patients = new ArrayList<>();
         try (FileInputStream fin = new FileInputStream(FILENAME);
@@ -189,6 +190,18 @@ public class Patient extends Model implements Serializable{
             patients = null;
         }
         return patients;
+    }
+
+    public List<Prescription> getPrescriptionList() {
+        return prescriptionList;
+    }
+
+    public void setPrescriptionList(List<Prescription> p){
+        prescriptionList = p;
+    }
+
+    public void setPrescription(Prescription p) {
+        this.prescriptionList.add(p);
     }
 
     public void removeWard(){
@@ -215,12 +228,52 @@ public class Patient extends Model implements Serializable{
         this.gender = gender;
     }
 
-    public Chart getChart() {
-        return chart;
+    public Chart getCurrentChart() {
+        for(Chart c : Chart.findAll()){
+            if(c.getP() != null){
+                charts.add(c);
+            }
+        }
+        this.update();
+        List<Chart> chartList = charts.stream().filter(c -> c.getDischargeDate() == null).collect(toList());
+        return chartList.get(0);
+    }
+
+    public Chart getBillingChart() {
+        List<Chart> billingCharts = charts.stream().filter(c -> c.getDateOfAdmittance() != null).collect(toList());
+
+        if(billingCharts.size() != 0) {
+            return billingCharts.get(billingCharts.size() - 1);
+        }
+        else{
+            return getCurrentChart();
+        }
+    }
+
+    public List<Chart> getAllBillingCharts() {
+        return charts.stream().filter(c -> c.getDischargeDate() != null).collect(toList());
+    }
+
+
+
+    public List<Chart> getCharts(){
+        return charts;
     }
 
     public void setChart(Chart chart) {
-        this.chart = chart;
+        this.charts.add(chart);
+    }
+
+    public void setChartList(List<Chart> charts){
+        this.charts = charts;
+    }
+
+    public Bill getB() {
+        return b;
+    }
+
+    public void setB(Bill b) {
+        this.b = b;
     }
 
     public void setWard(Ward ward) {
@@ -235,8 +288,20 @@ public class Patient extends Model implements Serializable{
         return mrn;
     }
 
-    public List<Appointment> getAppointments() {
+    public List<Appointment> getAppointmentsDue() {
+        return appointments.stream().filter( a -> !a.isComplete()).collect(toList());
+    }
+
+    public List<Appointment> getAllAppointments(){
         return appointments;
+    }
+
+    public List<Appointment> getCompletedAppointments() {
+        return appointments.stream().filter( a -> a.isComplete()).collect(toList());
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
     }
 
     public String getfName() {
@@ -343,11 +408,19 @@ public class Patient extends Model implements Serializable{
         this.medicalCard = medicalCard;
     }
 
-    public String getPrevIllnesses() {
-        return prevIllnesses;
+    public String getIllness() {
+        return illness;
     }
 
-    public void setPrevIllnesses(String prevIllnesses) {
-        this.prevIllnesses = prevIllnesses;
+    public void setIllness(String illness) {
+        this.illness = illness;
+    }
+
+    public PatientRecord getPatientRecord() {
+        return patientRecord;
+    }
+
+    public void setPatientRecord(PatientRecord patientRecord) {
+        this.patientRecord = patientRecord;
     }
 }

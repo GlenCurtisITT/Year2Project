@@ -1,6 +1,7 @@
 package models;
 import com.avaje.ebean.Model;
 
+import java.io.Serializable;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
@@ -14,15 +15,23 @@ import javax.persistence.*;
  */
 @Entity
 @SequenceGenerator(name = "app_gen", allocationSize=1, initialValue=1)
-public class Appointment extends Model {
+public class Appointment extends Model implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "app_gen")
     private String id;
     @Formats.DateTime(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date appDate = new Date();
+
+    private boolean complete;
+
+    @ManyToOne()
+    @JoinColumn(name = "recordId")
+    private PatientRecord patientRecord;
+
     @ManyToOne()
     @JoinColumn(name = "mrn")
     private Patient p;
+
     @ManyToOne()
     @JoinColumn(name = "idNum")
     private Consultant c;
@@ -34,12 +43,14 @@ public class Appointment extends Model {
         this.setAppDate(appDate);
         this.c = c;
         this.p = p;
+        complete = false;
     }
 
     public Appointment(Consultant c, Patient p){
         setAppDate(new Date());
         this.c = c;
         this.p = p;
+        complete = false;
     }
 
     public static Appointment create(Appointment a){
@@ -69,6 +80,24 @@ public class Appointment extends Model {
             formattedDates.add(date);
         }
         return formattedDates;
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void complete() {
+        this.complete = true;
+        this.update();
+        p.update();
+    }
+
+    public PatientRecord getPatientRecord() {
+        return patientRecord;
+    }
+
+    public void setPatientRecord(PatientRecord patientRecord) {
+        this.patientRecord = patientRecord;
     }
 
     public String getId() {

@@ -16,7 +16,7 @@ import java.util.zip.GZIPOutputStream;
  */
 @Entity
 @SequenceGenerator(name = "chart_gen", allocationSize=1, initialValue=1)
-public class Chart extends Model {
+public class Chart extends Model implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chart_gen")
     private int chartId;
@@ -27,19 +27,20 @@ public class Chart extends Model {
     private Date dischargeDate;
     private String mealPlan;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "mrn")
     private Patient p;
 
-    @OneToOne
-    @JoinColumn(name = "billId")
-    private Bill b;
-
-    @ManyToMany
-    @JoinTable(name = "CHARTPRESCRIPTION")
-    private List<Prescription> prescriptionList = new ArrayList<>();
+    @ManyToOne()
+    @JoinColumn(name = "recordId")
+    private PatientRecord patientRecord;
 
     public Chart() {
+    }
+
+    public Chart(Patient p) {
+        this.p = p;
+        this.dischargeDate = null;
     }
 
     public Chart(String currentWard, Date dateOfAdmittance, String mealPlan, Patient p) {
@@ -50,58 +51,25 @@ public class Chart extends Model {
         this.p = p;
     }
 
-    public static Finder<String, Ward> find = new Finder<String, Ward>(Ward.class);
-
-    public static List<Ward> findAll(){
-        return Ward.find.all();
+    public static Finder<String, Chart> find = new Finder<String, Chart>(Chart.class);
+    public static List<Chart> findAll(){
+        return Chart.find.all();
     }
 
-    public void serialize() throws IOException{
-        final String CHARTFILE = "public/Files/charts.gz";
-        try(FileOutputStream fo = new FileOutputStream(CHARTFILE);
-            GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
-            ObjectOutputStream oo = new ObjectOutputStream(gzipOut);){
-            oo.writeObject(this);
-        }
+    public PatientRecord getPatientRecord() {
+        return patientRecord;
     }
 
-    public static Chart readArchive(String mrn){
-        final String CHARTFILE = "public/Files/charts.gz";
-        Chart c = new Chart();
-        Chart chartResult = null;
-        try (FileInputStream fin = new FileInputStream(CHARTFILE);
-             GZIPInputStream gis = new GZIPInputStream(fin);
-             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
-            while (true) {
-                c = (Chart) ois.readObject();
-                if(c.getP().getMrn().equals(mrn)){
-                    chartResult = c;
-                    chartResult.insert();
-                    return chartResult;
-                }
-            }
-        }catch (ClassNotFoundException e) {
-            chartResult = null;
-        }catch (IOException e) {
-            chartResult = null;
-        }
-        return null;
+    public void setPatientRecord(PatientRecord patientRecord) {
+        this.patientRecord = patientRecord;
     }
 
-    public Bill getB() {
-        return b;
+    public void setDateOfAdmittance(Date dateOfAdmittance) {
+        this.dateOfAdmittance = dateOfAdmittance;
     }
 
-    public void setB(Bill b) {
-        this.b = b;
-    }
-
-    public List<Prescription> getPrescriptionList() {
-        return prescriptionList;
-    }
-
-    public void setPrescription(Prescription p) {
-        this.prescriptionList.add(p);
+    public void setMealPlan(String mealPlan) {
+        this.mealPlan = mealPlan;
     }
 
     public void setCurrentWard(String currentWard) {

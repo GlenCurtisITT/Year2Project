@@ -1,0 +1,88 @@
+@(user: models.users.User, patient: models.Patient)
+@if(user.checkRole().equals("Admin")) {
+  @adminPages.mainAdmin("Update Patient", user) {
+    @if(flash().containsKey("error")) {
+      <div class="row">
+        <div class="col-xs-5">
+          <div class="alert alert-warning">
+            <strong>@flash().get("error")</strong>
+          </div>
+        </div>
+      </div>
+    }
+    <div class="row">
+      <form method="post" action="@routes.AdminController.updatePatientSubmit" class="form-horizontal">
+        <div class="col-lg-4" id="margBot">
+          <label>First Name</label>
+          <input type="text" name="fname" value="@patient.getfName()" class="form-control" />
+
+          <label>Last Name</label>
+          <input type="text" name="lname" value="@patient.getlName()" class="form-control" />
+
+          <label>Gender</label>
+          <select name="gender" class="form-control">
+            @if(patient.getGender == true){
+              <option value="true">Male</option>
+              <option value="false">Female</option>
+            }else{
+              <option value="false">Female</option>
+              <option value="true">Male</option>
+            }
+          </select>
+
+          <label>PPS Number</label>
+          <input type="text" name="ppsNumber" value="@patient.getPpsNumber" class="form-control" />
+
+          <label>Date Of Birth</label>
+          <input type="date" name="date" value="@patient.getFormattedDOBForUpdate(patient.getDob)" class="form-control" />
+
+          <label>Address</label>
+          <input type="text" name="address" value="@patient.getAddress" class="form-control" />
+
+          <label>Email</label>
+          <input type="text" name="email" value="@patient.getEmail" class="form-control" />
+
+          <label>Home Phone No.</label>
+          <input type="text" name="homePhone" value="@patient.getHomePhone" class="form-control" />
+        </div>
+        <div class="col-lg-4">
+
+          <label>Mobile Phone No.</label>
+          <input type="text" name="mobileNum" value="@patient.getMobilePhone"  class="form-control" />
+
+          <label>Next of Kin First Name</label>
+          <input type="text" name="nokFname" value="@patient.getNokFName" class="form-control" />
+
+          <label>Next of Kin Last Name</label>
+          <input type="text" name="nokLname" value="@patient.getNokLName" class="form-control" />
+
+          <label>Next of Kin Address</label>
+          <input type="text" name="nokAdd" value="@patient.getNokAddress" class="form-control" />
+
+          <label>Next of Kin Contact Number</label>
+          <input type="text" name="nokPhone" value="@patient.getNokNumber" class="form-control" />
+
+          <label>Does the patient have a medical card?</label>
+          <select name="medicalCard" class="form-control">
+            @if(patient.getMedicalCard == true){
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            }else{
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            }
+          </select>
+
+          <label>Illness</label>
+          <input type="text" name="illness" value="@patient.getIllness" class="form-control" />
+
+          <input type="hidden" name="mrn" value="@patient.getMrn" class="form-control" />
+        </div>
+          <div class="col-lg-12">
+            <input type="submit" value="Update Patient" class="btn btn-primary">
+          </div>
+      </form>
+    </div>
+  }
+}
+

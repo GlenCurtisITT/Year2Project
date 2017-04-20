@@ -21,7 +21,7 @@ public class Medicine extends Model {
     private double pricePerUnit;
     private String unitOfMeasurement;
 
-    @OneToOne(mappedBy = "medicine")
+    @OneToMany(mappedBy = "medicine")
     private Prescription p;
 
     public Medicine(String name, String sideAffects, String ingredients, double pricePerUnit, String unitOfMeasurement) {
@@ -38,6 +38,9 @@ public class Medicine extends Model {
         return Medicine.find.all();
     }
 
+    public String formattedPrice(){
+        return String.format("€%.2f", pricePerUnit);
+    }
 
     public String getUnitOfMeasurement() {
         return unitOfMeasurement;

@@ -1,0 +1,19 @@
+@(consultant: models.users.Consultant)
+@consultantPages.mainConsultant("Update Specialisation", consultant) {
+  <div class="row">
+    <div class="col-lg-3">
+      <h2>Update Specialisation</h2>
+      <hr />
+      <form method="post" action="@routes.ConsultantController.declareSecialisationSubmit()" class="form-horizontal">
+        <input type="hidden" name="id" value="@consultant.getIdNum" />
+        @if(consultant.getSpecialization == null){
+          <input type="text" name="specialisation" placeholder="Enter Specialisation" class="form-control" id="margBot"/>
+        }else{
+          <input type="text" name="specialisation" value="@consultant.getSpecialization" placeholder="Enter Specialisation" id="margBot" />
+        }
+
+        <input type="submit" value="Update Specialisation" class="btn btn-primary" />
+      </form>
+    </div>
+  </div>
+}

@@ -5,6 +5,7 @@ import models.*;
 import java.util.*;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 /**
  * Created by conno on 11/03/2017.
@@ -13,7 +14,7 @@ import java.util.Date;
 @DiscriminatorValue("Consultant")
 @PrimaryKeyJoinColumn(referencedColumnName = "idNum")
 public class Consultant extends User{
-    private String specialization = null;
+    private String specialization;
 
     @OneToMany(mappedBy = "c")
     private List<Patient> patients = new ArrayList<>();
@@ -24,6 +25,7 @@ public class Consultant extends User{
 
     public Consultant(String fname, String lname, String phoneNumber, String address, String ppsNumber, Date dateOfBirth, String email, String password) {
         super(fname, lname, phoneNumber, address, ppsNumber, dateOfBirth, email, password);
+        specialization = null;
     }
 
     public static Finder<String, Consultant> find = new Finder<String, Consultant>(Consultant.class);
@@ -46,10 +48,14 @@ public class Consultant extends User{
             return find.byId(id);
     }
 
+    public void addPatient(Patient p){
+        patients.add(p);
+    }
+
     public List<Date> checkAppointments(){
         ArrayList<Date> appointmentDates = new ArrayList<>();
         if(appointments.size() != 0){ //no existing appointments for this consultant
-            for(Appointment a : appointments){
+            for(Appointment a : appointments.stream().filter(a ->!a.isComplete()).collect(Collectors.toList())){
                 appointmentDates.add(a.getAppDate());
             }
         }else{
@@ -68,6 +74,7 @@ public class Consultant extends User{
                 appointments.add(a);
             }
         }
+        this.update();
     }
     public String getSpecialization() {
         return specialization;
@@ -78,6 +85,6 @@ public class Consultant extends User{
     }
 
     public List<Appointment> getAppointments() {
-        return appointments;
+        return appointments.stream().filter(a ->!a.isComplete()).collect(Collectors.toList());
     }
 }

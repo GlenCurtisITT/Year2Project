@@ -1,0 +1,23 @@
+@(user: models.users.User, equipment: models.Equipment)
+@chiefAdminPages.mainChiefAdmin("Add Medication", user) {
+  @if(flash().containsKey("error")) {
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="alert alert-warning">
+          <strong>@flash().get("error")</strong>
+        </div>
+      </div>
+    </div>
+  }
+  <div class="row">
+    <div class="col-lg-3">
+      <h2>Add New Equipment</h2>
+      <hr />
+      <form method="post" action="@routes.ChiefAdminController.createEquipmentSubmit()" class="form-horizontal">
+
+        <label>Name</label>
+        <input type="text" name="name" value="@equipment.getType" class="form-control" id="margBot" />
+
+        <input type="submit" value="Add Equipment" class="btn btn-primary" />
+      </form>
+}
