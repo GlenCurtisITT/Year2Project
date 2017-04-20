@@ -55,41 +55,7 @@ public class Chart extends Model implements Serializable{
     public static List<Chart> findAll(){
         return Chart.find.all();
     }
-/*
-    public void serialize() throws IOException{
-        final String CHARTFILE = "public/Files/charts.gz";
-        try(FileOutputStream fo = new FileOutputStream(CHARTFILE);
-            GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
-            ObjectOutputStream oo = new ObjectOutputStream(gzipOut);){
-            oo.writeObject(this);
-        }
-    }
 
-    public static List<Chart> readArchive(String mrn){
-        final String CHARTFILE = "public/Files/charts.gz";
-        List<Chart> chartResult = new ArrayList<>();
-        Chart c = null;
-        try (FileInputStream fin = new FileInputStream(CHARTFILE);
-             GZIPInputStream gis = new GZIPInputStream(fin);
-             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
-            while (true) {
-                c = (Chart) ois.readObject();
-                if(c.getP().getMrn().equals(mrn)){
-                    chartResult.add(c);
-                    c.insert();
-                }
-            }
-        }catch (ClassNotFoundException e) {
-            chartResult = null;
-        }catch (EOFException e) {
-            return chartResult;
-        }catch (IOException e) {
-            chartResult = null;
-        }
-
-        return chartResult;
-    }
-*/
     public PatientRecord getPatientRecord() {
         return patientRecord;
     }

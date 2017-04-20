@@ -77,16 +77,13 @@ public class AdminController extends Controller{
                 }
                 pr.delete();
             }
-            for(Chart chart: p.getCharts()) {
-                Serializer.serialize(chart);
-                chart.delete();
-            }
             if (p.getPrescriptionList().size() != 0) {
                 for(Prescription prescription : p.getPrescriptionList()){
                     Serializer.serialize(prescription);
                     prescription.delete();
                 }
             }
+            p.getCurrentChart().delete();
             p.delete();
             b.delete();
         } catch(FileNotFoundException e) {

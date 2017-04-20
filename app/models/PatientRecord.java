@@ -38,28 +38,22 @@ public class PatientRecord extends Model implements Serializable {
         p.setPatientRecord(pr);
         pr.save();
         if(p.getCompletedAppointments().size() != 0){
-            List<Appointment> tempApps = p.getCompletedAppointments();
-            for(Appointment a : tempApps){
+            p.getCompletedAppointments().stream().forEach(a -> {
+                pr.addAppointment(a);
                 a.setP(null);
                 a.setPatientRecord(pr);
-                pr.getAppointments().add(a);
                 p.getAllAppointments().remove(a);
                 a.update();
-                pr.update();
-            }
+            }); //appointments which are completed are  paid and added to record
         }
         if(p.getAllBillingCharts().size() != 0){
-            List<Chart> tempCharts = p.getAllBillingCharts();
-            for(Chart c : tempCharts){
-                if (c.getDischargeDate() != null) {
-                    c.setPatientRecord(pr);
-                    pr.getCharts().add(c);
-                    p.getCharts().remove(c);
-                    c.setP(null);
-                    c.update();
-                    pr.update();
-                }
-            }
+            p.getAllBillingCharts().stream().forEach(c -> {
+                pr.addChart(c);
+                c.setP(null);
+                c.setPatientRecord(pr);
+                p.getCharts().remove(c);
+                c.update();
+            });  //charts to be paid and added to record
         }
         pr.update();
         p.update();
@@ -91,6 +85,18 @@ public class PatientRecord extends Model implements Serializable {
 
     public void setP(Patient p) {
         this.p = p;
+    }
+
+    public void addAppointment(Appointment a){
+        if(!appointments.contains(a)) {
+            appointments.add(a);
+        }
+    }
+
+    public void addChart(Chart c){
+        if(!charts.contains(c)) {
+            charts.add(c);
+        }
     }
 
     public List<Appointment> getAppointments() {

@@ -114,7 +114,7 @@ public class ConsultantController extends Controller {
         Patient p = a.getP();
         p.getB().resetPaidStatus();
         a.complete();
-        p.getB().noticeItem();
+        p.getB().calcBill();
         String log ="Appointment for Patient " + p.getfName() + " " + p.getlName() + "(" + p.getMrn() + ") was completed by Dr." + c.getLname();
         LogFile.writeToLog(log);
         flash("success", log);

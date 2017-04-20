@@ -199,3 +199,51 @@
 [19/04/2017 14:37:20] - Consultant Glen Connolly admitted patient test test to ward Burns Unit
 [19/04/2017 14:37:26] - Patient test test(10276081) was discharged from Burns Unit by Dr.ConnollyID (51428290)
 [19/04/2017 15:20:42] - Bill has been paid for test test(10276081)
+[19/04/2017 18:54:56] - Dr. Connolly(32795725) assigned to patient(11111215)
+[19/04/2017 18:55:09] - Consultant Glen Connolly made an appointment for John Jacobs for the 10 Oct 2018 at 06:00 AM
+[19/04/2017 18:55:18] - Consultant Glen Connolly admitted patient John Jacobs to ward Maternity Ward
+[19/04/2017 18:55:25] - Patient John Jacobs(11111215) was discharged from Maternity Ward by Dr.ConnollyID (32795725)
+[19/04/2017 18:56:07] - Bill has been paid for John Jacobs(11111215)
+[19/04/2017 18:56:39] - Appointment for Patient John Jacobs(11111215) was completed by Dr.Connolly
+[19/04/2017 18:57:08] - Bill has been paid for John Jacobs(11111215)
+[20/04/2017 09:45:02] - Dr. Connolly(32795725) assigned to patient(22222222)
+[20/04/2017 09:45:18] - Consultant Glen Connolly admitted patient Jean Janson to ward Intensive Care Unit
+[20/04/2017 09:45:23] - Patient Jean Janson(22222222) was discharged from Intensive Care Unit by Dr.ConnollyID (32795725)
+[20/04/2017 09:45:39] - Consultant Glen Connolly admitted patient Jean Janson to ward Psychiatric Ward
+[20/04/2017 09:45:45] - Patient Jean Janson(22222222) was discharged from Psychiatric Ward by Dr.ConnollyID (32795725)
+[20/04/2017 09:46:04] - Consultant Glen Connolly made an appointment for Jean Janson for the 21 Apr 2017 at 06:00 AM
+[20/04/2017 09:46:12] - Appointment for Patient Jean Janson(22222222) was completed by Dr.Connolly
+[20/04/2017 09:46:30] - Bill has been paid for Jean Janson(22222222)
+[20/04/2017 10:01:20] - Consultant Glen Connolly made an appointment for Jean Janson for the 13 Aug 2017 at 06:00 AM
+[20/04/2017 10:01:28] - Appointment for Patient Jean Janson(22222222) was completed by Dr.Connolly
+[20/04/2017 10:01:47] - Consultant Glen Connolly admitted patient Jean Janson to ward Burns Unit
+[20/04/2017 10:02:26] - Patient Jean Janson(22222222) was discharged from Burns Unit by Dr.ConnollyID (32795725)
+[20/04/2017 10:02:35] - Consultant Glen Connolly admitted patient Jean Janson to ward Private Ward
+[20/04/2017 10:02:40] - Patient Jean Janson(22222222) was discharged from Private Ward by Dr.ConnollyID (32795725)
+[20/04/2017 10:15:51] - Consultant Glen Connolly made an appointment for Jean Janson for the 10 Oct 2017 at 06:00 AM
+[20/04/2017 10:15:57] - Appointment for Patient Jean Janson(22222222) was completed by Dr.Connolly
+[20/04/2017 10:16:42] - Bill has been paid for Jean Janson(22222222)
+[20/04/2017 10:54:02] - Consultant Glen Connolly made an appointment for Jean Janson for the 20 Feb 2018 at 06:00 AM
+[20/04/2017 10:54:09] - Appointment for Patient Jean Janson(22222222) was completed by Dr.Connolly
+[20/04/2017 10:54:23] - Consultant Glen Connolly admitted patient Jean Janson to ward Maternity Ward
+[20/04/2017 10:54:29] - Patient Jean Janson(22222222) was discharged from Maternity Ward by Dr.ConnollyID (32795725)
+[20/04/2017 10:54:49] - Consultant Glen Connolly made an appointment for Jean Janson for the 21 Feb 2019 at 06:00 AM
+[20/04/2017 10:54:55] - Appointment for Patient Jean Janson(22222222) was completed by Dr.Connolly
+[20/04/2017 10:55:11] - Consultant Glen Connolly admitted patient Jean Janson to ward Intensive Care Unit
+[20/04/2017 10:55:17] - Patient Jean Janson(22222222) was discharged from Intensive Care Unit by Dr.ConnollyID (32795725)
+[20/04/2017 10:55:58] - Bill has been paid for Jean Janson(22222222)
+[20/04/2017 11:14:48] - Consultant Glen Connolly made an appointment for Jean Janson for the 21 Feb 2018 at 06:00 AM
+[20/04/2017 11:14:59] - Appointment for Patient Jean Janson(22222222) was completed by Dr.Connolly
+[20/04/2017 11:20:03] - Consultant Glen Connolly made an appointment for Jean Janson for the 21 Feb 2018 at 06:00 AM
+[20/04/2017 11:20:14] - Appointment for Patient Jean Janson(22222222) was completed by Dr.Connolly
+[20/04/2017 11:20:26] - Consultant Glen Connolly admitted patient Jean Janson to ward Psychiatric Ward
+[20/04/2017 11:20:32] - Patient Jean Janson(22222222) was discharged from Psychiatric Ward by Dr.ConnollyID (32795725)
+[20/04/2017 11:20:42] - Consultant Glen Connolly admitted patient Jean Janson to ward Burns Unit
+[20/04/2017 11:20:49] - Patient Jean Janson(22222222) was discharged from Burns Unit by Dr.ConnollyID (32795725)
+[20/04/2017 11:21:08] - Bill has been paid for Jean Janson(22222222)
+[20/04/2017 11:46:49] - Consultant Glen Connolly admitted patient Jean Janson to ward Private Ward
+[20/04/2017 11:46:56] - Patient Jean Janson(22222222) was discharged from Private Ward by Dr.ConnollyID (32795725)
+[20/04/2017 11:47:21] - Consultant Glen Connolly made an appointment for Jean Janson for the 20 Feb 2018 at 06:00 AM
+[20/04/2017 11:47:29] - Appointment for Patient Jean Janson(22222222) was completed by Dr.Connolly
+[20/04/2017 11:47:51] - Bill has been paid for Jean Janson(22222222)
+[20/04/2017 11:49:37] - Bill has been paid for Jean Janson(22222222)

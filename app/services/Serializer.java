@@ -11,16 +11,44 @@ import java.util.zip.GZIPOutputStream;
 /**
  * Created by conno on 15/04/2017.
  */
-public class Serializer {
+public class Serializer {   //currently cannot serialize more than one of anything. This includes Patient. Reason e
 
-    public static void serialize(Object object) throws IOException{
-        final String FILE = "public/Files/" + object.getClass().getName().substring(7).toLowerCase() + "s.gz";
-        try(FileOutputStream fo = new FileOutputStream(FILE);
-            GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
-            ObjectOutputStream oo = new ObjectOutputStream(gzipOut);){
+    public static void serialize(Object object) throws IOException {
+        final String FILENAME = "public/Files/" + object.getClass().getName().substring(7).toLowerCase() + "s.gz";
+        final File FILE = new File(FILENAME);
+        FILE.createNewFile();
+        List<Object> obj = new ArrayList<>();
+        FileInputStream fin = new FileInputStream(FILENAME);
+        try (GZIPInputStream gis = new GZIPInputStream(fin);
+             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))) {
+            while (true) {
+                obj.add(ois.readObject());
+            }
+        } catch (EOFException e){
+            fin.close();
+        } catch (ClassNotFoundException e) {
+
+        } catch (IOException e) {
+
+        }
+        finally {
+            fin.close();
+        }
+        try (FileOutputStream fo = new FileOutputStream(FILENAME, true);
+             GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
+             ObjectOutputStream oo = new ObjectOutputStream(gzipOut);) {
+            if (obj.size() != 0) {
+                for (Object o : obj) {
+                    oo.writeObject(o);
+                }
+            }else{
+                throw new IOException();
+            }
             oo.writeObject(object);
         }
     }
+
+
 
     public static List<Appointment> readAppointmentArchive(String recordId){
         final String FILE = "public/Files/appointments.gz";
@@ -41,7 +69,7 @@ public class Serializer {
         }catch (EOFException e) {
             return result;
         }catch (IOException e) {
-            result = null;
+            return result;
         }
         return result;
     }
@@ -70,7 +98,7 @@ public class Serializer {
         return prescriptionResult;
     }
 
-    public static List<Chart> readChartArchive(String mrn, String recordId){
+    public static List<Chart> readChartArchive(String recordId){
         final String CHARTFILE = "public/Files/charts.gz";
         List<Chart> chartResult = new ArrayList<>();
         Chart c = null;
@@ -78,26 +106,18 @@ public class Serializer {
              GZIPInputStream gis = new GZIPInputStream(fin);
              ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(gis))){
             while (true) {
-                c = (Chart) ois.readObject();
-                chartResult.add(c);
+                c = (Chart)ois.readObject();
+                if(c.getPatientRecord().getRecordId().equals(recordId)) {
+                    c.insert();
+                    chartResult.add(c);
+                }
             }
         }catch (ClassNotFoundException e) {
             chartResult = null;
         }catch (EOFException e) {
-            for(Chart chart : chartResult){
-                if(chart.getP() != null){
-                    if(!chart.getP().getMrn().equals(mrn)){
-                        chartResult.remove(chart);
-                    }
-                }
-                else{
-                    if(!chart.getPatientRecord().getRecordId().equals(recordId)){
-                        chartResult.remove(chart);
-                    }
-                }
-            }
+
         }catch (IOException e) {
-            chartResult = null;
+
         }
         return chartResult;
     }
