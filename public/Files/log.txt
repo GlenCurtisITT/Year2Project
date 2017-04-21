@@ -262,3 +262,7 @@
 [20/04/2017 19:03:11] - Consultant Glen Connolly made an appointment for Glen Connolly for the 21 Apr 2018 at 06:00 AM
 [20/04/2017 19:03:26] - Consultant Glen Connolly recorded Consultation Room as broken.
 [20/04/2017 19:06:15] - Consultant Glen Connolly recorded Consultation Room as broken.
+[21/04/2017 01:02:47] - Dr. Connolly(67705623) assigned to patient(22222222)
+[21/04/2017 01:10:50] - Bill generated for patient(22222222) by User 'Glen Curtis'(68913715)
+[21/04/2017 01:11:01] - Bill has been paid for Jean Janson(22222222)
+[21/04/2017 01:11:20] - Dr. Connolly(67705623) assigned to patient(11111215)
