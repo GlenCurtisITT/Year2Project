@@ -192,6 +192,11 @@ public class HomeController extends Controller {
             return badRequest(addChiefAdmin.render());
         }
 
+        if(password.length() < 6){
+            flash("error", "Passwords must be at least 6 characters");
+            return badRequest(addChiefAdmin.render());
+        }
+
         if(!password.equals(confPassword)){
             flash("error", "Passwords did not match.");
             return badRequest(addChiefAdmin.render());
@@ -201,6 +206,7 @@ public class HomeController extends Controller {
         List<User> users = User.findAll();
         for(User u : users){
             if(u.getEmail().equals(email)){
+                flash("error", "User already exists with that email address.");
                 return badRequest(addChiefAdmin.render());
             }
         }

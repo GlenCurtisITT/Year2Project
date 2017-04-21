@@ -23,8 +23,8 @@ public class Equipment extends Model {
     private List<Appointment> appointments = new ArrayList<>();
 
     public Equipment(String type, boolean functional) {
-        this.setType(type);
-        this.setFunctional(functional);
+        this.type = type;
+        this.functional = functional;
     }
 
     public static Finder<String, Equipment> find = new Finder<String, Equipment>(Equipment.class);
