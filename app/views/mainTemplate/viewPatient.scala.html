@@ -312,35 +312,34 @@
                         </table>
                     </div>
                 }
-            }
-            </div>
-            <div class="row">
-            @if(patient.getAppointmentsDue.size() != 0) {
-                <div class="col-lg-6">
-                    <h2>Appointment Information</h2>
-                    <hr />
+                @if(patient.getAppointmentsDue.size() != 0) {
+                    <div class="col-lg-6">
+                        <h2>Appointment Information</h2>
+                        <hr />
 
 
-                    <table class="table table-bordered table-hover table-condensed">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Consultant</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @for(a <- patient.getAppointmentsDue) {
-                            <tr>
-                                <td class="numeric">@a.getAppDate</td>
-                                <td>Dr. @a.getC.getLname</td>
-                                <td><a href="@routes.HomeController.appointmentMain(a.getId)">View Appointment</a></td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
-                </div>
+                        <table class="table table-bordered table-hover table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Consultant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @for(a <- patient.getAppointmentsDue) {
+                                <tr>
+                                    <td class="numeric">@a.getAppDate</td>
+                                    <td>Dr. @a.getC.getLname</td>
+                                    <td><a href="@routes.HomeController.appointmentMain(a.getId)">View Appointment</a></td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
             }
             </div>
+
             <div class="row">
                 <div class="col-lg-6" id="paddTop">
                     <div class="well centered">

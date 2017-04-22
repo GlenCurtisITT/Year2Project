@@ -11,8 +11,16 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-12">
-            <h1>Welcome back Dr @consultant.getLname. </h1>
+        <div class="col-lg-4">
+            <div class="well">
+                <h1><span class="blueText">Welcome back</span> Dr @consultant.getLname. </h1>
+                @if(consultant.getSpecialization != null) {
+                    <h1><span class="blueText">Your specialisation is:</span> @consultant.getSpecialization</h1>
+                    <a href="@routes.ConsultantController.declareSpecialisation()">
+                        Update Specialisation</a>
+                }
+            </div>
+
         </div>
     </div>
 

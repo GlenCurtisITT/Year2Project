@@ -35,8 +35,6 @@ public class ConsultantController extends Controller {
         this.formFactory = f;
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result consultantHomePage(){
         User u = HomeController.getUserFromSession();
         Consultant c = (Consultant) u;
@@ -54,8 +52,6 @@ public class ConsultantController extends Controller {
             return ok(consultantHomePage.render(c, appointments));
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result makePrescription(){
         Form<Prescription> addPrescriptionForm = formFactory.form(Prescription.class);
         List<Medicine> medicine = Medicine.findAll();
@@ -64,16 +60,12 @@ public class ConsultantController extends Controller {
         return ok(makePrescription.render(addPrescriptionForm, medicine, p, u, null));
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result viewMedicine(){
         User u = getUserFromSession();
         List<Medicine> medicine = Medicine.findAll();
         return ok(viewMedicine.render(u, medicine));
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result makePrescriptionSubmit(){
         DynamicForm newPrescriptionForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
@@ -113,8 +105,6 @@ public class ConsultantController extends Controller {
         return redirect(controllers.routes.HomeController.viewPatient());
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result admitPatient(){
         Patient p = getPatientFromSession();
         Form<Chart> addChartForm = formFactory.form(Chart.class);
@@ -124,8 +114,6 @@ public class ConsultantController extends Controller {
     }
 
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result admitPatientSubmit(){
         DynamicForm newChartForm = formFactory.form().bindFromRequest();
         Form errorForm = formFactory.form().bindFromRequest();
@@ -187,24 +175,18 @@ public class ConsultantController extends Controller {
         return redirect(controllers.routes.HomeController.viewPatientByID(p.getMrn()));
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result discharge() {
         Patient p = getPatientFromSession();
         Consultant c = (Consultant)getUserFromSession();
         return ok(discharge.render(c, p));
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result viewAppointments(){
         Consultant c = (Consultant)HomeController.getUserFromSession();
         List<Appointment> appointmentList = c.getAppointments().stream().filter(a ->!a.isComplete()).collect(Collectors.toList());
         return ok(viewAppointments.render(c, appointmentList));
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result dischargePatient() {
         Patient p = getPatientFromSession();
         Chart c = p.getCurrentChart();
@@ -236,8 +218,6 @@ public class ConsultantController extends Controller {
         return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result removePrescription(String prescription_id){
         Patient p = getPatientFromSession();
         Consultant c = (Consultant)HomeController.getUserFromSession();
@@ -249,8 +229,6 @@ public class ConsultantController extends Controller {
         return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result addConsultant(){
         Consultant c = (Consultant) HomeController.getUserFromSession();
         Patient p = getPatientFromSession();
@@ -261,8 +239,6 @@ public class ConsultantController extends Controller {
         return redirect(routes.HomeController.viewPatientByID(p.getMrn()));
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result completeAppointment(String id){
         Consultant c = (Consultant) HomeController.getUserFromSession();
         List<Appointment> appointments = c.getAppointments();
@@ -278,16 +254,12 @@ public class ConsultantController extends Controller {
 
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result declareSpecialisation(){
         Consultant c = (Consultant) HomeController.getUserFromSession();
 
         return ok(declareSpecialisation.render(c));
     }
 
-    @Security.Authenticated(Secured.class)
-    @With(AuthConsultant.class)
     public Result declareSecialisationSubmit(){
         DynamicForm df = formFactory.form().bindFromRequest();
         Consultant c = Consultant.find.byId(df.get("id"));

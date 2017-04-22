@@ -9,10 +9,11 @@
         @if(consultant.getSpecialization == null){
           <input type="text" name="specialisation" placeholder="Enter Specialisation" class="form-control" id="margBot"/>
         }else{
-          <input type="text" name="specialisation" value="@consultant.getSpecialization" placeholder="Enter Specialisation" id="margBot" />
+          <input type="text" name="specialisation" value="@consultant.getSpecialization" placeholder="Enter Specialisation" id="margBot" class="form-control" />
         }
 
         <input type="submit" value="Update Specialisation" class="btn btn-primary" />
+        <a href="@routes.ConsultantController.consultantHomePage()"><button class="btn btn-warning">Cancel</button></a>
       </form>
     </div>
   </div>

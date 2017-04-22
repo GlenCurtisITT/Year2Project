@@ -1,7 +1,7 @@
 @(consultants: List[models.users.Consultant], user: models.users.User, patient: models.Patient)
 
 @if(user.checkRole().equals("Admin")) {
-  @adminPages.mainAdmin("Search Patient", user) {
+  @adminPages.mainAdmin("List Consultants", user) {
     @if(flash().containsKey("success")) {
       <div class="col-xs-4">
         <div class="centered">

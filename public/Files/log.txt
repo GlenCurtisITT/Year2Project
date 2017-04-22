@@ -266,3 +266,5 @@
 [21/04/2017 01:10:50] - Bill generated for patient(22222222) by User 'Glen Curtis'(68913715)
 [21/04/2017 01:11:01] - Bill has been paid for Jean Janson(22222222)
 [21/04/2017 01:11:20] - Dr. Connolly(67705623) assigned to patient(11111215)
+[22/04/2017 14:33:31] - Dr. Bob(61993711) assigned to patient(24597043)
+[22/04/2017 14:35:10] - Consultant Bob Bob made an appointment for Test Test for the 22 Apr 2017 at 04:30 PM
