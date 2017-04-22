@@ -102,3 +102,19 @@ body{
     bottom: 10px;
     left:55px;
 }
+
+.weak{
+    color:red;
+}
+
+.good{
+    color:yellow;
+}
+
+.strong{
+    color:green;
+}
+
+.short{
+    color:red;
+}
