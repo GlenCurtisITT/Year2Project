@@ -1,7 +1,7 @@
 @(consultant: models.users.Consultant, appointmentList: List[models.Appointment])
 @consultantPages.mainConsultant("Consultant Homepage", consultant) {
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-4">
         @if(flash().containsKey("error")) {
             <div class="alert alert-warning">
                 <strong>@flash().get("error")</strong>

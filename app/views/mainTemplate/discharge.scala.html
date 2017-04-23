@@ -1,6 +1,6 @@
 @(user: models.users.User, patient: models.Patient)
 @if(user.checkRole().equals("Consultant")) {
-  @consultantPages.mainConsultant("View Patient", user) {
+  @consultantPages.mainConsultant("Discharge Patient", user) {
     @if(patient.getMrn == null) {
       <h1>No patient selected</h1>
     } else {
@@ -59,7 +59,7 @@
         <div class="col-lg-12">
           <a href="@routes.ConsultantController.dischargePatient()"><button type="button" class="btn btn-primary text-center">
             Confirm Discharge</button></a>
-            <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-primary text-center">Cancel</button></a>
+            <a href="@routes.HomeController.viewPatientByID(patient.getMrn)"><button type="button" class="btn btn-warning text-center">Cancel</button></a>
         </div>
       </div>
 

@@ -65,10 +65,11 @@
                         <tr>
                             <th onclick="sortTable(0)">MRN</th>
                             <th onclick="sortTable(1)">Name</th>
-                            <th onclick="sortTable(2)">PPS Number</th>
-                            <th onclick="sortTable(3)">Date of Birth</th>
-                            <th onclick="sortTable(4)">Illness</th>
-                            <th onclick="sortTable(5)">Profile</th>
+                            <th onclick="sortTable(2)">Gender</th>
+                            <th onclick="sortTable(3)">PPS Number</th>
+                            <th onclick="sortTable(4)">Date of Birth</th>
+                            <th onclick="sortTable(5)">Illness</th>
+                            <th onclick="sortTable(6)">Profile</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,6 +78,11 @@
                         <tr>
                             <td class="numeric">@p.getMrn</td>
                             <td>@p.getfName() @p.getlName()</td>
+                            @if(p.getGender == true){
+                                <td>Male</td>
+                            }else{
+                                <td>Female</td>
+                            }
                             <td>@p.getPpsNumber</td>
                             <td>@p.getFormattedDOB(p.getDob)</td>
                             <td>@p.getIllness</td>
@@ -157,10 +163,11 @@
                         <tr>
                             <th onclick="sortTable(0)">MRN</th>
                             <th onclick="sortTable(1)">Name</th>
-                            <th onclick="sortTable(2)">PPS Number</th>
-                            <th onclick="sortTable(3)">Date of Birth</th>
-                            <th onclick="sortTable(4)">Illness</th>
-                            <th onclick="sortTable(5)">Profile</th>
+                            <th onclick="sortTable(2)">Gender</th>
+                            <th onclick="sortTable(3)">PPS Number</th>
+                            <th onclick="sortTable(4)">Date of Birth</th>
+                            <th onclick="sortTable(5)">Illness</th>
+                            <th onclick="sortTable(6)">Profile</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -169,6 +176,11 @@
                             <tr>
                                 <td class="numeric">@p.getMrn</td>
                                 <td>@p.getfName() @p.getlName()</td>
+                                @if(p.getGender == true){
+                                    <td>Male</td>
+                                }else{
+                                    <td>Female</td>
+                                }
                                 <td>@p.getPpsNumber</td>
                                 <td>@p.getFormattedDOB(p.getDob)</td>
                                 <td>@p.getIllness</td>

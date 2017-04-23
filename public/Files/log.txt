@@ -268,3 +268,28 @@
 [21/04/2017 01:11:20] - Dr. Connolly(67705623) assigned to patient(11111215)
 [22/04/2017 14:33:31] - Dr. Bob(61993711) assigned to patient(24597043)
 [22/04/2017 14:35:10] - Consultant Bob Bob made an appointment for Test Test for the 22 Apr 2017 at 04:30 PM
+[23/04/2017 17:32:06] - Dr. Connolly(67705623) assigned to patient(76968982)
+[23/04/2017 18:00:55] - Consultant Glen Connolly made an appointment for New Patient for the 24 Apr 2017 at 01:30 PM
+[23/04/2017 18:49:47] - Consultant Glen Connolly made an appointment for Jean Janson for the 24 Apr 2017 at 11:00 AM
+[23/04/2017 18:50:06] - Consultant Glen Connolly made an appointment for John Jacobs for the 25 Apr 2017 at 01:30 PM
+[23/04/2017 18:50:38] - Consultant Glen Connolly made an appointment for Jean Janson for the 24 Apr 2017 at 08:30 PM
+[23/04/2017 19:04:22] - Consultant Glen Connolly rescheduled appointment for Jean Janson for the 25 Apr 2017 at 03:30 PM
+[23/04/2017 19:04:57] - Consultant Glen Connolly rescheduled appointment for John Jacobs for the 25 Apr 2017 at 04:30 PM
+[23/04/2017 19:05:10] - Consultant Glen Connolly cancelled an appointment with John Jacobs the appointment that was cancelled was on the 25 Apr 2017 at 04:30 PM
+[23/04/2017 23:27:32] - Consultant Test User admitted patient New Patient to ward Intensive Care Unit
+[23/04/2017 23:27:47] - Appointment for Patient New Patient(76968982) was completed by Dr.User
+[23/04/2017 23:36:25] - Patient New Patient(76968982) was discharged from Intensive Care Unit by Dr.UserID (25608203)
+[23/04/2017 23:37:15] - Consultant Test User admitted patient Test Test to ward Intensive Care Unit
+[23/04/2017 23:37:21] - Patient Test Test(24597043) was discharged from Intensive Care Unit by Dr.UserID (25608203)
+[23/04/2017 23:38:43] - Consultant Test User recorded Consultation Room as broken.
+[24/04/2017 00:20:30] - Admin Glen Curtis updated patient Jean Janson's information.
+[24/04/2017 00:25:36] - Admin Glen Curtis updated patient John Jacobs's information.
+[24/04/2017 00:30:59] - Admin Glen Curtis updated patient John Jacobs's information.
+[24/04/2017 00:31:08] - Admin Glen Curtis updated patient John Jacobs's information.
+[24/04/2017 00:31:15] - Admin Glen Curtis updated patient John Jacobs's information.
+[24/04/2017 00:31:31] - Admin Glen Curtis updated patient John Jacobs's information.
+[24/04/2017 00:32:31] - Admin Glen Curtis updated patient John Jacobs's information.
+[24/04/2017 00:33:03] - Admin Glen Curtis updated patient John Jacobs's information.
+[24/04/2017 00:34:50] - Admin Glen Curtis updated patient John Jacobs's information.
+[24/04/2017 00:36:52] - Admin Glen Curtis updated patient John Jacobs's information.
+[24/04/2017 00:37:48] - Admin Glen Curtis updated patient John Jacobs's information.
