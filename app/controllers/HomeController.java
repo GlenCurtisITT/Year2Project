@@ -430,7 +430,7 @@ public class HomeController extends Controller {
                 return badRequest(addPatient.render(errorForm, "Phone number entered is too short", getUserFromSession()));
             }
             try {
-                Integer.parseInt(nums[i]);
+                Long.parseLong(nums[i]);
             }catch (NumberFormatException e){
                 return badRequest(addPatient.render(errorForm, "Phone numbers cannot contain letters.", getUserFromSession()));
             }

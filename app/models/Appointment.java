@@ -10,9 +10,6 @@ import play.data.format.Formats;
 
 import javax.persistence.*;
 
-/**
- * Created by conno on 11/03/2017.
- */
 @Entity
 @SequenceGenerator(name = "app_gen", allocationSize=1, initialValue=1)
 public class Appointment extends Model implements Serializable {

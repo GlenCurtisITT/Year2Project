@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-/**
- * Created by conno on 16/03/2017.
- */
 @Entity
 @SequenceGenerator(name = "equip_gen", allocationSize=1, initialValue=4)
 public class Equipment extends Model {

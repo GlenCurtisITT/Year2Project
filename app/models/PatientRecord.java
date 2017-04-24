@@ -7,9 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by conno on 18/04/2017.
- */
 @Entity
 @SequenceGenerator(name = "record_gen", allocationSize=1, initialValue=1)
 public class PatientRecord extends Model implements Serializable {

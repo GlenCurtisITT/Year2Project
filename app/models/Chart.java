@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-/**
- * Created by conno on 20/03/2017.
- */
 @Entity
 @SequenceGenerator(name = "chart_gen", allocationSize=1, initialValue=1)
 public class Chart extends Model implements Serializable{

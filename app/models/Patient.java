@@ -12,9 +12,6 @@ import java.util.zip.GZIPInputStream;
 
 import static java.util.stream.Collectors.toList;
 
-/**
- * Created by wdd on 03/03/17.
- */
 @Entity
 public class Patient extends Model implements Serializable{
     @Id

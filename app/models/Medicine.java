@@ -5,9 +5,6 @@ import com.avaje.ebean.Model;
 import javax.persistence.*;
 import java.util.List;
 
-/**
- * Created by conno on 27/03/2017.
- */
 @Entity
 @SequenceGenerator(name = "med_gen", allocationSize=1, initialValue=1)
 public class Medicine extends Model {

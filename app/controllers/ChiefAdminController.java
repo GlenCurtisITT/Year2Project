@@ -345,7 +345,7 @@ public class ChiefAdminController extends Controller{
             return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
         }
 
-        DateFormat format = new SimpleDateFormat("yyyy-dd-MM");
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         try{
             date = format.parse(dob);
@@ -468,7 +468,7 @@ public class ChiefAdminController extends Controller{
         }
 
         String dateString = newUserForm.get("dateOfBirth");
-        DateFormat format = new SimpleDateFormat("yyyy-dd-MM");
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         try{
             date = format.parse(dateString);

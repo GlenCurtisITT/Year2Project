@@ -18,9 +18,6 @@ import java.util.stream.Collector;
 
 import static java.util.stream.Collectors.toList;
 
-/**
- * Created by conno on 27/03/2017.
- */
 @Entity
 @SequenceGenerator(name = "bill_gen", allocationSize=1, initialValue=1)
 public class Bill extends Model implements MedBilling{

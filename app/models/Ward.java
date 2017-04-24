@@ -5,9 +5,7 @@ import java.util.List;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-/**
- * Created by Glen on 2/20/2017.
- */
+
 @Entity
 @SequenceGenerator(name = "ward_gen", allocationSize=1, initialValue=1)
 public class Ward extends Model {

@@ -5,10 +5,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Created by conno on 25/03/2017.
- */
 @Entity
 @SequenceGenerator(name = "standby_gen", allocationSize=1, initialValue=1)
 public class StandbyList extends Model{

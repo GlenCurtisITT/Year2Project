@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-/**
- * Created by conno on 15/04/2017.
- */
 public class Serializer {   //currently cannot serialize more than one of anything. This includes Patient. Reason e
 
     public static void serialize(Object object) throws IOException {

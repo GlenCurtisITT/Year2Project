@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-/**
- * Created by conno on 27/03/2017.
- */
 @Entity
 @SequenceGenerator(name = "pre_gen", allocationSize=1, initialValue=1)
 public class Prescription extends Model implements Serializable {
