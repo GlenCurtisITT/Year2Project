@@ -55,6 +55,9 @@ public class SearchController extends Controller{
         }
         List<Patient> searchedPatients = new ArrayList<>();
         Patient p = Serializer.readPatientArchive(mrn);
+        if(p == null){
+            return ok(searchPatient.render(new ArrayList<Patient>(), getUserFromSession()));
+        }
         if(p.getPatientRecord() != null) {
             PatientRecord pr = Serializer.readPatientRecordArchive(p.getPatientRecord().getRecordId());
             pr.setP(p);

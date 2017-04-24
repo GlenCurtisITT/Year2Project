@@ -13,7 +13,7 @@ public class Serializer {   //currently cannot serialize more than one of anythi
     public static void serialize(Object object) throws IOException {
         final String FILENAME = "public/Files/" + object.getClass().getName().substring(7).toLowerCase() + "s.gz";
         final File FILE = new File(FILENAME);
-        FILE.createNewFile();
+        /*FILE.createNewFile();
         List<Object> obj = new ArrayList<>();
         FileInputStream fin = new FileInputStream(FILENAME);
         try (GZIPInputStream gis = new GZIPInputStream(fin);
@@ -30,17 +30,17 @@ public class Serializer {   //currently cannot serialize more than one of anythi
         }
         finally {
             fin.close();
-        }
+        }   */ //effort to resolve serialize overwrite issue here
         try (FileOutputStream fo = new FileOutputStream(FILENAME, true);
              GZIPOutputStream gzipOut = new GZIPOutputStream(new BufferedOutputStream(fo));
              ObjectOutputStream oo = new ObjectOutputStream(gzipOut);) {
-            if (obj.size() != 0) {
+            /*if (obj.size() != 0) {
                 for (Object o : obj) {
                     oo.writeObject(o);
                 }
             }else{
                 throw new IOException();
-            }
+            }*/ //Checking for previous objects in file and writing them back in
             oo.writeObject(object);
         }
     }

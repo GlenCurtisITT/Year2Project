@@ -302,3 +302,20 @@
 [24/04/2017 09:37:46] - Consultant Glen Connolly admitted patient John Jacobs to ward Private Ward
 [24/04/2017 10:39:22] - Dr. Bob(61993711) assigned to patient(24597043)
 [24/04/2017 10:40:10] - Dr. Bob(61993711) assigned to patient(24597043)
+[24/04/2017 12:47:33] - Dr. Conlon(43012568) assigned to patient(83305651)
+[24/04/2017 12:49:19] - Consultant Evan Conlon made an appointment for Kavin Karklaxadore for the 25 May 2018 at 06:00 AM
+[24/04/2017 12:49:31] - Consultant Evan Conlon recorded Surgical Tools as broken.
+[24/04/2017 12:49:35] - Appointment for Patient Kavin Karklaxadore(83305651) was completed by Dr.Conlon
+[24/04/2017 12:53:41] - Consultant Evan Conlon admitted patient Kavin Karklaxadore to ward Cunnilingus
+[24/04/2017 12:54:01] - Patient Kavin Karklaxadore(83305651) was discharged from Cunnilingus by Dr.ConlonID (43012568)
+[24/04/2017 13:00:05] - Dr. Conlon(43012568) assigned to patient(69202777)
+[24/04/2017 13:06:54] - Consultant Evan Conlon made an appointment for John JingleHimmerSchmidt for the 26 May 2018 at 06:00 AM
+[24/04/2017 13:07:33] - Consultant Evan Conlon admitted patient John JingleHimmerSchmidt to ward Private Ward
+[24/04/2017 13:08:08] - Patient John JingleHimmerSchmidt(69202777) was discharged from Private Ward by Dr.ConlonID (43012568)
+[24/04/2017 13:15:01] - Dr. Conlon(43012568) assigned to patient(25594765)
+[24/04/2017 13:15:06] - Consultant removed from patient Paul  Walker
+[24/04/2017 13:16:29] - Bill has been paid for John JingleHimmerSchmidt(69202777)
+[24/04/2017 13:16:33] - Bill generated for patient(69202777) by User 'Edmond Veale'(76140595)
+[24/04/2017 13:23:57] - Appointment for Patient John JingleHimmerSchmidt(69202777) was completed by Dr.Conlon
+[24/04/2017 13:33:50] - Bill generated for patient(69202777) by User 'Edmond Veale'(76140595)
+[24/04/2017 13:36:23] - Bill generated for patient(69202777) by User 'Edmond Veale'(76140595)

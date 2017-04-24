@@ -150,6 +150,8 @@ public class Bill extends Model implements MedBilling{
             } catch (DocumentException e) {
                 e.printStackTrace();
             }
+
+            this.update();
         if(p.getPatientRecord() != null){
             PatientRecord pr = p.getPatientRecord();
             pr.addToRecord();

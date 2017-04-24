@@ -370,7 +370,7 @@ public class ChiefAdminController extends Controller{
         }
 
         try{
-            Integer.parseInt(df.get("phoneNumber"));
+            Long.parseLong(df.get("phoneNumber"));
         }catch(NumberFormatException e){
             flash("error", "Phone number must contain numbers only");
             return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
@@ -424,10 +424,19 @@ public class ChiefAdminController extends Controller{
         user.setPhoneNumber(newUserForm.get("phoneNumber"));
         user.setPpsNumber(newUserForm.get("ppsNumber"));
 
-        //Checking if Form has errors.
-        if(newUserForm.hasErrors()){
-            return badRequest(createUser.render(user, "Error in form."));
+        String dateString = newUserForm.get("dateOfBirth");
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        try{
+            date = format.parse(dateString);
+            user.setDateOfBirth(date);
+        } catch (ParseException e) {
+            return badRequest(createUser.render(user, dateString));
         }
+        if(date.after(new Date())){
+            return badRequest(createUser.render(user, "Invalid Date of Birth entered"));
+        }
+
         //Checking that Email and Name are not blank.
         if(newUserForm.get("email").equals("") || newUserForm.get("fname").equals("") || newUserForm.get("lname").equals("") || newUserForm.get("phoneNumber").equals("") || newUserForm.get("address").equals("")){
             return badRequest(createUser.render(user, "Please fill all forms in the field"));
@@ -445,9 +454,9 @@ public class ChiefAdminController extends Controller{
             return badRequest(createUser.render(user, "Please enter a role."));
         }
 
-        int test = 0;
+        long test = 0;
         try{
-            test = Integer.parseInt(newUserForm.get("phoneNumber"));
+            test = Long.parseLong(newUserForm.get("phoneNumber"));
         } catch(NumberFormatException e){
             return badRequest(createUser.render(user, "PhoneNumber must contain numbers only"));
         }
@@ -474,18 +483,6 @@ public class ChiefAdminController extends Controller{
             }
         }
 
-        String dateString = newUserForm.get("dateOfBirth");
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        try{
-            date = format.parse(dateString);
-            user.setDateOfBirth(date);
-        } catch (ParseException e) {
-            return badRequest(createUser.render(user, dateString));
-        }
-        if(date.after(new Date())){
-            return badRequest(createUser.render(user, "Invalid Date of Birth entered"));
-        }
         //Adding user to database
         if(newUserForm.get("role").equals("Admin")){
             User u = new User(newUserForm.get("fname"), newUserForm.get("lname"), newUserForm.get("phoneNumber"), newUserForm.get("address")

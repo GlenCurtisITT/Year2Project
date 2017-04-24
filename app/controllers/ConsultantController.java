@@ -79,11 +79,7 @@ public class ConsultantController extends Controller {
         if(newPrescriptionForm.get("frequency").equals("") || newPrescriptionForm.get("dosage").equals("")){
             return badRequest(makePrescription.render(errorForm, medicine, p, u, "Must enter the dosage and how often patient is to take medicine"));
         }
-        try {
-            Integer.parseInt(newPrescriptionForm.get("dosage"));
-        }catch (NumberFormatException e){
-            return badRequest(makePrescription.render(errorForm, medicine, p, u, "Dosage must be represented by numbers"));
-        }
+
         if(Medicine.find.byId(newPrescriptionForm.get("medicineId")) == null){
             return badRequest(makePrescription.render(errorForm, medicine, p, u, "Must choose Medicine"));
         }
@@ -99,7 +95,9 @@ public class ConsultantController extends Controller {
         pres.setPatient(p);
         pres.save();
         p.update();
-        p.getB().noticeItem();
+        if(!p.getMedicalCard()) {
+            p.getB().noticeItem();
+        }
         String s = "Prescription for " + pres.getDosage() + pres.getMedicine().getUnitOfMeasurement() + " of " + pres.getMedicine().getName() + " written for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName();
         flash("success", s);
         return redirect(controllers.routes.HomeController.viewPatient());
@@ -245,7 +243,6 @@ public class ConsultantController extends Controller {
         List<Appointment> appointments = c.getAppointments();
         Appointment a = Appointment.find.byId(id);
         Patient p = a.getP();
-        p.getB().resetPaidStatus();
         a.complete();
         p.getB().calcBill();
         String log ="Appointment for Patient " + p.getfName() + " " + p.getlName() + "(" + p.getMrn() + ") was completed by Dr." + c.getLname();

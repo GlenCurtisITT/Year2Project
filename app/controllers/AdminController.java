@@ -154,7 +154,7 @@ public class AdminController extends Controller{
                 return badRequest(updatePatient.render(u, p));
             }
             try {
-                Integer.parseInt(nums[i]);
+                Long.parseLong(nums[i]);
             }catch (NumberFormatException e){
                 flash("error", "Phone numbers cannot contain letters.");
                 return badRequest(updatePatient.render(u, p));
