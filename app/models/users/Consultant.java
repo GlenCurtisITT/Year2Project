@@ -41,6 +41,13 @@ public class Consultant extends User{
         return c;
     }
 
+    public void releasePatient(Patient p){
+        this.patients.remove(p);
+        p.setC(null);
+        p.update();
+        this.update();
+    }
+
     public static Consultant getConsultantById(String id){
         if(id == null)
             return null;

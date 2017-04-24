@@ -99,6 +99,14 @@ public class AdminController extends Controller{
         return redirect(routes.SearchController.searchPatient());
     }
 
+    public Result removeConsultant(String id){
+        Patient p = Patient.find.byId(id);
+        p.getC().releasePatient(p);
+        flash("success", "Consultant removed.");
+        LogFile.writeToLog("Consultant removed from patient " + p.getfName() + " " + p.getlName());
+        return ok(viewPatient.render(HomeController.getUserFromSession(), p));
+    }
+
     public Result viewFullLog(){
         User u = HomeController.getUserFromSession();
         List<String> logEntries = LogFile.readAllLogEntries();

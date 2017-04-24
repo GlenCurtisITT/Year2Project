@@ -44,6 +44,7 @@ GET     /listConsultants            controllers.AdminController.listConsultants
 GET     /viewFullLog                controllers.AdminController.viewFullLog
 GET     /deleteLogFile              controllers.AdminController.deleteLogFile
 GET     /updatePatient/:mrn         controllers.AdminController.updatePatient(mrn: String)
+GET     /removeConsultant/:mrn      controllers.AdminController.removeConsultant(mrn: String)
 POST    /updatePatientSubmit        controllers.AdminController.updatePatientSubmit
 
 #SEARCH CONTROLLER

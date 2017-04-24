@@ -9,7 +9,6 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -86,7 +85,7 @@ public class Patient extends Model implements Serializable{
         this.nokNumber = nokNumber;
         this.medicalCard = medicalCard;
         this.illness = prevIllness;
-        this.c = null;
+        this.setC(null);
 
     }
 
@@ -104,7 +103,7 @@ public class Patient extends Model implements Serializable{
     }
 
     public void assignConsultant(Consultant c){
-        this.c = c;
+        this.setC(c);
         c.addPatient(this);
         this.save();
         c.save();
@@ -422,5 +421,9 @@ public class Patient extends Model implements Serializable{
 
     public void setPatientRecord(PatientRecord patientRecord) {
         this.patientRecord = patientRecord;
+    }
+
+    public void setC(Consultant c) {
+        this.c = c;
     }
 }

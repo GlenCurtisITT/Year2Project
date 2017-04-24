@@ -3,7 +3,7 @@
   @consultantPages.mainConsultant("View Medicine", user) {
     <div class="row">
       <div class="col-sm-12">
-        <a href="@routes.ConsultantController.makePrescription()"><button class="btn btn-primary">Back</button></a>
+        <button class="btn btn-primary" onclick="goBack()">Back</button>
         <table class="table table-bordered table-hover table-condensed">
           <thead>
             <tr>
@@ -28,6 +28,10 @@
         </table>
       </div>
     </div>
-
+    <script>
+            function goBack() {
+              window.history.back();
+            }
+    </script>
   }
 }
