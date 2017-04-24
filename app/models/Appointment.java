@@ -86,7 +86,12 @@ public class Appointment extends Model implements Serializable {
     public void complete() {
         this.complete = true;
         this.update();
-        p.update();
+        if(p.getPatientRecord() != null){
+            PatientRecord pr = p.getPatientRecord();
+            pr.addToRecord();
+        } else{
+            PatientRecord.record(p);
+        }
     }
 
     public PatientRecord getPatientRecord() {

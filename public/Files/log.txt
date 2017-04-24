@@ -319,3 +319,18 @@
 [24/04/2017 13:23:57] - Appointment for Patient John JingleHimmerSchmidt(69202777) was completed by Dr.Conlon
 [24/04/2017 13:33:50] - Bill generated for patient(69202777) by User 'Edmond Veale'(76140595)
 [24/04/2017 13:36:23] - Bill generated for patient(69202777) by User 'Edmond Veale'(76140595)
+[24/04/2017 15:01:49] - Dr. Connolly(77256542) assigned to patient(11111215)
+[24/04/2017 15:02:05] - Consultant Glen Connolly made an appointment for John Jacobs for the 25 May 2017 at 06:00 AM
+[24/04/2017 15:02:12] - Appointment for Patient John Jacobs(11111215) was completed by Dr.Connolly
+[24/04/2017 15:03:03] - Consultant Glen Connolly admitted patient John Jacobs to ward Maternity Ward
+[24/04/2017 15:03:10] - Patient John Jacobs(11111215) was discharged from Maternity Ward by Dr.ConnollyID (77256542)
+[24/04/2017 15:14:59] - Consultant Glen Connolly admitted patient John Jacobs to ward Psychiatric Ward
+[24/04/2017 15:15:07] - Patient John Jacobs(11111215) was discharged from Psychiatric Ward by Dr.ConnollyID (77256542)
+[24/04/2017 15:15:25] - Consultant Glen Connolly admitted patient John Jacobs to ward Private Ward
+[24/04/2017 15:15:31] - Patient John Jacobs(11111215) was discharged from Private Ward by Dr.ConnollyID (77256542)
+[24/04/2017 15:16:53] - Consultant Glen Connolly admitted patient John Jacobs to ward Maternity Ward
+[24/04/2017 15:16:59] - Patient John Jacobs(11111215) was discharged from Maternity Ward by Dr.ConnollyID (77256542)
+[24/04/2017 15:42:30] - Consultant Glen Connolly admitted patient John Jacobs to ward Private Ward
+[24/04/2017 15:42:52] - Patient John Jacobs(11111215) was discharged from Private Ward by Dr.ConnollyID (77256542)
+[24/04/2017 15:49:58] - Consultant Glen Connolly admitted patient John Jacobs to ward Burns Unit
+[24/04/2017 15:50:07] - Patient John Jacobs(11111215) was discharged from Burns Unit by Dr.ConnollyID (77256542)

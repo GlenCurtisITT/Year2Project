@@ -95,9 +95,7 @@ public class ConsultantController extends Controller {
         pres.setPatient(p);
         pres.save();
         p.update();
-        if(!p.getMedicalCard()) {
-            p.getB().noticeItem();
-        }
+        p.getB().calcBill();
         String s = "Prescription for " + pres.getDosage() + pres.getMedicine().getUnitOfMeasurement() + " of " + pres.getMedicine().getName() + " written for " + getPatientFromSession().getfName() + " " + getPatientFromSession().getlName();
         flash("success", s);
         return redirect(controllers.routes.HomeController.viewPatient());

@@ -116,42 +116,42 @@ public class Bill extends Model implements MedBilling{
                 prescriptions += prescription.getDosage() * prescription.getMedicine().getPricePerUnit();
             }
         }
-        if (p.getAppointmentsDue().size() != 0) {
+        if (p.getPatientRecord() != null) {
             p.getAllAppointments().stream().forEach(a -> {
                 if(a.getAppDate().before(new Date())) {
                     a.complete();
                 }
             });
-            appointments += p.getCompletedAppointments().size() * APPOINTMENT_COST;//only charge for appointments which have been completed
+            appointments += p.getPatientRecord().getAppointments().size() * APPOINTMENT_COST;//only charge for appointments which have been completed
         }
         amount = prescriptions + appointments;
-        for(Chart c : p.getAllBillingCharts()) {
-            int days = calcNumberOfDays(c);
-            double stayCost = COST_OF_ADMITTANCE;
-            stayCost += (days * COST_PER_DAY);
-            if (p.getMedicalCard() == true) {
-                amount = 0;
-            } else {
-                amount += stayCost;
+        if(p.getPatientRecord() != null) {
+            for (Chart c : p.getPatientRecord().getCharts()) {
+                int days = calcNumberOfDays(c);
+                double stayCost = COST_OF_ADMITTANCE;
+                stayCost += (days * COST_PER_DAY);
+                if (p.getMedicalCard() == true) {
+                    amount = 0;
+                } else {
+                    amount += stayCost;
+                }
+                stay.add(days);
+                costOfStay.add(stayCost);
+                charts.add(c);
             }
-            stay.add(days);
-            costOfStay.add(stayCost);
-            charts.add(c);
         }
             try {   //generation of PDF
                 Document document = new Document();
                 PdfWriter.getInstance(document, new FileOutputStream(pdf.FILE));
                     document.open();
                 PDF.addMetaData(document, p);
-                PDF.addContent(document, charts, p, this, stay , costOfStay, appointments, prescriptions);
+                PDF.addContent(document, p, this, stay , costOfStay, appointments, prescriptions);
                 document.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (DocumentException e) {
                 e.printStackTrace();
             }
-
-            this.update();
         if(p.getPatientRecord() != null){
             PatientRecord pr = p.getPatientRecord();
             pr.addToRecord();
@@ -161,5 +161,6 @@ public class Bill extends Model implements MedBilling{
         if (amount == 0) {
             isPaid = true;
         }
+        this.update();
     }
 }

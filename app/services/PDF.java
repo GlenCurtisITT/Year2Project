@@ -47,7 +47,7 @@ public class PDF {
         document.addCreator("Lars Vogel");
     }
 
-    public static void addContent(Document document, ArrayList<Chart> charts, Patient p, Bill b, ArrayList<Integer> stay, ArrayList<Double> costOfStay, double costOfAppointments, double prescriptionCost) throws DocumentException {
+    public static void addContent(Document document, Patient p, Bill b, ArrayList<Integer> stay, ArrayList<Double> costOfStay, double costOfAppointments, double prescriptionCost) throws DocumentException {
         Anchor anchor = new Anchor("Medical Bill", catFont);
         anchor.setName("Medical Bill");
         Paragraph preface = new Paragraph();
@@ -68,7 +68,7 @@ public class PDF {
         preface.add(new Paragraph(
                 "Patient MRN: " + p.getMrn(),
                 smallBold));
-        addEmptyLine(preface, 3);
+        addEmptyLine(preface, 2);
         preface.add(new Paragraph(
                 "Breakdown of costs",
                 smallBold));
@@ -86,20 +86,20 @@ public class PDF {
         subCatPart.add(paragraph);
 
         // add a table
-        createTable(subCatPart, p, charts, b, stay, costOfStay);
+        createTable(subCatPart, p, b, stay, costOfStay);
 
-        addEmptyLine(paragraph, 2);
+        addEmptyLine(paragraph, 1);
         subCatPart.add(paragraph);
         if(p.getPrescriptionList().size() != 0) {
             createPresList(subCatPart, p , prescriptionCost);
         }
         subCatPart.add(new Paragraph("Total cost of Prescriptions: €" + prescriptionCost));
         subCatPart.add(new Paragraph("Total cost of Appointments: €" + costOfAppointments));
-        subCatPart.add(new Paragraph("Total cost of Stay: €" + costOfStay.stream().mapToInt(Double::intValue).sum()));
+        subCatPart.add(new Paragraph("Total cost of Stay: €" + (Double)costOfStay.stream().mapToDouble(Double::intValue).sum()));
         subCatPart.add(new Paragraph("Gross Cost: €" + (costOfStay.stream().mapToInt(Double::intValue).sum() + prescriptionCost + costOfAppointments)));
 
         if(p.getMedicalCard() == true) {
-            subCatPart.add(new Paragraph("Patient has a medical card. Amount covered:" + p.getB().getAmount(), subFont));
+            subCatPart.add(new Paragraph("Patient has a medical card. Amount covered: €" + (costOfStay.stream().mapToInt(Double::intValue).sum() + prescriptionCost + costOfAppointments), subFont));
         }
         subCatPart.add(new Paragraph("Net Bill: €" + p.getB().getAmount(), subFont));
 
@@ -108,38 +108,67 @@ public class PDF {
 
     }
 
-    public static void createTable(Section subCatPart, Patient p, ArrayList<Chart> charts, Bill b, ArrayList<Integer> stay, ArrayList<Double> costOfStay)
+    public static void createTable(Section subCatPart, Patient p, Bill b, ArrayList<Integer> stay, ArrayList<Double> costOfStay)
             throws BadElementException {
-        PdfPTable table = new PdfPTable(5);
+        PdfPTable table = new PdfPTable(4);
+        Paragraph paragraph = new Paragraph();
         // t.setBorderColor(BaseColor.GRAY);
         // t.setPadding(4);
         // t.setSpacing(4);
         // t.setBorderWidth(1);
 
         PdfPCell c1;
-        if(p.getCompletedAppointments().size() != 0) {
-            c1 = new PdfPCell(new Phrase("Appointments"));
-            c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-            for(int i = 1; i <= p.getCompletedAppointments().size() ; i++ ) {
-                table.addCell(c1);
-                table.addCell("€" + Double.toString(b.APPOINTMENT_COST));
-                table.addCell("Appointment " + Integer.toString(i));
-                table.addCell("Consultant: Dr." + p.getCompletedAppointments().get(i - 1).getC().getLname());
-                table.addCell(p.getCompletedAppointments().get(i-1).getE().getType());
-            }
-        }
-
-        if(p.getBillingChart().getDateOfAdmittance() != null) {
-            for(int i = 0; i < charts.size(); i++) {
-                c1 = new PdfPCell(new Phrase(charts.get(i).getCurrentWard()));
+        if (p.getPatientRecord() != null) {
+            if (p.getPatientRecord().getAppointments().size() != 0) {
+                c1 = new PdfPCell(new Phrase("Appointments"));
                 c1.setHorizontalAlignment(Element.ALIGN_CENTER);
                 table.addCell(c1);
-                table.addCell(Integer.toString(stay.get(i)) + " days");
-                table.addCell("€" + Double.toString(costOfStay.get(i)));
+                c1 = new PdfPCell(new Phrase("Cost"));
+                c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table.addCell(c1);
+                c1 = new PdfPCell(new Phrase("Consultant"));
+                c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table.addCell(c1);
+                c1 = new PdfPCell(new Phrase("Equipment"));
+                c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table.addCell(c1);
+                for (int i = 1; i <= p.getPatientRecord().getAppointments().size(); i++) {
+                    table.addCell(Integer.toString(i));
+                    table.addCell("€" + Double.toString(b.APPOINTMENT_COST));
+                    table.addCell("Dr." + p.getPatientRecord().getAppointments().get(i - 1).getC().getLname());
+                    table.addCell(p.getPatientRecord().getAppointments().get(i - 1).getE().getType());
+                }
+                subCatPart.add(table);
+                addEmptyLine(paragraph, 1);
+                subCatPart.add(paragraph);
+            }
+
+            if (p.getPatientRecord().getCharts().size() != 0) {
+                PdfPTable table2 = new PdfPTable(4);
+
+                c1 = new PdfPCell(new Phrase("Ward"));
+                c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table2.addCell(c1);
+                c1 = new PdfPCell(new Phrase("Admittance Date"));
+                c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table2.addCell(c1);
+                c1 = new PdfPCell(new Phrase("Discharge Date"));
+                c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table2.addCell(c1);
+                c1 = new PdfPCell(new Phrase("Cost"));
+                c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table2.addCell(c1);
+
+                for (int i = 0; i < p.getPatientRecord().getCharts().size(); i++) {
+                    c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    table2.addCell(p.getPatientRecord().getCharts().get(i).getCurrentWard());
+                    table2.addCell(p.getPatientRecord().getCharts().get(i).getDateOfAdmittance().toString());
+                    table2.addCell(p.getPatientRecord().getCharts().get(i).getDischargeDate().toString());
+                    table2.addCell(Double.toString(costOfStay.get(i)));
+                }
+                subCatPart.add(table2);
             }
         }
-            subCatPart.add(table);
-
     }
 
     public static void createPresList(Section subCatPart, Patient p, double prescriptionCost) {
