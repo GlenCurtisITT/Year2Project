@@ -416,54 +416,61 @@ public class ChiefAdminController extends Controller{
 
     public Result addUserSubmit(){
         DynamicForm newUserForm = formFactory.form().bindFromRequest();
-        Form errorForm = formFactory.form().bindFromRequest();
+        User user = new User("", "", "", "", "", new Date(), "", "");
+        user.setEmail(newUserForm.get("email"));
+        user.setAddress(newUserForm.get("address"));
+        user.setFname(newUserForm.get("fname"));
+        user.setLname(newUserForm.get("lname"));
+        user.setPhoneNumber(newUserForm.get("phoneNumber"));
+        user.setPpsNumber(newUserForm.get("ppsNumber"));
+
         //Checking if Form has errors.
         if(newUserForm.hasErrors()){
-            return badRequest(createUser.render(errorForm, "Error in form."));
+            return badRequest(createUser.render(user, "Error in form."));
         }
         //Checking that Email and Name are not blank.
         if(newUserForm.get("email").equals("") || newUserForm.get("fname").equals("") || newUserForm.get("lname").equals("") || newUserForm.get("phoneNumber").equals("") || newUserForm.get("address").equals("")){
-            return badRequest(createUser.render(errorForm, "Please fill all forms in the field"));
+            return badRequest(createUser.render(user, "Please fill all forms in the field"));
         }
 
         if(newUserForm.get("fname").matches(".*\\d+.*") || newUserForm.get("lname").matches(".*\\d+.*")){
-            return badRequest(createUser.render(errorForm, "Name must not contain numbers"));
+            return badRequest(createUser.render(user, "Name must not contain numbers"));
         }
 
         if(!newUserForm.get("email").contains("@")){
-            return badRequest(createUser.render(errorForm, "Invalid email entered"));
+            return badRequest(createUser.render(user, "Invalid email entered"));
         }
 
         if(newUserForm.get("role").equals("select")){
-            return badRequest(createUser.render(errorForm, "Please enter a role."));
+            return badRequest(createUser.render(user, "Please enter a role."));
         }
 
         int test = 0;
         try{
             test = Integer.parseInt(newUserForm.get("phoneNumber"));
         } catch(NumberFormatException e){
-            return badRequest(createUser.render(errorForm, "PhoneNumber must contain numbers only"));
+            return badRequest(createUser.render(user, "PhoneNumber must contain numbers only"));
         }
 
         try {
             HomeController.ppsChecker(newUserForm.get("ppsNumber"));
         } catch (InvalidPPSNumberException e) {
-            return badRequest(createUser.render(errorForm, e.getMessage()));
+            return badRequest(createUser.render(user, e.getMessage()));
         }
 
         //Checking if password == confirmed password
         if(!newUserForm.get("password").equals(newUserForm.get("passwordConfirm"))){
-            return badRequest(createUser.render(errorForm, "Passwords do not match."));
+            return badRequest(createUser.render(user, "Passwords do not match."));
         }
         //Checking if password is longer than 6 characters
         if(newUserForm.get("password").length() < 6){
-            return badRequest(createUser.render(errorForm, "Password must be at least six characters."));
+            return badRequest(createUser.render(user, "Password must be at least six characters."));
         }
         //Checking if email exists already in database (Duplicate primary key)
         List<User> allusers = User.findAll();
         for(User a : allusers) {
             if (a.getEmail().equals(newUserForm.get("email"))) {
-                return badRequest(createUser.render(errorForm, "Email already exists in system."));
+                return badRequest(createUser.render(user, "Email already exists in system."));
             }
         }
 
@@ -472,11 +479,12 @@ public class ChiefAdminController extends Controller{
         Date date = new Date();
         try{
             date = format.parse(dateString);
+            user.setDateOfBirth(date);
         } catch (ParseException e) {
-            return badRequest(createUser.render(errorForm, dateString));
+            return badRequest(createUser.render(user, dateString));
         }
         if(date.after(new Date())){
-            return badRequest(createUser.render(errorForm, "Invalid Date of Birth entered"));
+            return badRequest(createUser.render(user, "Invalid Date of Birth entered"));
         }
         //Adding user to database
         if(newUserForm.get("role").equals("Admin")){
@@ -488,7 +496,7 @@ public class ChiefAdminController extends Controller{
                     , newUserForm.get("ppsNumber"), date, newUserForm.get("email"), newUserForm.get("password"));
             Consultant.create(c);
         } else {
-            return badRequest(createUser.render(errorForm, "Invalid role chosen."));
+            return badRequest(createUser.render(user, "Invalid role chosen."));
         }
         String s = newUserForm.get("role") + ": " + newUserForm.get("fname") + " " + newUserForm.get("lname") + " added successfully.";
         //Flashing String s to memory to be used in index screen.
@@ -521,7 +529,7 @@ public class ChiefAdminController extends Controller{
     }
 
     public Result createUser(){
-        Form<User> addUserForm = formFactory.form(User.class);
-        return ok(createUser.render(addUserForm, null));
+        User user = new User("", "", "", "", "", new Date(), "", "");
+        return ok(createUser.render(user, null));
     }
 }

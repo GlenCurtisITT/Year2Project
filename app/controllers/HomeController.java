@@ -544,7 +544,7 @@ public class HomeController extends Controller {
         }
         testPPS = pps.substring(0, 6);
         try{
-            Integer.parseInt(testPPS);
+            Long.parseLong(testPPS);
         }catch(NumberFormatException e){
             throw new InvalidPPSNumberException("Invalid PPS number entered");
         }
