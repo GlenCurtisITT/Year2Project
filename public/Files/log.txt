@@ -293,3 +293,10 @@
 [24/04/2017 00:34:50] - Admin Glen Curtis updated patient John Jacobs's information.
 [24/04/2017 00:36:52] - Admin Glen Curtis updated patient John Jacobs's information.
 [24/04/2017 00:37:48] - Admin Glen Curtis updated patient John Jacobs's information.
+[24/04/2017 09:23:30] - Consultant Glen Connolly admitted patient Jean Janson to ward Private Ward
+[24/04/2017 09:23:55] - John Jacobs was put on standby-list for ward Private Ward
+[24/04/2017 09:25:09] - Patient John Jacobs(11111215) is next on the stanby list for Private Ward
+[24/04/2017 09:25:09] - Patient Jean Janson(22222222) was discharged from Private Ward by Dr.ConnollyID (67705623)
+[24/04/2017 09:28:44] - Admin Glen Curtis made an appointment for New Patient for the 25 Apr 2017 at 10:00 AM
+[24/04/2017 09:29:12] - Admin Glen Curtis rescheduled appointment for New Patient for the 25 Apr 2017 at 11:30 AM
+[24/04/2017 09:37:46] - Consultant Glen Connolly admitted patient John Jacobs to ward Private Ward

@@ -27,7 +27,7 @@
             <tbody>
             @for(a <- appointmentList) {
               <tr>
-                <td class="numeric">@a.getAppDate</td>
+                <td class="numeric">@a.getFormattedAppDate(a.getAppDate) at @a.getFormattedAppTime(a.getAppDate)</td>
                 <td>@a.getP.getfName() @a.getP.getlName()</td>
                 <td>@a.getP.getMrn</td>
                 <td><a href="@routes.HomeController.appointmentMain(a.getId)">View Appointment</a></td>

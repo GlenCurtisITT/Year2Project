@@ -164,12 +164,15 @@ public class AdminController extends Controller{
             p.setGender(false);
         }
 
-        /*try{ Does not work because patient cannot be updated.
+        String tempPPS = p.getPpsNumber();
+        p.setPpsNumber("");
+        try{
             HomeController.ppsChecker(df.get("ppsNumber"));
         } catch (InvalidPPSNumberException e) {
+            p.setPpsNumber(tempPPS);
             flash("error", e.getMessage());
             return badRequest(updatePatient.render(u, p));
-        }*/
+        }
 
         p.setPpsNumber(df.get("ppsNumber"));
         p.setEmail(df.get("email"));

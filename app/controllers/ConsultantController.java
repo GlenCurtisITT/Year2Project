@@ -184,6 +184,7 @@ public class ConsultantController extends Controller {
     public Result viewAppointments(){
         Consultant c = (Consultant)HomeController.getUserFromSession();
         List<Appointment> appointmentList = c.getAppointments().stream().filter(a ->!a.isComplete()).collect(Collectors.toList());
+        Collections.sort(appointmentList, new DateComparator());
         return ok(viewAppointments.render(c, appointmentList));
     }
 
@@ -205,7 +206,7 @@ public class ConsultantController extends Controller {
         b.update();
         if(w.getSl().getPatients().size() != 0){
             Patient nextP = w.getSl().getPatients().get(0);
-            String logFileString = "Patient " + nextP.getfName() + " " + nextP.getlName() + "(" + nextP.getMrn() + ")" + " is next on the stanby list for " + w.getName();
+            String logFileString = "Patient " + nextP.getfName() + " " + nextP.getlName() + "(" + nextP.getMrn() + ")" + " is next on the standby list for " + w.getName();
             LogFile.writeToLog(logFileString);
             String logFileString2 = "Patient " + p.getfName() + " " + p.getlName() + "(" + p.getMrn() + ")" + " was discharged from " + w.getName() + " by Dr." + consultant.getLname() + "ID (" + consultant.getIdNum() + ")";
             LogFile.writeToLog(logFileString2);

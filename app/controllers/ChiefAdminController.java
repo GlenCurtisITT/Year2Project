@@ -386,12 +386,20 @@ public class ChiefAdminController extends Controller{
             return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
         }
 
+        //Setting to null to check for duplicates in Database.
+        u.setPpsNumber("");
+        u.update();
         try {
             HomeController.ppsChecker(pps);
         } catch (InvalidPPSNumberException e) {
+            //Resetting PPS back to initial value if there is an error.
+            u.setPpsNumber(pps);
+            u.update();
             flash("error", e.getMessage());
             return badRequest(updateUser.render(HomeController.getUserFromSession(), u));
         }
+
+
 
         u.setEmail(email);
         u.setFname(fName);
