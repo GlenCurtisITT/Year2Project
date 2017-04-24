@@ -334,3 +334,7 @@
 [24/04/2017 15:42:52] - Patient John Jacobs(11111215) was discharged from Private Ward by Dr.ConnollyID (77256542)
 [24/04/2017 15:49:58] - Consultant Glen Connolly admitted patient John Jacobs to ward Burns Unit
 [24/04/2017 15:50:07] - Patient John Jacobs(11111215) was discharged from Burns Unit by Dr.ConnollyID (77256542)
+[24/04/2017 16:42:37] - Consultant removed from patient John Jacobs
+[24/04/2017 16:42:45] - Dr. Connolly(77256542) assigned to patient(11111215)
+[24/04/2017 16:45:19] - Consultant removed from patient John Jacobs
+[24/04/2017 16:49:58] - Dr. Connolly(77256542) assigned to patient(11111215)
