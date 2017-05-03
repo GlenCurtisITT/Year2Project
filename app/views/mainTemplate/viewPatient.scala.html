@@ -141,7 +141,7 @@
                                 <tbody>
                                 @for(a <- patient.getAppointmentsDue) {
                                     <tr>
-                                        <td class="numeric">@a.getAppDate</td>
+                                        <td class="numeric">@a.getFormattedAppDate(a.getAppDate) at @a.getFormattedAppTime(a.getAppDate)</td>
                                         <td>Dr. @a.getC.getLname</td>
                                         <td><a href="@routes.HomeController.appointmentMain(a.getId)">View Appointment</a></td>
                                     </tr>
@@ -331,7 +331,7 @@
                             <tbody>
                             @for(a <- patient.getAppointmentsDue) {
                                 <tr>
-                                    <td class="numeric">@a.getAppDate</td>
+                                    <td class="numeric">@a.getFormattedAppDate(a.getAppDate) at @a.getFormattedAppTime(a.getAppDate)</td>
                                     <td>Dr. @a.getC.getLname</td>
                                     <td><a href="@routes.HomeController.appointmentMain(a.getId)">View Appointment</a></td>
                                 </tr>

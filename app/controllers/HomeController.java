@@ -489,11 +489,11 @@ public class HomeController extends Controller {
         flash("success", s);
         User u = getUserFromSession();
         if(u instanceof Consultant){
-            return redirect(routes.ConsultantController.consultantHomePage());
+            return redirect(routes.SearchController.searchPatient());
         }else if(u == null){
             return badRequest();
         }else{
-            return redirect(routes.AdminController.adminHomePage());
+            return redirect(routes.SearchController.searchPatient());
         }
 
     }

@@ -1,0 +1,2 @@
+[03/05/2017 11:45:01] - Dr. Connolly(77256542) assigned to patient(67743325)
+[03/05/2017 11:45:43] - Consultant Glen Connolly made an appointment for Hello Test for the 03 May 2017 at 04:00 PM
